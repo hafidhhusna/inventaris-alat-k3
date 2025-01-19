@@ -6,7 +6,7 @@ import { LoginButton } from "./LoginButton";
 export function LoginForm() {
   return (
     <form className="flex flex-col self-stretch my-auto text-lg font-extralight tracking-tight leading-none text-center text-black max-md:mt-10">
-      <div className="px-8 mt-8">
+      <div className="px-0 mt-8">
         <InputField type="email" placeholder="Email address" id="email-input" />
         <InputField
           type="password"
