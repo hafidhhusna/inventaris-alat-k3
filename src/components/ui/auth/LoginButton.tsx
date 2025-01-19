@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ButtonProps } from "./types";
 
-export function Button({ children, onClick }: ButtonProps) {
+export function LoginButton({ children, onClick }: ButtonProps) {
   return (
     <button
       onClick={onClick}
