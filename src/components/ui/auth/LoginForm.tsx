@@ -1,23 +1,31 @@
-import * as React from "react";
-// import { Hero } from "../hero/Hero"; // Import Hero
-import { InputField } from "./InputField";
-import { LoginButton } from "./LoginButton";
+'use client';
 
-export function LoginForm() {
+import * as React from "react";
+import { InputField } from "./InputField";
+import { Button } from "./Button";
+
+export const LoginForm: React.FC = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+  };
+
   return (
-    <form className="flex flex-col self-stretch my-auto text-lg font-extralight tracking-tight leading-none text-center text-black max-md:mt-10">
-      <div className="px-0 mt-8">
-        <InputField type="email" placeholder="Email address" id="email-input" />
-        <InputField
-          type="password"
-          placeholder="Password"
-          id="password-input"
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col mt-12 max-w-full text-lg w-[720px] max-md:mt-10 max-md:ml-1.5"
+    >
+      <InputField type="email" id="email" placeholder="Email address" />
+      <InputField type="password" id="password" placeholder="Password" />
+      <Button>Login</Button>
+      <div className="flex gap-2.5 self-center mt-8 max-w-full text-sm font-light tracking-tight leading-none w-[234px]">
+        <div className="grow">Or Register</div>
+        <div
+          className="object-contain shrink-0 w-px bg-black"
+          role="separator"
+          aria-hidden="true"
         />
-        <LoginButton>Login</LoginButton>
-        <div className="self-center mt-7 text-sm font-light tracking-tight leading-none">
-          Or Register
-        </div>
+        <div className="grow shrink w-[141px]">Forgot Your Password?</div>
       </div>
     </form>
   );
-}
+};
