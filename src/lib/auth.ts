@@ -1,6 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { login } from "@/services/auth";
+import { login } from "@/services/register";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/db";
 
@@ -8,7 +8,7 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
-    maxAge: 1 * 8 * 60 * 60, // 8 hours
+    maxAge: 8 * 60 * 60, // 8 hours
   },
   providers: [
     CredentialsProvider({
@@ -23,10 +23,13 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          const { user } = await login(credentials.email, credentials.password);
+          // Pastikan fungsi login mengembalikan object dengan property: id, name, email, role
+          const user = await login(credentials.email, credentials.password);
           return {
             id: user.id,
+            name: user.name,
             email: user.email,
+            role: user.role
           };
         } catch (error) {
           console.error("Auth error:", error);
@@ -47,6 +50,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           name: user.name,
           email: user.email,
+          role: user.role,
         };
       }
       return token;
@@ -60,6 +64,7 @@ export const authOptions: NextAuthOptions = {
           id: token.id,
           name: token.name,
           email: token.email,
+          role: token.role,
         },
       };
     },

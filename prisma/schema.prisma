@@ -7,27 +7,61 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model admin {
-  id_admin   String  @id @default(dbgenerated("('ADMIN'::text || nextval('admin_id'::regclass))")) @db.VarChar(10)
-  nama_admin String? @db.VarChar(50)
-  role_admin String? @db.VarChar(20)
-  email      String? @db.VarChar(50)
-  password   String? @db.VarChar(15)
+enum Role {
+  ADMIN
+  PELAKSANA
+  STAFF
 }
 
-model pelaksana {
-  id_pelaksana   String  @id @default(dbgenerated("('PELAKSANA'::text || nextval('pelaksana_id'::regclass))")) @db.VarChar(10)
-  nama_pelaksana String? @db.VarChar(50)
-  email          String? @db.VarChar(50)
-  password       String? @db.VarChar(15)
+// Model User yang digunakan NextAuth dan mengakomodasi 3 role
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  password      String?   // Pastikan menggunakan hash untuk penyimpanan password
+  image         String?
+  role          Role      @default(STAFF)
+  accounts      Account[]
+  sessions      Session[]
 }
 
-model staff {
-  id_staff   String  @id @default(dbgenerated("('STAFF'::text || nextval('staff_id'::regclass))")) @db.VarChar(10)
-  nama_staff String? @db.VarChar(50)
-  email      String? @db.VarChar(50)
-  password   String? @db.VarChar(15)
+// Model-model tambahan untuk NextAuth
+model Account {
+  id                 String   @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+  user               User     @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
 }
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Model-model untuk aplikasi yang sudah ada
 
 model inspeksi_sprinkler {
   id_inspeksi                String  @id @default(dbgenerated("('SPR'::text || nextval('admin_id'::regclass))")) @db.VarChar
@@ -215,8 +249,8 @@ model item {
   inspeksi_sarana_jalan_keluar    inspeksi_sarana_jalan_keluar[]
   inspeksi_scba                   inspeksi_scba[]
   inspeksi_spill_containment_room inspeksi_spill_containment_room[]
-  titik_lokasi                    titik_lokasi                      @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
-  lokasi                          lokasi                            @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
+  lokasi_titik_lokasi                    titik_lokasi                      @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
+  lokasi_lokasi                          lokasi                            @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
   rekapitulasi_bulanan            rekapitulasi_bulanan[]
   rekapitulasi_mingguan           rekapitulasi_mingguan[]
 }

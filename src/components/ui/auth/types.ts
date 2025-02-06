@@ -1,7 +1,9 @@
-export interface InputFieldProps {
-  placeholder: string;
-  type: string;
-  id: string;
+export interface InputFieldProps{
+  type : string;
+  id : string;
+  placeholder : string;
+  value : string;
+  onChange : (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface ButtonProps {
