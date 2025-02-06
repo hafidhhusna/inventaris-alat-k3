@@ -5,6 +5,8 @@ export const InputField: React.FC<InputFieldProps> = ({
   placeholder,
   type,
   id,
+  value,
+  onChange,
 }) => {
   return (
     <div className="relative">
@@ -17,6 +19,8 @@ export const InputField: React.FC<InputFieldProps> = ({
         placeholder={placeholder}
         className="w-full px-8 py-4 mt-2 text-lg font-extralight tracking-tight leading-none rounded-2xl border-2 border-solid border-zinc-300"
         aria-label={placeholder}
+        value = {value}
+        onChange={onChange}
       />
     </div>
   );
