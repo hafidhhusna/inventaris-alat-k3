@@ -4,6 +4,9 @@ import { InputFieldProps } from "./types";
 export const InputField: React.FC<InputFieldProps> = ({
   placeholder,
   type = "text",
+  name,
+  value,
+  onChange,
 }) => {
   return (
     <div className="relative w-full max-w-[479px] mb-2.5">
@@ -15,6 +18,9 @@ export const InputField: React.FC<InputFieldProps> = ({
         id={`input-${placeholder}`}
         className="px-16 py-5 w-full text-xl font-extralight tracking-tight leading-none text-center text-black rounded-2xl border-2 border-solid border-zinc-300 max-md:px-5"
         placeholder={placeholder}
+        name={name}
+        value={value}
+        onChange={onChange}
         aria-label={placeholder}
       />
     </div>

@@ -17,23 +17,24 @@ export const LoginForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    router.push("/signup")
     setLoading(true); // Aktifkan loading
   
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: true,
-    });
+    // const result = await signIn("credentials", {
+    //   email,
+    //   password,
+    //   redirect: true,
+    // });
 
-    console.log("Login results : ", result)
-    setLoading(false); // Matikan loading setelah selesai
+    // console.log("Login results : ", result)
+    // setLoading(false); // Matikan loading setelah selesai
   
-    if (result?.error) {
-      setError("Invalid email or password");
-    } else {
-      console.log("Login Success! Redirecting...")
-      router.push("/signup");
-    }
+    // if (result?.error) {
+    //   setError("Invalid email or password");
+    // } else {
+    //   console.log("Login Success! Redirecting...")
+    //   router.push("/signup");
+    // }
   };
   
 
@@ -42,9 +43,9 @@ export const LoginForm: React.FC = () => {
       onSubmit={handleSubmit}
       className="flex flex-col mt-12 max-w-full text-lg w-[720px] max-md:mt-10 max-md:ml-1.5"
     >
-      {error && <p className="text-red-500">{error}</p>}
+      {/* {error && <p className="text-red-500">{error}</p>} */}
       
-      <InputField
+      {/* <InputField
         type="email"
         id="email"
         placeholder="Email address"
@@ -58,7 +59,7 @@ export const LoginForm: React.FC = () => {
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-      />
+      /> */}
       
       <Button type="submit" isLoading={loading}>Login</Button>
       

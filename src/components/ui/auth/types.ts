@@ -3,7 +3,7 @@ export interface InputFieldProps{
   id : string;
   placeholder : string;
   value : string;
-  onChange : (e: React.ChangeEvent<HTMLInputElement>) => void;
+  // onChange : (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface ButtonProps {

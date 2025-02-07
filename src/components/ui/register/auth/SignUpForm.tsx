@@ -1,9 +1,49 @@
+"use client";
+
 import * as React from "react";
 import { InputField } from "./InputField";
 import { SocialButton } from "./SocialButton";
+import { useState } from "react";
 
 export const SignUpForm: React.FC = () => {
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const socialIcons = ["Google", "Facebook", "Twitter"];
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to register");
+      }
+
+      alert("Registration successful!");
+      setFormData({ username: "", email: "", password: "" });
+    } catch (error) {
+      setError("Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex overflow-hidden flex-col bg-white">
@@ -36,15 +76,33 @@ export const SignUpForm: React.FC = () => {
               Select your sign up method:
             </p>
 
-            <InputField placeholder="Username" />
-            <InputField placeholder="Email Address" type="email" />
-            <InputField placeholder="Password" type="password" />
+            <InputField 
+              placeholder="Username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+             />
+            <InputField 
+              placeholder="Email Address" 
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              />
+            <InputField 
+              placeholder="Password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange} 
+            />
 
             <button
               type="submit"
+              disabled={loading}
               className="px-16 py-5 mt-2.5 max-w-full text-xl font-semibold tracking-tight leading-none text-center bg-teal-400 rounded-2xl text-zinc-50 w-[479px] max-md:px-5"
             >
-              Sign Up
+              {loading ? "Processing..." : "Sign Up"}
             </button>
 
             <p className="mt-12 text-2xl font-extralight tracking-tight leading-none text-black max-md:mt-10">
