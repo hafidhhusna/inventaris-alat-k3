@@ -7,19 +7,19 @@ const sources = [
     src_img: "/images/profile.png",
     text: "Profile",
     classnames: "w-[1.111vw] h-[1.111vw]",
-    linkto: "/Profile",
+    linkto: "/profile",
   },
   {
     src_img: "/images/tracker.png",
     text: "Tracker",
     classnames: "w-[1.432vw] h-[0.677vw]",
-    linkto: "/Tracker",
+    linkto: "/tracker",
   },
   {
     src_img: "/images/profile.png",
     text: "Settings",
     classnames: "w-[1.111vw] h-[1.111vw]",
-    linkto: "/Settings",
+    linkto: "/settings",
   },
 ];
 

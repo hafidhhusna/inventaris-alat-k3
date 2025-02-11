@@ -80,12 +80,6 @@ const ContactUsPage = () => {
         ))}
       </div>
       <div className="w-[30vw] h-[0.12vw] bg-[#D3D3D3] mt-[1vw]"></div>
-      <h1 className="text-[1.146vw] mt-[1vw]">Reach Us Through Social Media</h1>
-      <div className=" w-[30vw] flex items-start justify-between mt-[1vw]">
-        <Link href="/">social media 1</Link>
-        <Link href="/">social media 2</Link>
-        <Link href="/">social media 3</Link>
-      </div>
     </div>
   );
 };
