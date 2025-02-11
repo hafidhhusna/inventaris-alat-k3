@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { InputField } from "./InputField";
-import { SocialButton } from "./SocialButton";
 import { useState } from "react";
 
 export const SignUpForm: React.FC = () => {
@@ -12,8 +11,6 @@ export const SignUpForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
-
-  const socialIcons = ["Google", "Facebook", "Twitter"];
 
     const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault(); // Mencegah reload halaman
@@ -107,9 +104,6 @@ export const SignUpForm: React.FC = () => {
             </p>
 
             <div className="flex gap-5 justify-between mt-4 max-w-full w-[229px]">
-              {socialIcons.map((icon) => (
-                <SocialButton key={icon} icon={icon} />
-              ))}
             </div>
           </form>
         </div>
