@@ -1,33 +1,39 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { FaArrowLeft } from "react-icons/fa6";
+import { FaLocationDot } from "react-icons/fa6";
+import { IoCall } from "react-icons/io5";
+import { CiMail } from "react-icons/ci";
 
 const sources = [
   {
-    src_img: "/",
+    src_img: <FaLocationDot />,
     text1: "Address",
     text2: "Lorem ipsum dolor sit amet, consectetur",
-    img_classname: "",
+    img_classname: "text-[1.146vw] text-white",
   },
   {
-    src_img: "/",
+    src_img: <IoCall />,
     text1: "Phone Number",
     text2: "+6289810001293",
-    img_classname: "",
+    img_classname: "text-[1.146vw] text-white",
   },
   {
-    src_img: "/",
+    src_img: <CiMail />,
     text1: "Email",
     text2: "hafidhanjink@mail.ptcintasejati.co.id",
-    img_classname: "",
+    img_classname: "text-[1.25vw] text-white",
   },
 ];
 
 const ContactUsPage = () => {
   return (
     <div className="w-screen h-screen flex flex-col items-start justify-center p-[6vw] bg-[#fff] text-[#000] relative overflow-hidden">
-      <Link href="/Tracker" className="absolute top-[1vw] left-[2vw]">
-        <div className="rounded-full w-[3.646vw] h-[3.646vw] bg-[#F1F2F3]"></div>
+      <Link href="/Profile" className="absolute top-[1vw] left-[2vw]">
+        <div className="rounded-full w-[3.646vw] h-[3.646vw] bg-[#F1F2F3] text-[1.615vw] text-[#FA8020] flex items-center justify-center">
+          <FaArrowLeft />
+        </div>
       </Link>
       <Image
         src="/images/LOGO INSPEKTRA PLUS 3.png"
@@ -63,14 +69,8 @@ const ContactUsPage = () => {
       <div className="mt-[1.5vw]">
         {sources.map((item, index) => (
           <div key={index} className="flex">
-            <div className="w-[2.865vw] h-[2.865vw] rounded-full bg-[#FCAE18] mb-[0.8vw]">
-              <Image
-                src={item.src_img}
-                alt="logo"
-                width={10000}
-                height={10000}
-                className={item.img_classname}
-              />
+            <div className="w-[2.865vw] h-[2.865vw] rounded-full bg-[#FCAE18] mb-[0.8vw] flex items-center justify-center">
+              <div className={item.img_classname}>{item.src_img}</div>
             </div>
             <div className="ml-[1vw]">
               <h1 className="font-bold text-[0.938vw]">{item.text1}</h1>

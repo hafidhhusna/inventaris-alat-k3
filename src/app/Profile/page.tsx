@@ -1,6 +1,6 @@
 import React from "react";
-import NavBar from "@/components/NavBar";
-import Header from "@/components/Header";
+import NavBar from "../components/NavBar";
+import Header from "../components/Header";
 
 const ProfilePage = () => {
   return (
@@ -61,7 +61,7 @@ const ProfilePage = () => {
                   className="w-[22.865vw] h-[2.135vw] bg-[#f4f4f4] rounded-[0.417vw] px-[0.5vw]"
                 />
                 <button className="text-[#0091B6] text-[0.885vw] italic">
-                  LChange Password
+                  Change Password
                 </button>
               </div>
             </div>
