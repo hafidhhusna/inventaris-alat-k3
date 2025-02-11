@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { Role } from "@prisma/client";
 
-export async function register(name: string, email: string, password: string) {
+export async function register(name: string, email: string, password: string, role: string) {
   // Cek apakah email sudah digunakan
   const existingUser = await prisma.user.findUnique({
     where: { email },
