@@ -6,10 +6,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   try {
-    const newUser = await register(name, email, password);
+    const newUser = await register(name, email, password, role);
     res.status(201).json(newUser);
   } catch (error) {
     res.status(400).json({ message: (error as Error).message });

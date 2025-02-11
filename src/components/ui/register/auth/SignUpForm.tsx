@@ -6,41 +6,31 @@ import { SocialButton } from "./SocialButton";
 import { useState } from "react";
 
 export const SignUpForm: React.FC = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
 
   const socialIcons = ["Google", "Facebook", "Twitter"];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault(); // Mencegah reload halaman
+    setLoading(true)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+    const response = await fetch(`${window.location.origin}/api/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password, role }),
+    });
 
-    try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to register");
-      }
-
-      alert("Registration successful!");
-      setFormData({ username: "", email: "", password: "" });
-    } catch (error) {
-      setError("Registration failed. Please try again.");
-    } finally {
+    if (response.ok) {
+      alert("User registered successfully!");
+      setLoading(false);
+    } else {
+      const errorData = await response.json();
+      setError(errorData.message);
       setLoading(false);
     }
   };
@@ -68,7 +58,7 @@ export const SignUpForm: React.FC = () => {
             className="object-contain self-end max-w-full aspect-[2.87] w-[181px]"
           />
 
-          <form className="flex flex-col items-center w-full">
+          <form onSubmit={handleRegister} className="flex flex-col items-center w-full">
             <h1 className="mt-16 text-4xl font-semibold tracking-tight leading-none text-black max-md:mt-10">
               Create Your Account
             </h1>
@@ -79,23 +69,30 @@ export const SignUpForm: React.FC = () => {
             <InputField 
               placeholder="Username"
               name="username"
-              value={formData.username}
-              onChange={handleChange}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
              />
             <InputField 
               placeholder="Email Address" 
               name="email"
               type="email"
-              value={formData.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               />
             <InputField 
               placeholder="Password"
               name="password"
               type="password"
-              value={formData.password}
-              onChange={handleChange} 
-            />
+              value={password}
+              onChange={(e) => setPassword(e.target.value)} 
+              />
+            <InputField
+            placeholder="Role"
+            name="role"
+            type="role"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+              />
 
             <button
               type="submit"
