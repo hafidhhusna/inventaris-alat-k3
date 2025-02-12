@@ -8,7 +8,7 @@ export const authOptions: NextAuthOptions = {
   debug: true,
   adapter: PrismaAdapter(prisma),
   session: {
-    strategy: "jwt",
+    strategy: "jwt", // Gunakan JWT agar CredentialsProvider bekerja
     maxAge: 8 * 60 * 60, // 8 hours
   },
   providers: [
@@ -24,13 +24,12 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          // Pastikan fungsi login mengembalikan object dengan property: id, name, email, role
           const user = await login(credentials.email, credentials.password);
           return {
             id: user.id,
             name: user.name,
             email: user.email,
-            role: user.role
+            role: user.role,
           };
         } catch (error) {
           console.error("Auth error:", error);
@@ -40,11 +39,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
-      if (trigger === "update" && session) {
-        return { ...token, ...session.user };
-      }
-
+    async jwt({ token, user }) {
       if (user) {
         return {
           ...token,
@@ -56,12 +51,10 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-
     async session({ session, token }) {
       return {
         ...session,
         user: {
-          ...session.user,
           id: token.id,
           name: token.name,
           email: token.email,
