@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import NavBar from "@/app/components/NavBar";
-import Header from "@/app/components/Header";
+import NavBar from "@/components/ui/NavBar";
+import Header from "@/components/ui/Header";
 import {
   Pagination,
   PaginationContent,
