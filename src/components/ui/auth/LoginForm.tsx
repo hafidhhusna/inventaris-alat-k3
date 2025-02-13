@@ -40,7 +40,7 @@ export const LoginForm: React.FC = () => {
       setError("Invalid email or password");
     } else {
       console.log("Login Success! Redirecting...")
-      router.push("/dashboard");
+      router.push("/Tracker");
     }
   };
   
