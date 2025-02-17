@@ -5,6 +5,8 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  relationMode = "foreignKeys"
 }
 
 enum Role {
@@ -64,7 +66,7 @@ model VerificationToken {
 // Model-model untuk aplikasi yang sudah ada
 
 model inspeksi_sprinkler {
-  id_inspeksi                String  @id @default(dbgenerated("('SPR'::text || nextval('admin_id'::regclass))")) @db.VarChar
+  id_inspeksi                Int      @id @default(autoincrement())
   kondisi_internal_pipa      Boolean
   katup_kontrol              Boolean
   koneksi_pemadam_kebakaran  Boolean
@@ -235,7 +237,7 @@ model item {
   tanggal_pembelian               DateTime?                         @db.Date
   pemasok                         String?                           @db.VarChar
   PIC                             String?                           @db.VarChar
-  gambar                          Bytes?
+  gambar                          String?
   status_pemasangan               Boolean?
   id_titik_lokasi                 Int                               @default(autoincrement())
   inspeksi_sprinkler              inspeksi_sprinkler[]
@@ -266,7 +268,7 @@ model rekapitulasi_bulanan {
   rekap_bulanan_id Int     @id @default(autoincrement())
   bulan            String? @db.VarChar
   id_item          Int     @default(autoincrement())
-  foto             Bytes?
+  foto             String?
   item             item    @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
 }
 
@@ -274,7 +276,7 @@ model rekapitulasi_mingguan {
   rekap_mingguan_id Int    @id @default(autoincrement())
   minggu_ke         Int?
   id_item           Int    @default(autoincrement())
-  foto              Bytes?
+  foto              String?
   item              item   @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
 }
 
