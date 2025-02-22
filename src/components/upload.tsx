@@ -8,66 +8,94 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-const UploadFile = () => {
+const UploadForm = () => {
+  const [formData, setFormData] = useState({
+    nama_item: "",
+    nomor_ser: "",
+    lokasi: "",
+    titik_lokasi: "",
+    spesifikasi: "",
+    tanggal_pembelian: "",
+    pemasok: "",
+    PIC: "",
+  });
+
   const [file, setFile] = useState<File | null>(null);
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setFile(event.target.files[0]);
+  // Handle perubahan input form
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Handle perubahan input file
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(e.target.files[0]);
     }
   };
 
-  const uploadFile = async () => {
-    if (!file) {
-      console.error("No file provided");
-      return;
-    }
-
+  // Handle submit form dan upload file
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
-    const filePath = `${Date.now()}_${file.name}`;
 
-    const { data, error } = await supabase.storage
-      .from("bucket_name")
-      .upload(filePath, file);
+    let imageUrl = "";
 
-    if (error) {
-      console.error("Error uploading file:", error.message);
-      setLoading(false);
-      return;
+    if (file) {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${formData.nama_item.replace(/\s+/g, "_")}_${Date.now()}.${fileExt}`;
+      const filePath = `items/${fileName}`;
+
+      // Upload file ke Supabase Storage
+      const { data, error } = await supabase.storage.from("bucket_name").upload(filePath, file);
+
+      if (error) {
+        console.error("Error uploading file:", error.message);
+        setLoading(false);
+        return;
+      }
+
+      // Dapatkan URL publik gambar
+      const { data: publicURLData } = supabase.storage.from("bucket_name").getPublicUrl(filePath);
+      imageUrl = publicURLData.publicUrl;
     }
 
-    console.log("File uploaded successfully:", data);
+    // Kirim data ke backend
+    const response = await fetch("/api/items", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...formData, gambar: imageUrl }),
+    });
 
-    const { data: publicURLData } = supabase.storage
-      .from("bucket_name")
-      .getPublicUrl(filePath);
+    const result = await response.json();
 
-    setFileUrl(publicURLData.publicUrl);
+    if (!response.ok) {
+      console.error("Error saving data:", result.error);
+    }
+
     setLoading(false);
+    alert("Data berhasil disimpan!");
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-6">
-      <input type="file" onChange={handleFileChange} className="mb-4" />
-      <button
-        onClick={uploadFile}
-        disabled={!file || loading}
-        className="px-4 py-2 bg-blue-500 text-white rounded-lg disabled:opacity-50"
-      >
-        {loading ? "Uploading..." : "Upload File"}
+    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-gray-100 rounded-lg shadow-md">
+      <input type="text" name="nama_item" placeholder="Nama Item" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
+      <input type="text" name="nomor_ser" placeholder="Nomor Seri" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
+      <input type="text" name="lokasi" placeholder="Lokasi" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
+      <input type="text" name="titik_lokasi" placeholder="Titik Lokasi" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
+      <input type="text" name="spesifikasi" placeholder="Spesifikasi" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
+      <input type="date" name="tanggal_pembelian" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
+      <input type="text" name="pemasok" placeholder="Pemasok" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
+      <input type="text" name="PIC" placeholder="PIC" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
+
+      <input type="file" onChange={handleFileChange} className="mb-2 p-2 w-full border rounded" />
+
+      <button type="submit" disabled={loading} className="w-full p-2 bg-blue-500 text-white rounded disabled:opacity-50">
+        {loading ? "Uploading..." : "Submit"}
       </button>
-      {fileUrl && (
-        <div className="mt-4">
-          <p>File berhasil diunggah:</p>
-          <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-            {fileUrl}
-          </a>
-        </div>
-      )}
-    </div>
+    </form>
   );
 };
 
-export default UploadFile;
+export default UploadForm;
