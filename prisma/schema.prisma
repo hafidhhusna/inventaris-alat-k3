@@ -267,6 +267,7 @@ model lokasi {
 model rekapitulasi_bulanan {
   rekap_bulanan_id Int     @id @default(autoincrement())
   bulan            String? @db.VarChar
+  tanggal          DateTime?
   id_item          Int     @default(autoincrement())
   foto             String?
   item             item    @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
@@ -275,6 +276,7 @@ model rekapitulasi_bulanan {
 model rekapitulasi_mingguan {
   rekap_mingguan_id Int    @id @default(autoincrement())
   minggu_ke         Int?
+  tanggal           DateTime?
   id_item           Int    @default(autoincrement())
   foto              String?
   item              item   @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
