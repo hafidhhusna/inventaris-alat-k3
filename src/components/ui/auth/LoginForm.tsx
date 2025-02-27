@@ -20,30 +20,29 @@ export const LoginForm: React.FC = () => {
     // router.push("/signup")
     // setLoading(true); // Aktifkan loading
 
-    if (!email || !password){
-      setError("Email and password are required!")
+    if (!email || !password) {
+      setError("Email and password are required!");
       return;
     }
 
-    setLoading(true)
-  
+    setLoading(true);
+
     const result = await signIn("credentials", {
       email,
       password,
       redirect: false,
     });
 
-    console.log("Login results : ", result)
+    console.log("Login results : ", result);
     setLoading(false); // Matikan loading setelah selesai
-  
+
     if (result?.error) {
       setError("Invalid email or password");
     } else {
-      console.log("Login Success! Redirecting...")
-      router.push("/dashboard");
+      console.log("Login Success! Redirecting...");
+      router.push("/Tracker");
     }
   };
-  
 
   return (
     <form
@@ -51,7 +50,7 @@ export const LoginForm: React.FC = () => {
       className="flex flex-col mt-12 max-w-full text-lg w-[720px] max-md:mt-10 max-md:ml-1.5"
     >
       {error && <p className="text-red-500">{error}</p>}
-      
+
       <InputField
         type="email"
         id="email"
@@ -59,7 +58,7 @@ export const LoginForm: React.FC = () => {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      
+
       <InputField
         type="password"
         id="password"
@@ -67,12 +66,18 @@ export const LoginForm: React.FC = () => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      
-      <Button type="submit" isLoading={loading}>Login</Button>
-      
+
+      <Button type="submit" isLoading={loading}>
+        Login
+      </Button>
+
       <div className="flex gap-2.5 self-center mt-8 max-w-full text-sm font-light tracking-tight leading-none w-[234px]">
         <div className="grow">Or Register</div>
-        <div className="object-contain shrink-0 w-px bg-black" role="separator" aria-hidden="true" />
+        <div
+          className="object-contain shrink-0 w-px bg-black"
+          role="separator"
+          aria-hidden="true"
+        />
         <div className="grow shrink w-[141px]">Forgot Your Password?</div>
       </div>
     </form>
