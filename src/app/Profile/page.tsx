@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
 import React from "react";
-import NavBar from "@/components/ui/NavBar";
-import Header from "@/components/ui/Header";
+import NavBar from "@/components/NavBar";
+import Header from "@/components/Header";
 
 const ProfilePage = () => {
   return (
@@ -12,7 +12,7 @@ const ProfilePage = () => {
       </div>
       <Header></Header>
       <div className="px-[15vw] pt-[2vw]">
-        <h1 className="text-[2.083vw]">Welcome, `{username}`</h1>
+        <h1 className="text-[2.083vw]">Welcome, Ryan</h1>
         <div className="flex pt-[2vw]">
           <div className="flex flex-col items-center justify-start">
             <div className="w-[7.396vw] h-[7.396vw] rounded-full bg-[#000]"></div>
