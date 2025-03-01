@@ -6,6 +6,7 @@ import { Button } from "./Button";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -77,7 +78,12 @@ export const LoginForm: React.FC = () => {
       </Button>
 
       <div className="flex gap-2.5 self-center mt-8 max-w-full text-sm font-light tracking-tight leading-none w-[234px]">
-        <div className="grow">Or Register</div>
+        <div className="grow flex">
+          <h1 className="mr-[0.5vw]">Or</h1>
+          <Link href={"/signup"} className="text-blue-600">
+            Register
+          </Link>
+        </div>
         <div
           className="object-contain shrink-0 w-px bg-black"
           role="separator"
