@@ -48,7 +48,7 @@ const UploadForm = () => {
       const filePath = `items/${fileName}`;
 
       // Upload file ke Supabase Storage
-      const { data, error } = await supabase.storage.from("bucket_name").upload(filePath, file);
+      const { data, error } = await supabase.storage.from("test-bucket").upload(filePath, file);
 
       if (error) {
         console.error("Error uploading file:", error.message);
@@ -57,12 +57,12 @@ const UploadForm = () => {
       }
 
       // Dapatkan URL publik gambar
-      const { data: publicURLData } = supabase.storage.from("bucket_name").getPublicUrl(filePath);
+      const { data: publicURLData } = supabase.storage.from("test-bucket").getPublicUrl(filePath);
       imageUrl = publicURLData.publicUrl;
     }
 
     // Kirim data ke backend
-    const response = await fetch("/api/items", {
+    const response = await fetch("/api/upload", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...formData, gambar: imageUrl }),
