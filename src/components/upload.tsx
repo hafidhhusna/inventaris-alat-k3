@@ -12,8 +12,8 @@ const UploadForm = () => {
   const [formData, setFormData] = useState({
     nama_item: "",
     nomor_ser: "",
-    lokasi: "",
-    titik_lokasi: "",
+    lokasi_id: "",
+    titik_lokasi_id: "",
     spesifikasi: "",
     tanggal_pembelian: "",
     pemasok: "",
@@ -82,8 +82,8 @@ const UploadForm = () => {
     <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-gray-100 rounded-lg shadow-md">
       <input type="text" name="nama_item" placeholder="Nama Item" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
       <input type="text" name="nomor_ser" placeholder="Nomor Seri" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
-      <input type="text" name="lokasi" placeholder="Lokasi" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
-      <input type="text" name="titik_lokasi" placeholder="Titik Lokasi" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
+      <input type="text" name="lokasi_id" placeholder="Lokasi" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
+      <input type="text" name="titik_lokasi_id" placeholder="Titik Lokasi" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
       <input type="text" name="spesifikasi" placeholder="Spesifikasi" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
       <input type="date" name="tanggal_pembelian" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
       <input type="text" name="pemasok" placeholder="Pemasok" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />

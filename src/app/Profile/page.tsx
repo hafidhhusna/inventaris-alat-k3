@@ -1,16 +1,8 @@
-<<<<<<< HEAD
-// 'use client'
-
-import React, {useState} from "react";
-import NavBar from "@/components/ui/NavBar";
-import Header from "@/components/ui/Header";
-=======
 "use client";
 
 import React from "react";
 import NavBar from "@/components/NavBar";
 import Header from "@/components/Header";
->>>>>>> 12d728f47fd3fdd1fbb8c4d21af4a3b1bf8def4d
 
 const ProfilePage = () => {
   return (

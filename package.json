@@ -10,16 +10,11 @@
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",
-<<<<<<< HEAD
-    "@prisma/client": "^6.3.1",
-    "@radix-ui/react-slot": "^1.1.2",
-    "@supabase/supabase-js": "^2.48.1",
-=======
     "@prisma/client": "^6.4.1",
     "@radix-ui/react-icons": "^1.3.2",
     "@radix-ui/react-select": "^2.1.6",
     "@radix-ui/react-slot": "^1.1.2",
->>>>>>> d1ecee9ade7cfad7cb76da15ea051323e3af3aca
+    "@supabase/supabase-js": "^2.49.1",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -28,6 +23,7 @@
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.54.2",
     "react-icons": "^5.4.0",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7"
