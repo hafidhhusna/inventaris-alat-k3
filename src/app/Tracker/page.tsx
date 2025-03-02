@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from "@/components/NavBar";
 import Header from "@/components/Header";
 import {
@@ -15,11 +15,36 @@ import {
 
 const ITEMS_PER_PAGE = 8;
 
-const TrackerPage = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+interface Item {
+  id_item: number;
+  nama_item: string;
+  lokasi: string;
+  gambar: string;
+}
 
-  // Mock Data
-  const items = Array.from({ length: 100 }, (_, i) => `Item ${i + 1}`);
+const TrackerPage = () => {
+  const [items, setItems] = useState<Item[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch items from API
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await fetch("/api/items");
+        const data = await response.json();
+        if (data.success) {
+          setItems(data.items);
+        }
+      } catch (error) {
+        console.error("Error fetching items:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, []);
 
   // Total Pages
   const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
@@ -54,106 +79,114 @@ const TrackerPage = () => {
         <NavBar />
       </div>
       <Header />
+
       <div className="w-full px-[15vw] pt-[2vw] grid grid-rows-2 grid-cols-4 gap-y-[2vw]">
-        {paginatedItems.map((item, index) => (
-          <div
-            key={index}
-            className="w-[11.797vw] h-[16vw] rounded-[1.5vw] bg-[#fff] text-black flex items-center justify-center drop-shadow-md relative"
-          >
-            <h1 className="text-[0.819vw] absolute bottom-[0.7vw]">{item}</h1>
-          </div>
-        ))}
+        {loading ? (
+          <p className="text-center col-span-4">Loading...</p>
+        ) : paginatedItems.length > 0 ? (
+          paginatedItems.map((item) => (
+            <div
+              key={item.id_item}
+              className="w-[11.797vw] h-[16vw] rounded-[1.5vw] bg-white shadow-md flex flex-col items-center justify-center relative p-4"
+            >
+              <img
+                src={item.gambar || "/placeholder.jpg"}
+                alt={item.nama_item}
+                className="w-full h-[10vw] object-cover rounded-[1vw] mb-2"
+              />
+              <h1 className="text-[0.819vw] font-bold">{item.nama_item}</h1>
+              <p className="text-[0.7vw] text-gray-500">{item.lokasi}</p>
+            </div>
+          ))
+        ) : (
+          <p className="text-center col-span-4">Tidak ada item tersedia.</p>
+        )}
       </div>
 
-      <div className="mt-[2vw]">
-        <Pagination>
-          <PaginationContent>
-            {/* Previous Button */}
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handlePageChange(currentPage - 1);
-                }}
-                className={
-                  currentPage === 1 ? "opacity-50 pointer-events-none" : ""
-                }
-              />
-            </PaginationItem>
-
-            {/* First Page & Left Ellipsis */}
-            {currentPage > 2 && (
-              <>
-                <PaginationItem>
-                  <PaginationLink
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handlePageChange(1);
-                    }}
-                  >
-                    1
-                  </PaginationLink>
-                </PaginationItem>
-                {currentPage > 3 && <PaginationEllipsis />}
-              </>
-            )}
-
-            {/* Dynamic Page Numbers */}
-            {getPaginationRange().map((page) => (
-              <PaginationItem key={page}>
-                <PaginationLink
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-[2vw] flex justify-center">
+          <Pagination>
+            <PaginationContent>
+              {/* Previous Button */}
+              <PaginationItem>
+                <PaginationPrevious
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    handlePageChange(page);
+                    handlePageChange(currentPage - 1);
                   }}
-                  className={
-                    currentPage === page ? "bg-gray-300 font-bold" : ""
-                  }
-                >
-                  {page}
-                </PaginationLink>
+                  className={currentPage === 1 ? "opacity-50 pointer-events-none" : ""}
+                />
               </PaginationItem>
-            ))}
 
-            {/* Right Ellipsis & Last Page */}
-            {currentPage < totalPages - 1 && (
-              <>
-                {currentPage < totalPages - 2 && <PaginationEllipsis />}
-                <PaginationItem>
+              {/* First Page & Left Ellipsis */}
+              {currentPage > 2 && (
+                <>
+                  <PaginationItem>
+                    <PaginationLink
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handlePageChange(1);
+                      }}
+                    >
+                      1
+                    </PaginationLink>
+                  </PaginationItem>
+                  {currentPage > 3 && <PaginationEllipsis />}
+                </>
+              )}
+
+              {/* Dynamic Page Numbers */}
+              {getPaginationRange().map((page) => (
+                <PaginationItem key={page}>
                   <PaginationLink
                     href="#"
                     onClick={(e) => {
                       e.preventDefault();
-                      handlePageChange(totalPages);
+                      handlePageChange(page);
                     }}
+                    className={currentPage === page ? "bg-gray-300 font-bold" : ""}
                   >
-                    {totalPages}
+                    {page}
                   </PaginationLink>
                 </PaginationItem>
-              </>
-            )}
+              ))}
 
-            {/* Next Button */}
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handlePageChange(currentPage + 1);
-                }}
-                className={
-                  currentPage === totalPages
-                    ? "opacity-50 pointer-events-none"
-                    : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
+              {/* Right Ellipsis & Last Page */}
+              {currentPage < totalPages - 1 && (
+                <>
+                  {currentPage < totalPages - 2 && <PaginationEllipsis />}
+                  <PaginationItem>
+                    <PaginationLink
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handlePageChange(totalPages);
+                      }}
+                    >
+                      {totalPages}
+                    </PaginationLink>
+                  </PaginationItem>
+                </>
+              )}
+
+              {/* Next Button */}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePageChange(currentPage + 1);
+                  }}
+                  className={currentPage === totalPages ? "opacity-50 pointer-events-none" : ""}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
     </div>
   );
 };

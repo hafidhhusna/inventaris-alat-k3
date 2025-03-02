@@ -21,7 +21,7 @@ const sources = [
     src_img: <FaArrowTrendUp className="fill-current" />,
     text: "Tracker",
     classnames: "text-[1.432vw]",
-    linkto: "/Tracker",
+    linkto: "/tracker",
   },
   {
     id: "settings",
