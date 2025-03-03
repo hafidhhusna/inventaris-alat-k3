@@ -27,6 +27,7 @@ export const SignUpForm: React.FC = () => {
       setLoading(false);
     } else {
       const errorData = await response.json();
+      alert(`Register Error : ${errorData.message}`)
       setError(errorData.message);
       setLoading(false);
     }

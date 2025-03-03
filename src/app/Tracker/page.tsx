@@ -92,11 +92,11 @@ const TrackerPage = () => {
               key={item.id_item}
               className="w-[11.797vw] h-[16vw] rounded-[1.5vw] bg-white shadow-md flex flex-col items-center justify-center relative p-4"
             >
-              {/* <img
+              <img
                 src={item.gambar || "/placeholder.jpg"}
                 alt={item.nama_item}
                 className="w-full h-[10vw] object-cover rounded-[1vw] mb-2"
-              /> */}
+              />
               <h1 className="text-[0.819vw] font-bold">{item.nama_item}</h1>
               <p className="text-[0.7vw] text-gray-500">{item.lokasi}</p>
             </Link>
