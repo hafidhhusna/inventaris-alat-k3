@@ -12,6 +12,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import Link from "next/link";
+import Image from "next/image";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -85,18 +87,19 @@ const TrackerPage = () => {
           <p className="text-center col-span-4">Loading...</p>
         ) : paginatedItems.length > 0 ? (
           paginatedItems.map((item) => (
-            <div
+            <Link
+              href={{ pathname: "/ItemsForm", query: { id: item.id_item } }}
               key={item.id_item}
               className="w-[11.797vw] h-[16vw] rounded-[1.5vw] bg-white shadow-md flex flex-col items-center justify-center relative p-4"
             >
-              <img
+              {/* <img
                 src={item.gambar || "/placeholder.jpg"}
                 alt={item.nama_item}
                 className="w-full h-[10vw] object-cover rounded-[1vw] mb-2"
-              />
+              /> */}
               <h1 className="text-[0.819vw] font-bold">{item.nama_item}</h1>
               <p className="text-[0.7vw] text-gray-500">{item.lokasi}</p>
-            </div>
+            </Link>
           ))
         ) : (
           <p className="text-center col-span-4">Tidak ada item tersedia.</p>
@@ -116,7 +119,9 @@ const TrackerPage = () => {
                     e.preventDefault();
                     handlePageChange(currentPage - 1);
                   }}
-                  className={currentPage === 1 ? "opacity-50 pointer-events-none" : ""}
+                  className={
+                    currentPage === 1 ? "opacity-50 pointer-events-none" : ""
+                  }
                 />
               </PaginationItem>
 
@@ -147,7 +152,9 @@ const TrackerPage = () => {
                       e.preventDefault();
                       handlePageChange(page);
                     }}
-                    className={currentPage === page ? "bg-gray-300 font-bold" : ""}
+                    className={
+                      currentPage === page ? "bg-gray-300 font-bold" : ""
+                    }
                   >
                     {page}
                   </PaginationLink>
@@ -180,7 +187,11 @@ const TrackerPage = () => {
                     e.preventDefault();
                     handlePageChange(currentPage + 1);
                   }}
-                  className={currentPage === totalPages ? "opacity-50 pointer-events-none" : ""}
+                  className={
+                    currentPage === totalPages
+                      ? "opacity-50 pointer-events-none"
+                      : ""
+                  }
                 />
               </PaginationItem>
             </PaginationContent>

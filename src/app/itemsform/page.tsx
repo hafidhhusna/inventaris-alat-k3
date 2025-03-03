@@ -3,9 +3,12 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Dropdown from "@/components/Dropdown";
+import { useSearchParams } from "next/navigation";
 
 const ItemsForm = () => {
   const [selected, setSelected] = useState("Status Condition");
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
 
   return (
     <div className="w-screen h-screen bg-[#fcfcfc] flex flex-col items-center">
@@ -43,6 +46,7 @@ const ItemsForm = () => {
           ]}
         />
         <h1 className="text-[1.302vw] mr-[3.5vw]">Lokasi</h1>
+        <p>{id}</p>
       </div>
     </div>
   );
