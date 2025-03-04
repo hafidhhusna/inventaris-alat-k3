@@ -94,6 +94,7 @@ const UploadForm = () => {
 
       <form onSubmit={handleSubmit}>
         <input type="text" name="nama_item" placeholder="Nama Item" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
+        <input type="text" name="jenis_sarana" placeholder="Jenis Sarana" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
         <input type="text" name="nomor_ser" placeholder="Nomor Seri" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
         <input type="text" name="lokasi_id" placeholder="Lokasi ID" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
         <input type="text" name="id_titik_lokasi" placeholder="Titik Lokasi ID" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
