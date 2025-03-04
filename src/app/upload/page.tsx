@@ -127,7 +127,7 @@ const UploadForm = () => {
           <option value="detector">Detector</option>
           <option value="sprinkler">Sprinkler</option>
           <option value="hidran_halaman">Hidran Halaman</option>
-          <option value="kotak-p3k">Kotak P3K</option>
+          <option value="kotak_p3k">Kotak P3K</option>
           <option value="ruang_mns">Ruang MNS</option>
           <option value="rumah_pompa_hidran">Rumah Pompa Hidran</option>
           <option value="sarana_jalan_keluar">Sarana Jalan Keluar</option>
