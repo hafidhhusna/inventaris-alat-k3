@@ -26,7 +26,11 @@ const UploadForm = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   // Handle perubahan input form
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -51,11 +55,16 @@ const UploadForm = () => {
 
     if (file) {
       const fileExt = file.name.split(".").pop();
-      const fileName = `${formData.nama_item.replace(/\s+/g, "_")}_${Date.now()}.${fileExt}`;
+      const fileName = `${formData.nama_item.replace(
+        /\s+/g,
+        "_"
+      )}_${Date.now()}.${fileExt}`;
       const filePath = `items/${fileName}`;
 
       // Upload file ke Supabase Storage
-      const { data, error } = await supabase.storage.from("test-bucket").upload(filePath, file);
+      const { data, error } = await supabase.storage
+        .from("test-bucket")
+        .upload(filePath, file);
 
       if (error) {
         console.error("Error uploading file:", error.message);
@@ -65,7 +74,9 @@ const UploadForm = () => {
       }
 
       // Dapatkan URL publik gambar
-      const { data: publicURLData } = supabase.storage.from("test-bucket").getPublicUrl(filePath);
+      const { data: publicURLData } = supabase.storage
+        .from("test-bucket")
+        .getPublicUrl(filePath);
       imageUrl = publicURLData.publicUrl;
     }
 
@@ -93,15 +104,92 @@ const UploadForm = () => {
       <h2 className="text-lg font-bold mb-4">Tambah Item Baru</h2>
 
       <form onSubmit={handleSubmit}>
-        <input type="text" name="nama_item" placeholder="Nama Item" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
-        <input type="text" name="jenis_sarana" placeholder="Jenis Sarana" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
-        <input type="text" name="nomor_ser" placeholder="Nomor Seri" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
-        <input type="text" name="lokasi_id" placeholder="Lokasi ID" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
-        <input type="text" name="id_titik_lokasi" placeholder="Titik Lokasi ID" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
-        <input type="text" name="spesifikasi" placeholder="Spesifikasi" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
-        <input type="date" name="tanggal_pembelian" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
-        <input type="text" name="pemasok" placeholder="Pemasok" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
-        <input type="text" name="PIC" placeholder="PIC" onChange={handleChange} required className="mb-2 p-2 w-full border rounded" />
+        <input
+          type="text"
+          name="nama_item"
+          placeholder="Nama Item"
+          onChange={handleChange}
+          required
+          className="mb-2 p-2 w-full border rounded"
+        />
+        <select
+          name="jenis_sarana"
+          value={formData.jenis_sarana}
+          onChange={handleChange}
+          required
+          className="mb-2 p-2 w-full border rounded"
+        >
+          <option value="" disabled>
+            Select Jenis Sarana
+          </option>
+          <option value="hidran_bangunan">Hidran Bangunan</option>
+          <option value="APAP">APAP</option>
+          <option value="detector">Detector</option>
+          <option value="sprinkler">Sprinkler</option>
+          <option value="hidran_halaman">Hidran Halaman</option>
+          <option value="kotak-p3k">Kotak P3K</option>
+          <option value="ruang_mns">Ruang MNS</option>
+          <option value="rumah_pompa_hidran">Rumah Pompa Hidran</option>
+          <option value="sarana_jalan_keluar">Sarana Jalan Keluar</option>
+          <option value="scba">SCBA</option>
+          <option value="spill_containment_room">Spill Containment Room</option>
+        </select>
+
+        <input
+          type="text"
+          name="nomor_ser"
+          placeholder="Nomor Seri"
+          onChange={handleChange}
+          required
+          className="mb-2 p-2 w-full border rounded"
+        />
+        <input
+          type="text"
+          name="lokasi_id"
+          placeholder="Lokasi ID"
+          onChange={handleChange}
+          required
+          className="mb-2 p-2 w-full border rounded"
+        />
+        <input
+          type="text"
+          name="id_titik_lokasi"
+          placeholder="Titik Lokasi ID"
+          onChange={handleChange}
+          required
+          className="mb-2 p-2 w-full border rounded"
+        />
+        <input
+          type="text"
+          name="spesifikasi"
+          placeholder="Spesifikasi"
+          onChange={handleChange}
+          required
+          className="mb-2 p-2 w-full border rounded"
+        />
+        <input
+          type="date"
+          name="tanggal_pembelian"
+          onChange={handleChange}
+          required
+          className="mb-2 p-2 w-full border rounded"
+        />
+        <input
+          type="text"
+          name="pemasok"
+          placeholder="Pemasok"
+          onChange={handleChange}
+          required
+          className="mb-2 p-2 w-full border rounded"
+        />
+        <input
+          type="text"
+          name="PIC"
+          placeholder="PIC"
+          onChange={handleChange}
+          required
+          className="mb-2 p-2 w-full border rounded"
+        />
 
         {/* Input Radio Button untuk Status Pemasangan */}
         <div className="mb-2">
@@ -133,10 +221,18 @@ const UploadForm = () => {
         </div>
 
         {/* Upload Gambar */}
-        <input type="file" onChange={handleFileChange} className="mb-2 p-2 w-full border rounded" />
+        <input
+          type="file"
+          onChange={handleFileChange}
+          className="mb-2 p-2 w-full border rounded"
+        />
 
         {/* Tombol Submit */}
-        <button type="submit" disabled={loading} className="w-full p-2 bg-blue-500 text-white rounded disabled:opacity-50">
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full p-2 bg-blue-500 text-white rounded disabled:opacity-50"
+        >
           {loading ? "Uploading..." : "Submit"}
         </button>
       </form>

@@ -6,6 +6,7 @@ import Dropdown from "@/components/Dropdown";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 // import { table } from "console";
+// import { table } from "console";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,7 +16,7 @@ const supabase = createClient(
 const ItemsForm = () => {
   const [selected, setSelected] = useState("Status Condition");
   const [jenisSarana, setJenisSarana] = useState<string | null>(null);
-  // const [columnName, setColumnName] = useState<any[]>([]);
+  const [columnName, setColumnName] = useState<any[]>([]);
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
@@ -46,23 +47,21 @@ const ItemsForm = () => {
     const table_name = `inspeksi_${jenisSarana}`;
     // console.log(table_name);
 
-    const fetch_table_name = async () => {
-      const { data, error } = await supabase
-        .from(table_name)
-        .select("*")
-        .limit(1); // Fetch only 1 row to save bandwidth
+    const fetchColumnNames = async () => {
+      const { data, error } = await supabase.rpc("get_columns_name", {
+        table_name: table_name,
+      });
 
       if (error) {
-        console.error("Error fetching columns: ", error);
-      } else if (data && data.length > 0) {
-        const columns = Object.keys(data[0]);
-        console.log("Column Names: ", columns);
+        console.error(error);
       } else {
-        console.warn("Table is empty — no rows to extract columns from.");
+        setColumnName(data);
       }
+
+      // console.log(data);
     };
 
-    fetch_table_name();
+    fetchColumnNames();
   }, [jenisSarana]);
 
   return (
@@ -80,7 +79,7 @@ const ItemsForm = () => {
         </button>
       </div>
       <h1 className="p-[1vw] drop-shadow-md bg-[#fff] mt-[2vw] rounded-[0.521vw] text-[2.083vw]">
-        Inspeksi Alat Pemadam Api Portabel (APAP)
+        Inspeksi {jenisSarana}
       </h1>
       <h1 className="mt-[1vw] text-[1.302vw]">
         Formulir Inspeksi Alat Pemadam Api
@@ -91,19 +90,36 @@ const ItemsForm = () => {
         <h1>Status Inspeksi</h1>
       </div>
       <div className="w-[48.125vw] h-[0.052vw] bg-black"></div>
-      <div className="flex w-[48.125vw] items-center justify-evenly my-[2vw]">
-        <Dropdown
-          value={selected}
-          onChange={(e) => setSelected(e.target.value)}
-          options={[
-            { label: "Yes", value: "Yes" },
-            { label: "No", value: "No" },
-          ]}
-        />
-        <h1 className="text-[1.302vw] mr-[3.5vw]">Lokasi</h1>
-        <p>id item: {id}</p>
+      <div className="flex flex-col w-[48.125vw] my-[2vw]">
+        {columnName
+          .filter(
+            (column) =>
+              column.column_name !== "id_item" &&
+              column.column_name !== "id_inspeksi"
+          )
+          .map((column, index) => {
+            return (
+              <div
+                key={index}
+                className="flex justify-between mb-[1vw] relative"
+              >
+                <Dropdown
+                  value={selected}
+                  onChange={(e) => setSelected(e.target.value)}
+                  options={[
+                    { label: "Yes", value: "Yes" },
+                    { label: "No", value: "No" },
+                  ]}
+                />
+                <h1 className="text-[1.302vw]">{column.column_name}</h1>
+              </div>
+            );
+          })}
+
+        {/* <p>id item: {id}</p>
         <p>Jenis Sarana: {jenisSarana}</p>
-        {/* <p>Nama Kolom: {JSON.stringify(columnName)}</p> */}
+        <p>Nama Kolom: {JSON.stringify(columnName)}</p>
+        <p>{columnName.length}</p> */}
       </div>
     </div>
   );
