@@ -9,7 +9,6 @@ export async function GET() {
       orderBy: { id_item: "asc" },
     });
 
-    console.log(items)
     return NextResponse.json({ success: true, items });
   } catch (error) {
     console.error("Error fetching items:", error);

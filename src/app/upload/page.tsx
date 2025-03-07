@@ -13,6 +13,7 @@ const UploadForm = () => {
     jenis_sarana: "",
     nama_item: "",
     nomor_ser: "",
+    deskripsi: "",
     lokasi_id: "",
     id_titik_lokasi: "",
     spesifikasi: "",
@@ -193,6 +194,15 @@ const UploadForm = () => {
           onChange={handleChange}
           required
           className="mb-2 p-2 w-full border rounded"
+        />
+
+        <input 
+          type="text"
+          name="deskripsi"
+          placeholder="Deskripsi Item"
+          onChange={handleChange}
+          required
+          className="mb-2 p-2 w-full border rounded" 
         />
 
         {/* Dropdown Lokasi */}

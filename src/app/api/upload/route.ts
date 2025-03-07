@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
         nama_item: body.nama_item,
         jenis_sarana: body.jenis_sarana,
         nomor_ser: body.nomor_ser,
+        deskripsi: body.deskripsi,
         lokasi_id: body.lokasi_id,
         id_titik_lokasi: body.id_titik_lokasi,
         spesifikasi: body.spesifikasi || "",

@@ -241,6 +241,7 @@ model item {
   jenis_sarana                    String?                           @db.VarChar
   nama_item                       String?                           @db.VarChar
   nomor_ser                       String?                           @db.VarChar
+  deskripsi                       String?                           @db.VarChar
   lokasi                          String?                           @db.VarChar
   titik_lokasi                    String?                           @db.VarChar
   spesifikasi                     String?                           @db.VarChar
