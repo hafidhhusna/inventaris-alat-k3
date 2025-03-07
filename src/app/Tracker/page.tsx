@@ -12,7 +12,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-// import Link from "next/link";
+import Link from "next/link";
 import Image from "next/image";
 import { IoIosClose } from "react-icons/io";
 
@@ -38,6 +38,7 @@ const TrackerPage = () => {
   const [loading, setLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
   // Fetch items from API
   useEffect(() => {
@@ -99,7 +100,11 @@ const TrackerPage = () => {
           paginatedItems.map((item) => (
             <React.Fragment key={item.id_item}>
               <button
-                onClick={() => setIsOpen(true)}
+                onClick={() => {
+                  // console.log(item);
+                  setIsOpen(true);
+                  setSelectedItem(item);
+                }}
                 className="w-[11.797vw] h-[16vw] rounded-[1.5vw] bg-white shadow-md flex flex-col items-center justify-center relative p-4 hover:bg-gray-100"
               >
                 <Image
@@ -113,7 +118,7 @@ const TrackerPage = () => {
                 <p className="text-[0.7vw] text-gray-500">{item.lokasi}</p>
               </button>
 
-              {isOpen && (
+              {isOpen && selectedItem && (
                 <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-25 z-10">
                   <div className="w-[75vw] h-[44.271vw] bg-white p-[3vw] relative">
                     <button
@@ -179,7 +184,7 @@ const TrackerPage = () => {
                   </div>
                 </div>
               )}
-              {qrOpen && (
+              {qrOpen && selectedItem && (
                 <div className="fixed inset-0 flex justify-center items-center z-20">
                   <div className="w-[75vw] h-[44.271vw] bg-white p-[3vw] relative flex items-center justify-evenly">
                     <button
@@ -198,6 +203,14 @@ const TrackerPage = () => {
                       height={10000}
                       className="w-[15vw] h-[13vw]"
                     />
+                    <Link
+                      href={{
+                        pathname: "/ItemsForm",
+                        query: { id: selectedItem.id_item },
+                      }}
+                    >
+                      form inspeksi item {selectedItem.id_item}
+                    </Link>
                   </div>
                 </div>
               )}

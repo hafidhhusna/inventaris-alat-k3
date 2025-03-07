@@ -5,6 +5,7 @@ import Image from "next/image";
 import Dropdown from "@/components/Dropdown";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
+import Link from "next/link";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -56,6 +57,7 @@ const ItemsForm = () => {
       } else {
         setColumnName(data);
       }
+      console.log(data, table_name);
     };
 
     fetchColumnNames();
@@ -75,6 +77,10 @@ const ItemsForm = () => {
       .join(" ");
   };
 
+  const handleSubmit = () => {
+    return;
+  };
+
   return (
     <div className="w-screen h-screen bg-[#fcfcfc] flex flex-col items-center">
       <div className="w-full h-[5.156vw] p-[2vw] flex items-center justify-between bg-[#fff]">
@@ -85,9 +91,12 @@ const ItemsForm = () => {
           alt="logo Inspektra"
           className="w-[9.427vw] h-[3.281vw]"
         />
-        <button className="w-[13.802vw] h-[2.656vw] bg-[#51B5DD] rounded-[2.5vw] text-[1.042vw] text-white">
+        <Link
+          href="/Tracker"
+          className="w-[13.802vw] h-[2.656vw] bg-[#51B5DD] rounded-[2.5vw] text-[1.042vw] text-white flex items-center justify-center font-bold"
+        >
           Tutup Form
-        </button>
+        </Link>
       </div>
       <h1 className="p-[1vw] drop-shadow-md bg-[#fff] mt-[2vw] rounded-[0.521vw] text-[2.083vw]">
         Inspeksi {formatColumnName(jenisSarana)}
@@ -100,8 +109,10 @@ const ItemsForm = () => {
         <h1>Elemen</h1>
         <h1>Status Inspeksi</h1>
       </div>
-      <div className="w-[48.125vw] h-[0.052vw] bg-black"></div>
-      <div className="flex flex-col w-[48.125vw] my-[2vw]">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col w-[48.125vw] my-[2vw]"
+      >
         {columnName
           .filter(
             (column) =>
@@ -132,7 +143,13 @@ const ItemsForm = () => {
               </div>
             );
           })}
-      </div>
+        <button
+          type="submit"
+          className="w-[8vw] bg-red-700 text-white rounded-[0.5vw]"
+        >
+          Submit
+        </button>
+      </form>
     </div>
   );
 };
