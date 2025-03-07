@@ -63,24 +63,6 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Inspeksi {
-  id             Int      @id @default(autoincrement())
-  id_item        Int
-  jenis_inspeksi String   @db.VarChar // Misal: "Sprinkler", "APAP", dll.
-  tanggal_inspeksi DateTime  // Tanggal inspeksi yang lebih presisi
-  checklist      Json // Simpan hasil inspeksi dalam JSON
-  status         StatusInspeksi @default(BELUM_DIINSPEKSI)
-  dokumentasi    String? // Bisa simpan URL foto atau laporan
-  inspeksi_oleh  String? // Nama pemeriksa
-  item           item    @relation(fields: [id_item], references: [id_item], onDelete: Cascade)
-}
-
-enum StatusInspeksi{
-  BELUM_DIINSPEKSI
-  READY
-  TINJAU_LEBIH_LANJUT
-}
-
 // Model-model untuk aplikasi yang sudah ada
 
 model inspeksi_sprinkler {
@@ -258,7 +240,6 @@ model item {
   gambar                          String?
   status_pemasangan               Boolean?
   id_titik_lokasi                 Int                               @default(autoincrement())
-  inspeksi                        Inspeksi[]
   inspeksi_sprinkler              inspeksi_sprinkler[]
   inspeksi_APAP                   inspeksi_APAP[]
   inspeksi_detector               inspeksi_detector[]
