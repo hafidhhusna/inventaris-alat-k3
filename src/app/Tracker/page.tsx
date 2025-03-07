@@ -12,8 +12,9 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import Link from "next/link";
+// import Link from "next/link";
 import Image from "next/image";
+import { IoIosClose } from "react-icons/io";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -24,10 +25,19 @@ interface Item {
   gambar: string;
 }
 
+const source = [
+  { inspect_loc: "Data 1", inspect_date: "Data 1", inspect_status: "Data 1" },
+  { inspect_loc: "Data 1", inspect_date: "Data 1", inspect_status: "Data 1" },
+  { inspect_loc: "Data 1", inspect_date: "Data 1", inspect_status: "Data 1" },
+  { inspect_loc: "Data 1", inspect_date: "Data 1", inspect_status: "Data 1" },
+];
+
 const TrackerPage = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [qrOpen, setQrOpen] = useState(false);
 
   // Fetch items from API
   useEffect(() => {
@@ -87,21 +97,111 @@ const TrackerPage = () => {
           <p className="text-center col-span-4">Loading...</p>
         ) : paginatedItems.length > 0 ? (
           paginatedItems.map((item) => (
-            <Link
-              href={{ pathname: "/ItemsForm", query: { id: item.id_item } }}
-              key={item.id_item}
-              className="w-[11.797vw] h-[16vw] rounded-[1.5vw] bg-white shadow-md flex flex-col items-center justify-center relative p-4 hover:bg-gray-100"
-            >
-              <Image
-                src={item.gambar || "/placeholder.jpg"}
-                alt={item.nama_item}
-                width={10000}
-                height={100000}
-                className="w-full h-[10vw] object-cover rounded-[1vw] mb-2"
-              />
-              <h1 className="text-[0.819vw] font-bold">{item.nama_item}</h1>
-              <p className="text-[0.7vw] text-gray-500">{item.lokasi}</p>
-            </Link>
+            <React.Fragment key={item.id_item}>
+              <button
+                onClick={() => setIsOpen(true)}
+                className="w-[11.797vw] h-[16vw] rounded-[1.5vw] bg-white shadow-md flex flex-col items-center justify-center relative p-4 hover:bg-gray-100"
+              >
+                <Image
+                  src={item.gambar || "/placeholder.jpg"}
+                  alt={item.nama_item}
+                  width={10000}
+                  height={100000}
+                  className="w-full h-[10vw] object-cover rounded-[1vw] mb-2"
+                />
+                <h1 className="text-[0.819vw] font-bold">{item.nama_item}</h1>
+                <p className="text-[0.7vw] text-gray-500">{item.lokasi}</p>
+              </button>
+
+              {isOpen && (
+                <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-25 z-10">
+                  <div className="w-[75vw] h-[44.271vw] bg-white p-[3vw] relative">
+                    <button
+                      className="text-[1vw] absolute right-[0.5vw] top-[0.5vw]"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <IoIosClose className="text-[4vw]"></IoIosClose>
+                    </button>
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col pr-[4vw]">
+                        <div className="flex items-center justify-between">
+                          <h1 className="text-[2.448vw] font-bold">
+                            Alat Pemadam Api Portabel (APAP)
+                          </h1>
+                          <button
+                            className="text-[2vw]"
+                            onClick={() => setQrOpen(true)}
+                          >
+                            Generate QR <br /> di sini
+                          </button>
+                        </div>
+                        <h1 className="text-[1vw] text-justify mt-[1vw]">
+                          Lorem Ipsum is simply dummy text of the printing and
+                          typesetting industry. Lorem Ipsum has been the
+                          industry standard dummy text ever since the 1500s,
+                          when an unknown printer took a galley of type and
+                          scrambled it to make a type specimen book. It has
+                          survived not only five centuries, but also the leap
+                          into electronic typesetting, remaining essentially
+                          unchanged. It was popularised in the 1960s with the
+                          release of Letraset sheets containing Lorem Ipsum
+                          passages, and more recently with desktop publishing
+                          software like Aldus PageMaker including versions of
+                          Lorem Ipsum.
+                        </h1>
+                      </div>
+                      <Image
+                        src="/images/profile.png"
+                        alt="foto barang"
+                        width={10000}
+                        height={10000}
+                        className="w-[15vw] h-[13vw]"
+                      />
+                    </div>
+                    <table className="mt-[3vw] w-full">
+                      <thead className="border-b border-black font-bold text-[0.938vw] italic">
+                        <tr>
+                          <th>Inspection Location</th>
+                          <th>Date of Location</th>
+                          <th>Inspection Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="text-[0.938vw] text-center">
+                        {source.map((item, index) => (
+                          <tr key={index} className="border-b border-black">
+                            <td>{item.inspect_loc}</td>
+                            <td>{item.inspect_date}</td>
+                            <td>{item.inspect_status}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+              {qrOpen && (
+                <div className="fixed inset-0 flex justify-center items-center z-20">
+                  <div className="w-[75vw] h-[44.271vw] bg-white p-[3vw] relative flex items-center justify-evenly">
+                    <button
+                      className="text-[1vw] absolute right-[0.5vw] top-[0.5vw]"
+                      onClick={() => setQrOpen(false)}
+                    >
+                      <IoIosClose className="text-[4vw]"></IoIosClose>
+                    </button>
+                    <h1 className="text-[2.5vw] font-bold">
+                      Silahkan <br /> Scan QR Berikut
+                    </h1>
+                    <Image
+                      src="/images/profile.png"
+                      alt="foto barang"
+                      width={10000}
+                      height={10000}
+                      className="w-[15vw] h-[13vw]"
+                    />
+                  </div>
+                </div>
+              )}
+            </React.Fragment>
           ))
         ) : (
           <p className="text-center col-span-4">Tidak ada item tersedia.</p>
