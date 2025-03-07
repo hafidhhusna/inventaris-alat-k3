@@ -90,11 +90,13 @@ const TrackerPage = () => {
             <Link
               href={{ pathname: "/ItemsForm", query: { id: item.id_item } }}
               key={item.id_item}
-              className="w-[11.797vw] h-[16vw] rounded-[1.5vw] bg-white shadow-md flex flex-col items-center justify-center relative p-4"
+              className="w-[11.797vw] h-[16vw] rounded-[1.5vw] bg-white shadow-md flex flex-col items-center justify-center relative p-4 hover:bg-gray-100"
             >
-              <img
+              <Image
                 src={item.gambar || "/placeholder.jpg"}
                 alt={item.nama_item}
+                width={10000}
+                height={100000}
                 className="w-full h-[10vw] object-cover rounded-[1vw] mb-2"
               />
               <h1 className="text-[0.819vw] font-bold">{item.nama_item}</h1>
