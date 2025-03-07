@@ -5,8 +5,6 @@ import Image from "next/image";
 import Dropdown from "@/components/Dropdown";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
-// import { table } from "console";
-// import { table } from "console";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -45,7 +43,6 @@ const ItemsForm = () => {
     if (!jenisSarana) return;
 
     const table_name = `inspeksi_${jenisSarana}`;
-    // console.log(table_name);
 
     const fetchColumnNames = async () => {
       const { data, error } = await supabase.rpc("get_columns_name", {
@@ -57,8 +54,6 @@ const ItemsForm = () => {
       } else {
         setColumnName(data);
       }
-
-      // console.log(data);
     };
 
     fetchColumnNames();
@@ -115,11 +110,6 @@ const ItemsForm = () => {
               </div>
             );
           })}
-
-        {/* <p>id item: {id}</p>
-        <p>Jenis Sarana: {jenisSarana}</p>
-        <p>Nama Kolom: {JSON.stringify(columnName)}</p>
-        <p>{columnName.length}</p> */}
       </div>
     </div>
   );
