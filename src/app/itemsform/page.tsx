@@ -12,9 +12,11 @@ const supabase = createClient(
 );
 
 const ItemsForm = () => {
-  const [selected, setSelected] = useState("Status Condition");
-  const [jenisSarana, setJenisSarana] = useState<string | null>(null);
+  const [jenisSarana, setJenisSarana] = useState<string>("");
   const [columnName, setColumnName] = useState<any[]>([]);
+  const [selectedValue, setSelectedValue] = useState<{ [key: string]: string }>(
+    {}
+  );
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
@@ -59,6 +61,20 @@ const ItemsForm = () => {
     fetchColumnNames();
   }, [jenisSarana]);
 
+  const handleDropdownChange = (columnName: string, value: string) => {
+    setSelectedValue((prev) => ({
+      ...prev,
+      [columnName]: value,
+    }));
+  };
+
+  const formatColumnName = (name: string) => {
+    return name
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   return (
     <div className="w-screen h-screen bg-[#fcfcfc] flex flex-col items-center">
       <div className="w-full h-[5.156vw] p-[2vw] flex items-center justify-between bg-[#fff]">
@@ -74,7 +90,7 @@ const ItemsForm = () => {
         </button>
       </div>
       <h1 className="p-[1vw] drop-shadow-md bg-[#fff] mt-[2vw] rounded-[0.521vw] text-[2.083vw]">
-        Inspeksi {jenisSarana}
+        Inspeksi {formatColumnName(jenisSarana)}
       </h1>
       <h1 className="mt-[1vw] text-[1.302vw]">
         Formulir Inspeksi Alat Pemadam Api
@@ -99,14 +115,20 @@ const ItemsForm = () => {
                 className="flex justify-between mb-[1vw] relative"
               >
                 <Dropdown
-                  value={selected}
-                  onChange={(e) => setSelected(e.target.value)}
+                  value={
+                    selectedValue[column.column_name] || "status condition"
+                  }
+                  onChange={(e) =>
+                    handleDropdownChange(column.column_name, e.target.value)
+                  }
                   options={[
                     { label: "Yes", value: "Yes" },
                     { label: "No", value: "No" },
                   ]}
                 />
-                <h1 className="text-[1.302vw]">{column.column_name}</h1>
+                <h1 className="text-[1.302vw]">
+                  {formatColumnName(column.column_name)}
+                </h1>
               </div>
             );
           })}
