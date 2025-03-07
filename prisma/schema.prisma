@@ -3,46 +3,38 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  directUrl    = env("DIRECT_URL")
   relationMode = "foreignKeys"
 }
 
-enum Role {
-  ADMIN
-  PELAKSANA
-  STAFF
-}
-
-// Model User yang digunakan NextAuth dan mengakomodasi 3 role
 model User {
   id            String    @id @default(cuid())
   name          String?
   email         String?   @unique
   emailVerified DateTime?
-  password      String?   // Pastikan menggunakan hash untuk penyimpanan password
+  password      String?
   image         String?
   role          Role      @default(STAFF)
   accounts      Account[]
   sessions      Session[]
 }
 
-// Model-model tambahan untuk NextAuth
 model Account {
-  id                 String   @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
-  user               User     @relation(fields: [userId], references: [id])
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
 }
@@ -63,27 +55,8 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// Model-model untuk aplikasi yang sudah ada
-
-model inspeksi_sprinkler {
-  id_inspeksi                Int      @id @default(autoincrement())
-  kondisi_internal_pipa      Boolean
-  katup_kontrol              Boolean
-  koneksi_pemadam_kebakaran  Boolean
-  penyangga                  Boolean
-  kepala_sprinkler           Boolean
-  sprinkler_cadangan         Boolean
-  perangkat_pengawasan_katup Boolean
-  perangkat_alarm_aliran_air Boolean
-  catatan                    String? @db.VarChar
-  id_item                    Int?
-  item                       item?   @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
-
-  @@map("inspeksi sprinkler")
-}
-
 model inspeksi_APAP {
-  lokasi               String?  @db.VarChar
+  lokasi               String?   @db.VarChar
   visibilitas          Boolean?
   kemudahan_akses      Boolean?
   tekanan              Boolean?
@@ -91,30 +64,30 @@ model inspeksi_APAP {
   segel_pengaman       Boolean?
   selang_dan_nozel     Boolean?
   abnormalitas_fisik   Boolean?
-  karetban_roda_kereta String?  @db.VarChar
-  createdAt            DateTime? @default(now())
-  id_inspeksi          Int      @id @default(autoincrement())
+  karetban_roda_kereta String?   @db.VarChar
+  id_inspeksi          Int       @id @default(autoincrement())
   id_item              Int?
-  item                 item?    @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  createdAt            DateTime? @default(now())
+  item                 item?     @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model inspeksi_detector {
-  id_inspeksi         Int      @id @default(autoincrement())
+  id_inspeksi         Int       @id @default(autoincrement())
   lokasi              Boolean?
   penghalang_detektor Boolean?
   kerusakan_fisik     Boolean?
-  derajat_kebersihan  String?  @db.VarChar
+  derajat_kebersihan  String?   @db.VarChar
   audible_dan_visible Boolean?
   lampu               Boolean?
   power_supply        Boolean?
   prosedur_manufaktur Boolean?
-  createdAt            DateTime? @default(now())
   id_item             Int?
-  item                item?    @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  createdAt           DateTime? @default(now())
+  item                item?     @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model inspeksi_hidran_bangunan {
-  id_inspeksi                      Int      @id @default(autoincrement())
+  id_inspeksi                      Int       @id @default(autoincrement())
   tanda_informasi_desain_hidraulik Boolean?
   koneksi_selang                   Boolean?
   perpipaan                        Boolean?
@@ -122,13 +95,13 @@ model inspeksi_hidran_bangunan {
   nozel                            Boolean?
   perangkat_penyimpan_selang       Boolean?
   kabinet_penyimpanan              Boolean?
-  createdAt            DateTime? @default(now())
   id_item                          Int?
-  item                             item?    @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  createdAt                        DateTime? @default(now())
+  item                             item?     @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model inspeksi_hidran_halaman {
-  id_inspeksi                     Int      @id @default(autoincrement())
+  id_inspeksi                     Int       @id @default(autoincrement())
   kemudahan_akses                 Boolean?
   outlet_bagian_atas_hidran_pilar Boolean?
   batang_pilar                    Boolean?
@@ -136,13 +109,13 @@ model inspeksi_hidran_halaman {
   nozel                           Boolean?
   mur_pengoperasian               Boolean?
   ketersediaan_kunci_hidran       Boolean?
-  createdAt            DateTime? @default(now())
   id_item                         Int?
-  item                            item?    @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  createdAt                       DateTime? @default(now())
+  item                            item?     @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model inspeksi_kotak_p3k {
-  id_inspeksi             Int      @id @default(autoincrement())
+  id_inspeksi             Int       @id @default(autoincrement())
   perban                  Boolean?
   plester                 Boolean?
   kapas                   Boolean?
@@ -153,13 +126,13 @@ model inspeksi_kotak_p3k {
   povidon_iodin           Boolean?
   kantong_plastik         Boolean?
   buku_panduan_daftar_isi Boolean?
-  createdAt            DateTime? @default(now())
   id_item                 Int?
-  item                    item?    @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  createdAt               DateTime? @default(now())
+  item                    item?     @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model inspeksi_ruang_mns {
-  id_inspeksi                  Int      @id @default(autoincrement())
+  id_inspeksi                  Int       @id @default(autoincrement())
   antena                       Boolean?
   transceiver                  Boolean?
   backup                       Boolean?
@@ -174,13 +147,13 @@ model inspeksi_ruang_mns {
   daya_sekunder                Boolean?
   ketersediaan_alat_komunikasi Boolean?
   pemantauan_alat_komunikasi   Boolean?
-  createdAt            DateTime? @default(now())
   id_item                      Int?
-  item                         item?    @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  createdAt                    DateTime? @default(now())
+  item                         item?     @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model inspeksi_rumah_pompa_hidran {
-  id_inspeksi                             Int      @id @default(autoincrement())
+  id_inspeksi                             Int       @id @default(autoincrement())
   pencahayaan_normal                      Boolean?
   pencahayaan_darurat                     Boolean?
   ventilasi                               Boolean?
@@ -192,47 +165,47 @@ model inspeksi_rumah_pompa_hidran {
   baterai                                 Boolean?
   penyediaan_bahan_bakar                  Boolean?
   buku_petunjuk_perkakas_khusus_sparepart Boolean?
-  createdAt            DateTime? @default(now())
   id_item                                 Int?
-  item                                    item?    @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  createdAt                               DateTime? @default(now())
+  item                                    item?     @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model inspeksi_sarana_jalan_keluar {
-  id_inspeksi         Int      @id @default(autoincrement())
+  id_inspeksi         Int       @id @default(autoincrement())
   eksit               Boolean?
   eksit_pelepasan     Boolean?
   iluminasi           Boolean?
   pencahayaan_darurat Boolean?
   penandaan           Boolean?
   tangga_kebakaran    Boolean?
-  createdAt            DateTime? @default(now())
   id_item             Int?
-  item                item?    @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  createdAt           DateTime? @default(now())
+  item                item?     @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model inspeksi_scba {
-  id_inspeksi            Int      @id @default(autoincrement())
+  id_inspeksi            Int       @id @default(autoincrement())
   facepiece              Boolean?
   rangka_rakitan_harness Boolean?
   silinder_tabung        Boolean?
   selang                 Boolean?
   EOSTI                  Boolean?
   regulator              Boolean?
-  createdAt            DateTime? @default(now())
   id_item                Int?
-  item                   item?    @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  createdAt              DateTime? @default(now())
+  item                   item?     @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model inspeksi_spill_containment_room {
-  id_inspeksi                           Int      @id @default(autoincrement())
+  id_inspeksi                           Int       @id @default(autoincrement())
   fasilitas                             Boolean?
   sistem_keamanan                       Boolean?
   sistem_pencegahan_kebakaran           Boolean?
   sistem_pencegahan_tumpahan_limbah     Boolean?
   sistem_penanggulangan_keadaan_darurat Boolean?
-  createdAt            DateTime? @default(now())
   id_item                               Int?
-  item                                  item?    @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  createdAt                             DateTime? @default(now())
+  item                                  item?     @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model item {
@@ -241,7 +214,6 @@ model item {
   jenis_sarana                    String?                           @db.VarChar
   nama_item                       String?                           @db.VarChar
   nomor_ser                       String?                           @db.VarChar
-  deskripsi                       String?                           @db.VarChar
   lokasi                          String?                           @db.VarChar
   titik_lokasi                    String?                           @db.VarChar
   spesifikasi                     String?                           @db.VarChar
@@ -251,7 +223,7 @@ model item {
   gambar                          String?
   status_pemasangan               Boolean?
   id_titik_lokasi                 Int                               @default(autoincrement())
-  inspeksi_sprinkler              inspeksi_sprinkler[]
+  deskripsi                       String?                           @db.VarChar
   inspeksi_APAP                   inspeksi_APAP[]
   inspeksi_detector               inspeksi_detector[]
   inspeksi_hidran_bangunan        inspeksi_hidran_bangunan[]
@@ -262,8 +234,9 @@ model item {
   inspeksi_sarana_jalan_keluar    inspeksi_sarana_jalan_keluar[]
   inspeksi_scba                   inspeksi_scba[]
   inspeksi_spill_containment_room inspeksi_spill_containment_room[]
-  lokasi_titik_lokasi                    titik_lokasi                      @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
-  lokasi_lokasi                          lokasi                            @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
+  inspeksi_sprinkler              inspeksi_sprinkler[]
+  lokasi_titik_lokasi             titik_lokasi                      @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
+  lokasi_lokasi                   lokasi                            @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
   rekapitulasi_bulanan            rekapitulasi_bulanan[]
   rekapitulasi_mingguan           rekapitulasi_mingguan[]
 }
@@ -276,21 +249,21 @@ model lokasi {
 }
 
 model rekapitulasi_bulanan {
-  rekap_bulanan_id Int     @id @default(autoincrement())
-  bulan            String? @db.VarChar
+  rekap_bulanan_id Int       @id @default(autoincrement())
+  bulan            String?   @db.VarChar
   tanggal          DateTime?
-  id_item          Int     @default(autoincrement())
+  id_item          Int       @default(autoincrement())
   foto             String?
-  item             item    @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  item             item      @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model rekapitulasi_mingguan {
-  rekap_mingguan_id Int    @id @default(autoincrement())
+  rekap_mingguan_id Int       @id @default(autoincrement())
   minggu_ke         Int?
   tanggal           DateTime?
-  id_item           Int    @default(autoincrement())
+  id_item           Int       @default(autoincrement())
   foto              String?
-  item              item   @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  item              item      @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model titik_lokasi {
@@ -301,4 +274,25 @@ model titik_lokasi {
   lokasi            lokasi  @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
 
   @@map("titik lokasi")
+}
+
+model inspeksi_sprinkler {
+  id_inspeksi                Int     @id(map: "inspeksi sprinkler_pkey") @default(autoincrement())
+  kondisi_internal_pipa      Boolean
+  katup_kontrol              Boolean
+  koneksi_pemadam_kebakaran  Boolean
+  penyangga                  Boolean
+  kepala_sprinkler           Boolean
+  sprinkler_cadangan         Boolean
+  perangkat_pengawasan_katup Boolean
+  perangkat_alarm_aliran_air Boolean
+  catatan                    String? @db.VarChar
+  id_item                    Int?
+  item                       item?   @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction, map: "inspeksi sprinkler_id_item_fkey")
+}
+
+enum Role {
+  ADMIN
+  PELAKSANA
+  STAFF
 }
