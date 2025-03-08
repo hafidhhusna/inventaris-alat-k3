@@ -24,6 +24,7 @@ interface Item {
   nama_item: string;
   lokasi: string;
   gambar: string;
+  deskripsi: string;
 }
 
 const source = [
@@ -89,6 +90,8 @@ const TrackerPage = () => {
     return [currentPage - 1, currentPage, currentPage + 1];
   };
 
+  // console.log(selectedItem);
+
   return (
     <div className="w-screen h-screen flex flex-col relative bg-[#fff] text-[#000]">
       <div className="absolute">
@@ -104,9 +107,10 @@ const TrackerPage = () => {
             <React.Fragment key={item.id_item}>
               <button
                 onClick={() => {
-                  // console.log(item);
+                  console.log(item);
                   setIsOpen(true);
                   setSelectedItem(item);
+                  console.log(selectedItem);
                 }}
                 className="w-[11.797vw] h-[16vw] rounded-[1.5vw] bg-white shadow-md flex flex-col items-center justify-center relative p-4 hover:bg-gray-100"
               >
@@ -151,18 +155,7 @@ const TrackerPage = () => {
                           </button>
                         </div>
                         <h1 className="w-[36vw] h-[7.969vw] text-[1vw] text-justify mt-[1vw]">
-                          Lorem Ipsum is simply dummy text of the printing and
-                          typesetting industry. Lorem Ipsum has been the
-                          industry standard dummy text ever since the 1500s,
-                          when an unknown printer took a galley of type and
-                          scrambled it to make a type specimen book. It has
-                          survived not only five centuries, but also the leap
-                          into electronic typesetting, remaining essentially
-                          unchanged. It was popularised in the 1960s with the
-                          release of Letraset sheets containing Lorem Ipsum
-                          passages, and more recently with desktop publishing
-                          software like Aldus PageMaker including versions of
-                          Lorem Ipsum.
+                          {selectedItem.deskripsi}
                         </h1>
                       </div>
                       <Image
