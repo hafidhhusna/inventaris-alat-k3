@@ -123,14 +123,14 @@ const TrackerPage = () => {
 
               {isOpen && selectedItem && (
                 <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-25 z-10">
-                  <div className="w-[75vw] h-[44.271vw] bg-white p-[3vw] relative">
+                  <div className="w-[75vw] h-[44.271vw] bg-white p-[4vw] relative">
                     <button
                       className="text-[1vw] absolute right-[0.5vw] top-[0.5vw]"
                       onClick={() => setIsOpen(false)}
                     >
                       <IoIosClose className="text-[4vw]"></IoIosClose>
                     </button>
-                    <div className="flex items-center justify-between">
+                    <div className="flex justify-between">
                       <div className="flex flex-col pr-[4vw]">
                         <div className="flex items-center justify-between">
                           <h1 className="text-[2.448vw] font-bold">
@@ -141,10 +141,16 @@ const TrackerPage = () => {
                             className="text-[2vw]"
                             onClick={() => setQrOpen(true)}
                           >
-                            Generate QR <br /> di sini
+                            <Image
+                              src="/images/qr.png"
+                              alt="qr code"
+                              width={10000}
+                              height={10000}
+                              className="w-[5.365vw] h-[5.417vw]"
+                            />
                           </button>
                         </div>
-                        <h1 className="text-[1vw] text-justify mt-[1vw]">
+                        <h1 className="w-[36vw] h-[7.969vw] text-[1vw] text-justify mt-[1vw]">
                           Lorem Ipsum is simply dummy text of the printing and
                           typesetting industry. Lorem Ipsum has been the
                           industry standard dummy text ever since the 1500s,
@@ -160,14 +166,14 @@ const TrackerPage = () => {
                         </h1>
                       </div>
                       <Image
-                        src="/images/profile.png"
-                        alt="foto barang"
+                        src={selectedItem.gambar || "/placeholder.jpg"}
+                        alt={selectedItem.nama_item}
                         width={10000}
                         height={10000}
-                        className="w-[15vw] h-[13vw]"
+                        className="w-[25vw] h-[17vw]"
                       />
                     </div>
-                    <table className="mt-[3vw] w-full">
+                    <table className="mt-[5vw] w-full">
                       <thead className="border-b border-black font-bold text-[0.938vw] italic">
                         <tr>
                           <th>Inspection Location</th>
@@ -200,24 +206,17 @@ const TrackerPage = () => {
                     <h1 className="text-[2.5vw] font-bold">
                       Silahkan <br /> Scan QR Berikut
                     </h1>
-                    <Image
-                      src="/images/profile.png"
-                      alt="foto barang"
-                      width={10000}
-                      height={10000}
-                      className="w-[15vw] h-[13vw]"
-                    />
-                    <div className="p-4 border rounded shadow-md">
+                    <div className="p-[0.2vw] border rounded-[0.3vw] shadow-md">
                       <Canvas
                         text={`${process.env.NEXT_PUBLIC_WEB_URI}/ItemsForm?id=${selectedItem.id_item}`}
                         options={{
                           errorCorrectionLevel: "M",
                           margin: 3,
                           scale: 4,
-                          width: 200,
+                          width: 400,
                           color: {
-                            dark: "#010599FF",
-                            light: "#FFBF60FF",
+                            dark: "#000",
+                            light: "#fff",
                           },
                         }}
                       />
@@ -226,6 +225,7 @@ const TrackerPage = () => {
                           pathname: "/ItemsForm",
                           query: { id: selectedItem.id_item },
                         }}
+                        className="w-full flex items-center justify-center text-blue-600 underline"
                       >
                         form inspeksi item {selectedItem.id_item}
                       </Link>
