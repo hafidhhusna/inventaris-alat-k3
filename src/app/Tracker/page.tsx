@@ -15,6 +15,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { IoIosClose } from "react-icons/io";
+import { useQRCode } from "next-qrcode";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -39,6 +40,8 @@ const TrackerPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+
+  const { Canvas } = useQRCode();
 
   // Fetch items from API
   useEffect(() => {
@@ -203,14 +206,29 @@ const TrackerPage = () => {
                       height={10000}
                       className="w-[15vw] h-[13vw]"
                     />
-                    <Link
-                      href={{
-                        pathname: "/ItemsForm",
-                        query: { id: selectedItem.id_item },
-                      }}
-                    >
-                      form inspeksi item {selectedItem.id_item}
-                    </Link>
+                    <div className="p-4 border rounded shadow-md">
+                      <Canvas
+                        text={`http://localhost:3000/ItemsForm?id=${selectedItem.id_item}`}
+                        options={{
+                          errorCorrectionLevel: "M",
+                          margin: 3,
+                          scale: 4,
+                          width: 200,
+                          color: {
+                            dark: "#010599FF",
+                            light: "#FFBF60FF",
+                          },
+                        }}
+                      />
+                      <Link
+                        href={{
+                          pathname: "/ItemsForm",
+                          query: { id: selectedItem.id_item },
+                        }}
+                      >
+                        form inspeksi item {selectedItem.id_item}
+                      </Link>
+                    </div>
                   </div>
                 </div>
               )}
