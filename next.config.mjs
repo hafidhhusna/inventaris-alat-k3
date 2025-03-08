@@ -6,7 +6,9 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: [process.env.NEXT_PUBLIC_DOMAIN],
+    domains: [process.env.NEXT_PUBLIC_DOMAIN, "cdn.builder.io"],
+    dangerouslyAllowSVG: true,   // Enable SVG images
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   }
 };
 
