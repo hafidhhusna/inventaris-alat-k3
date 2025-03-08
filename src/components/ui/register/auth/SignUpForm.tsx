@@ -3,8 +3,10 @@
 import * as React from "react";
 import { InputField } from "./InputField";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import Dropdown from "@/components/Dropdown";
 
 export const SignUpForm: React.FC = () => {
   const [error, setError] = useState("");
@@ -13,9 +15,20 @@ export const SignUpForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
+  // const [selectedRole, setSelectedRole] = useState("");
+
+  const router = useRouter();
+
+  const handleDropdownChange = (value: string) => {
+    setRole(value);
+  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault(); // Mencegah reload halaman
+    if (!name || !email || !password || !role) {
+      setError("All fields are required!");
+      return;
+    }
     setLoading(true);
 
     const response = await fetch(
@@ -30,6 +43,7 @@ export const SignUpForm: React.FC = () => {
     if (response.ok) {
       alert("User registered successfully!");
       setLoading(false);
+      router.push("/login");
     } else {
       const errorData = await response.json();
       alert(`Register Error : ${errorData.message}`);
@@ -92,12 +106,22 @@ export const SignUpForm: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <InputField
+            {/* <InputField
               placeholder="Role"
               name="role"
               type="role"
               value={role}
               onChange={(e) => setRole(e.target.value)}
+            /> */}
+
+            <Dropdown
+              value={role || "status condition"}
+              onChange={(e) => handleDropdownChange(e.target.value)}
+              options={[
+                { label: "Admin", value: "ADMIN" },
+                { label: "Pelaksana", value: "PELAKSANA" },
+                { label: "Staff", value: "STAFF" },
+              ]}
             />
             <button
               type="submit"
