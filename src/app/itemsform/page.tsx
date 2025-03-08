@@ -15,13 +15,14 @@ const supabase = createClient(
 const ItemsForm = () => {
   const [jenisSarana, setJenisSarana] = useState<string>("");
   const [columnName, setColumnName] = useState<Record<string, string>[]>([]);
-  const [selectedValue, setSelectedValue] = useState<{ [key: string]: string }>(
+  const [selectedValue, setSelectedValue] = useState<{ [key: string]: boolean }>(
     {}
   );
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
+  // Fetch jenis_sarana berdasarkan id_item
   useEffect(() => {
     const fetch_jenis_sarana = async () => {
       if (!id) return;
@@ -42,6 +43,7 @@ const ItemsForm = () => {
     fetch_jenis_sarana();
   }, [id]);
 
+  // Fetch nama kolom dari tabel inspeksi berdasarkan jenis_sarana
   useEffect(() => {
     if (!jenisSarana) return;
 
@@ -57,19 +59,20 @@ const ItemsForm = () => {
       } else {
         setColumnName(data);
       }
-      // console.log(data, table_name);
     };
 
     fetchColumnNames();
   }, [jenisSarana]);
 
+  // Mengubah nilai dropdown menjadi boolean (Yes = true, No = false)
   const handleDropdownChange = (columnName: string, value: string) => {
     setSelectedValue((prev) => ({
       ...prev,
-      [columnName]: value,
+      [columnName]: value === "Yes", // Yes → true, No → false
     }));
   };
 
+  // Format nama kolom agar lebih readable
   const formatColumnName = (name: string) => {
     return name
       .split("_")
@@ -77,12 +80,46 @@ const ItemsForm = () => {
       .join(" ");
   };
 
-  const handleSubmit = () => {
-    return;
+  // Handle submit form ke database Supabase
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!jenisSarana || !id) {
+      console.error("Jenis Sarana atau ID tidak tersedia");
+      return;
+    }
+
+    const table_name = `inspeksi_${jenisSarana}`;
+
+    const dataToInsert: { [key: string]: string | number | boolean | null } = {
+      id_item: id,
+    };
+
+    columnName.forEach((column) => {
+      if (
+        column.column_name !== "id_item" &&
+        column.column_name !== "id_inspeksi"
+      ) {
+        const value = selectedValue[column.column_name];
+        dataToInsert[column.column_name] = value ?? false; // Jika tidak dipilih, simpan null
+      }
+    });
+
+    console.log("Data to insert:", dataToInsert); // Debugging sebelum insert
+
+    const { data, error } = await supabase.from(table_name).insert([dataToInsert]);
+
+    if (error) {
+      console.error("Error inserting data: ", error.message);
+    } else {
+      console.log("Data inserted successfully", data);
+      alert("Data berhasil disimpan!");
+    }
   };
 
   return (
     <div className="w-screen h-screen bg-[#fcfcfc] flex flex-col items-center">
+      {/* Header */}
       <div className="w-full h-[5.156vw] p-[2vw] flex items-center justify-between bg-[#fff]">
         <Image
           src="/images/LOGO INSPEKTRA PLUS 3.png"
@@ -98,17 +135,23 @@ const ItemsForm = () => {
           Tutup Form
         </Link>
       </div>
+
+      {/* Title */}
       <h1 className="p-[1vw] drop-shadow-md bg-[#fff] mt-[2vw] rounded-[0.521vw] text-[2.083vw]">
         Inspeksi {formatColumnName(jenisSarana)}
       </h1>
       <h1 className="mt-[1vw] text-[1.302vw]">
         Formulir Inspeksi Alat Pemadam Api
       </h1>
+
+      {/* Separator */}
       <div className="w-[48.125vw] h-[0.052vw] bg-black mt-[0.5vw]"></div>
       <div className="w-[48.125vw] flex justify-evenly py-[0.78vw] text-[1.302vw]">
         <h1>Elemen</h1>
         <h1>Status Inspeksi</h1>
       </div>
+
+      {/* Formulir */}
       <form
         onSubmit={handleSubmit}
         className="flex flex-col w-[48.125vw] my-[2vw]"
@@ -126,9 +169,7 @@ const ItemsForm = () => {
                 className="flex justify-between mb-[1vw] relative"
               >
                 <Dropdown
-                  value={
-                    selectedValue[column.column_name] || "status condition"
-                  }
+                  value={selectedValue[column.column_name] ? "Yes" : "No"} // Mapping boolean ke "Yes"/"No"
                   onChange={(e) =>
                     handleDropdownChange(column.column_name, e.target.value)
                   }
