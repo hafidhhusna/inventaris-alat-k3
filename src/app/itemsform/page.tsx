@@ -14,7 +14,7 @@ const supabase = createClient(
 
 const ItemsForm = () => {
   const [jenisSarana, setJenisSarana] = useState<string>("");
-  const [columnName, setColumnName] = useState<any[]>([]);
+  const [columnName, setColumnName] = useState<Record<string, string>[]>([]);
   const [selectedValue, setSelectedValue] = useState<{ [key: string]: string }>(
     {}
   );
@@ -57,7 +57,7 @@ const ItemsForm = () => {
       } else {
         setColumnName(data);
       }
-      console.log(data, table_name);
+      // console.log(data, table_name);
     };
 
     fetchColumnNames();

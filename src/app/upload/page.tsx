@@ -115,7 +115,7 @@ const UploadForm = () => {
       )}_${Date.now()}.${fileExt}`;
       const filePath = `items/${fileName}`;
 
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from("test-bucket")
         .upload(filePath, file);
 
@@ -196,13 +196,13 @@ const UploadForm = () => {
           className="mb-2 p-2 w-full border rounded"
         />
 
-        <input 
+        <input
           type="text"
           name="deskripsi"
           placeholder="Deskripsi Item"
           onChange={handleChange}
           required
-          className="mb-2 p-2 w-full border rounded" 
+          className="mb-2 p-2 w-full border rounded"
         />
 
         {/* Dropdown Lokasi */}

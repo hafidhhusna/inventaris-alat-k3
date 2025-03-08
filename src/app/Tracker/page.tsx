@@ -134,7 +134,8 @@ const TrackerPage = () => {
                       <div className="flex flex-col pr-[4vw]">
                         <div className="flex items-center justify-between">
                           <h1 className="text-[2.448vw] font-bold">
-                            Alat Pemadam Api Portabel (APAP)
+                            {/* {formatColumnName(selectedItem.nama_item)} */}
+                            {selectedItem.nama_item}
                           </h1>
                           <button
                             className="text-[2vw]"
@@ -208,7 +209,7 @@ const TrackerPage = () => {
                     />
                     <div className="p-4 border rounded shadow-md">
                       <Canvas
-                        text={`http://localhost:3000/ItemsForm?id=${selectedItem.id_item}`}
+                        text={`${process.env.NEXT_PUBLIC_WEB_URI}/ItemsForm?id=${selectedItem.id_item}`}
                         options={{
                           errorCorrectionLevel: "M",
                           margin: 3,
