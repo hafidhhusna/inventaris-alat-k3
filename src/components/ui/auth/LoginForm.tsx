@@ -75,7 +75,7 @@ export const LoginForm: React.FC = () => {
       <div className="flex gap-2.5 self-center mt-8 max-w-full text-sm font-light tracking-tight leading-none w-[234px]">
         <div className="grow flex">
           <h1 className="mr-[0.5vw]">Or</h1>
-          <Link href={"/signup"} className="text-blue-600">
+          <Link href="/signup" className="text-blue-600 underline">
             Register
           </Link>
         </div>
