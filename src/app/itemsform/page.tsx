@@ -50,12 +50,15 @@ const ItemsForm = () => {
     const table_name = `inspeksi_${jenisSarana}`;
 
     const fetchColumnNames = async () => {
-      const { data, error } = await supabase.rpc("get_column_names", {
+      const { data, error } = await supabase.rpc("get_column_info", {
         table_name: table_name,
       });
 
+      console.log(data)
+
       if (error) {
         console.error(error);
+        console.log(error.message)
       } else {
         setColumnName(data);
       }
