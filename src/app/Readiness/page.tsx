@@ -1,9 +1,40 @@
+"use client";
+
 import React from "react";
 import NavBar from "@/components/NavBar";
 import BarChart from "@/components/BarChart";
 import { ChartData, ChartOptions } from "chart.js";
 
 const Readiness = () => {
+  const sendToTelegram = async (message: string): Promise<any> => {
+    const botToken = process.env.NEXT_PUBLIC_BOT_TOKEN;
+    const chatId = process.env.NEXT_PUBLIC_CHAT_ID;
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+      }),
+    });
+
+    return response.json();
+  };
+
+  const formatChartData = (chartData: ChartData<"bar">): string => {
+    const labels = chartData.labels ?? [];
+    const dataset = chartData.datasets[0];
+
+    return (
+      `${dataset.label || "No Label"}\n` +
+      labels
+        .map((label, index) => `${label}: ${dataset.data[index] ?? "N/A"}`)
+        .join("\n")
+    );
+  };
+
   const data: ChartData<"bar"> = {
     labels: ["JKT", "JKT", "SBY", "SBY", "DIY", "DIY"],
     datasets: [
@@ -50,8 +81,8 @@ const Readiness = () => {
         </div>
       </div>
       {/* <Header /> */}
-      <div className="w-[full] px-[15vw] pt-[2vw]">
-        <div className="w-[59.271vw] h-[39vw] rounded-[0.781vw] shadow-xl p-[1vw]">
+      <div className="w-full h-full px-[15vw] pt-[2vw] flex relative">
+        <div className="w-[59.271vw] h-[39vw] rounded-[0.781vw] shadow-xl p-[1vw] relative">
           <h1 className="font-bold text-[1.458vw] mb-[0.5vw]">
             Recent Updates
           </h1>
@@ -62,6 +93,12 @@ const Readiness = () => {
             <div className="w-[12.552vw] h-[5.365vw] rounded-[1vw] shadow-lg"></div>
           </div>
           <BarChart data={data} options={options}></BarChart>
+          <button
+            className=" rounded-[0.3vw] w-[7vw] h-[2vw] bg-[#0092b6] absolute right-0 bottom-[-2.5vw] font-bold text-white text-[0.7vw] hover:bg-[#007a99] active:bg-[#00637d]"
+            onClick={() => sendToTelegram(formatChartData(data))}
+          >
+            Send to Telegram
+          </button>
         </div>
       </div>
     </div>
