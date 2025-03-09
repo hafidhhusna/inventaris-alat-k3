@@ -15,12 +15,17 @@ const supabase = createClient(
 const ItemsForm = () => {
   const [jenisSarana, setJenisSarana] = useState<string>("");
   const [columnName, setColumnName] = useState<Record<string, string>[]>([]);
-  const [selectedValue, setSelectedValue] = useState<{ [key: string]: boolean }>(
-    {}
-  );
+  const [selectedValue, setSelectedValue] = useState<{
+    [key: string]: boolean | number | string | null;
+  }>({});
+  const [textAreaValue, setTextAreaValue] = useState<string>("");
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setTextAreaValue(e.target.value);
+  };
 
   // Fetch jenis_sarana berdasarkan id_item
   useEffect(() => {
@@ -54,11 +59,11 @@ const ItemsForm = () => {
         table_name: table_name,
       });
 
-      console.log(data)
+      console.log(data);
 
       if (error) {
         console.error(error);
-        console.log(error.message)
+        console.log(error.message);
       } else {
         setColumnName(data);
       }
@@ -68,11 +73,26 @@ const ItemsForm = () => {
   }, [jenisSarana]);
 
   // Mengubah nilai dropdown menjadi boolean (Yes = true, No = false)
-  const handleDropdownChange = (columnName: string, value: string) => {
-    setSelectedValue((prev) => ({
-      ...prev,
-      [columnName]: value === "Yes", // Yes → true, No → false
-    }));
+  const handleDropdownChange = (
+    columnName: string,
+    value: string,
+    columnDataType: string
+  ) => {
+    console.log(
+      `Column: ${columnName}, Value: ${value}, ColumnDataType: ${columnDataType}`
+    );
+    if (columnDataType === "boolean") {
+      setSelectedValue((prev) => ({
+        ...prev,
+        [columnName]: value === "Yes",
+      }));
+    } else if (columnDataType === "integer") {
+      const intValue = parseInt(value);
+      setSelectedValue((prev) => ({
+        ...prev,
+        [columnName]: intValue,
+      }));
+    }
   };
 
   // Format nama kolom agar lebih readable
@@ -98,19 +118,37 @@ const ItemsForm = () => {
       id_item: id,
     };
 
-    columnName.forEach((column) => {
-      if (
-        column.column_name !== "id_item" &&
-        column.column_name !== "id_inspeksi"
-      ) {
-        const value = selectedValue[column.column_name];
-        dataToInsert[column.column_name] = value ?? false; // Jika tidak dipilih, simpan null
-      }
-    });
+    columnName.forEach(
+      (column) => {
+        if (
+          column.column_name !== "id_item" &&
+          column.column_name !== "id_inspeksi"
+        ) {
+          let value = selectedValue[column.column_name];
 
-    console.log("Data to insert:", dataToInsert); // Debugging sebelum insert
+          if (column.data_type === "character varying") {
+            value = textAreaValue;
+          }
 
-    const { data, error } = await supabase.from(table_name).insert([dataToInsert]);
+          if (column.data_type === "integer" && typeof value === "string") {
+            value = parseInt(value);
+          } else if (
+            column.data_type === "boolean" &&
+            typeof value === "string"
+          ) {
+            value = value === "Yes";
+          }
+          dataToInsert[column.column_name] = value ?? null; // Jika tidak dipilih, simpan null
+        }
+      },
+      [columnName]
+    );
+
+    console.log(dataToInsert); // Debugging sebelum insert
+
+    const { data, error } = await supabase
+      .from(table_name)
+      .insert([dataToInsert]);
 
     if (error) {
       console.error("Error inserting data: ", error.message);
@@ -121,7 +159,7 @@ const ItemsForm = () => {
   };
 
   return (
-    <div className="w-screen h-screen bg-[#fcfcfc] flex flex-col items-center">
+    <div className="w-screen h-screen overflow-x-hidden bg-[#fcfcfc] flex flex-col items-center">
       {/* Header */}
       <div className="w-full h-[5.156vw] p-[2vw] flex items-center justify-between bg-[#fff]">
         <Image
@@ -171,16 +209,54 @@ const ItemsForm = () => {
                 key={index}
                 className="flex justify-between mb-[1vw] relative"
               >
-                <Dropdown
-                  value={selectedValue[column.column_name] ? "Yes" : "No"} // Mapping boolean ke "Yes"/"No"
-                  onChange={(e) =>
-                    handleDropdownChange(column.column_name, e.target.value)
-                  }
-                  options={[
-                    { label: "Yes", value: "Yes" },
-                    { label: "No", value: "No" },
-                  ]}
-                />
+                {column.data_type === "boolean" && (
+                  <Dropdown
+                    value={
+                      selectedValue[column.column_name] === true
+                        ? "Yes"
+                        : selectedValue[column.column_name] === false
+                        ? "No"
+                        : "Status Condition"
+                    }
+                    onChange={(e) =>
+                      handleDropdownChange(
+                        column.column_name,
+                        e.target.value,
+                        column.data_type
+                      )
+                    }
+                    options={[
+                      { label: "Yes", value: "Yes" },
+                      { label: "No", value: "No" },
+                    ]}
+                  />
+                )}
+                {column.data_type === "integer" && (
+                  <Dropdown
+                    value={String(
+                      selectedValue[column.column_name] || "Status Condition"
+                    )}
+                    onChange={(e) =>
+                      handleDropdownChange(
+                        column.column_name,
+                        e.target.value,
+                        column.data_type
+                      )
+                    }
+                    options={[
+                      { label: "Lokasi 1", value: "1" },
+                      { label: "Lokasi 2", value: "2" },
+                    ]}
+                  />
+                )}
+                {column.data_type === "character varying" && (
+                  <textarea
+                    value={textAreaValue}
+                    onChange={handleTextareaChange}
+                    placeholder="Insert text here"
+                    className="h-[8vw] py-[0.2vw] px-[0.4vw] border border-black rounded-[0.5vw]"
+                  />
+                )}
                 <h1 className="text-[1.302vw]">
                   {formatColumnName(column.column_name)}
                 </h1>
@@ -189,7 +265,7 @@ const ItemsForm = () => {
           })}
         <button
           type="submit"
-          className="w-[8vw] bg-red-700 text-white rounded-[0.5vw]"
+          className="w-[8vw] h-[2vw] bg-red-600 text-white rounded-[0.5vw] font-bold hover:bg-red-700 active:bg-red-800"
         >
           Submit
         </button>
