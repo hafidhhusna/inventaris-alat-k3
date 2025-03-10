@@ -6,21 +6,25 @@ import BarChart from "@/components/BarChart";
 import { ChartData, ChartOptions } from "chart.js";
 
 const Readiness = () => {
-  const sendToTelegram = async (message: string): Promise<any> => {
-    const botToken = process.env.NEXT_PUBLIC_BOT_TOKEN;
-    const chatId = process.env.NEXT_PUBLIC_CHAT_ID;
-    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+  const sendToTelegram = async (message: string) => {
+    try {
+      const response = await fetch("/api/sendToTelegram", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      });
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: message,
-      }),
-    });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
 
-    return response.json();
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : {};
+
+      console.log("Telegram Response:", data);
+    } catch (error) {
+      console.error("Failed to send message to Telegram", error);
+    }
   };
 
   const formatChartData = (chartData: ChartData<"bar">): string => {
