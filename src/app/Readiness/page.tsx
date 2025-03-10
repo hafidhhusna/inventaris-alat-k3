@@ -6,12 +6,12 @@ import BarChart from "@/components/BarChart";
 import { ChartData, ChartOptions } from "chart.js";
 
 const Readiness = () => {
-  const sendToTelegram = async (message: string) => {
+  const sendToTelegram = async (message: string, chatId: string) => {
     try {
       const response = await fetch("/api/sendToTelegram", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message, chatId }),
       });
 
       if (!response.ok) {
@@ -99,7 +99,7 @@ const Readiness = () => {
           <BarChart data={data} options={options}></BarChart>
           <button
             className=" rounded-[0.3vw] w-[7vw] h-[2vw] bg-[#0092b6] absolute right-0 bottom-[-2.5vw] font-bold text-white text-[0.7vw] hover:bg-[#007a99] active:bg-[#00637d]"
-            onClick={() => sendToTelegram(formatChartData(data))}
+            onClick={() => sendToTelegram(formatChartData(data), "6594147857")}
           >
             Send to Telegram
           </button>
