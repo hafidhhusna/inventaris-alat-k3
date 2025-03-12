@@ -2,7 +2,9 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Cookies from "js-cookie";
 import { FaArrowTrendUp } from "react-icons/fa6";
 import { IoPersonSharp } from "react-icons/io5";
 import { IoMdSettings } from "react-icons/io";
@@ -34,6 +36,12 @@ const sources = [
 
 const NavBar: React.FC = () => {
   const [active, setActive] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleLogout = () => {
+    Cookies.remove("accessToken");
+    router.push("/login");
+  };
 
   return (
     <div className="w-[8.021vw] h-screen bg-[#F9FAFC] rounded-r-[0.781vw] flex flex-col items-center justify-evenly text-[#000000]">
@@ -79,7 +87,10 @@ const NavBar: React.FC = () => {
         </div>
       ))}
 
-      <button className="flex flex-col items-center justify-center relative group">
+      <button
+        className="flex flex-col items-center justify-center relative group"
+        onClick={handleLogout}
+      >
         <div className="p-[1vw] relative">
           <div
             className="absolute w-[3vw] h-[3vw] bg-[#FE8021] rounded-full opacity-0 group-hover:opacity-100 z-0 

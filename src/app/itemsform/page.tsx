@@ -18,13 +18,18 @@ const ItemsForm = () => {
   const [selectedValue, setSelectedValue] = useState<{
     [key: string]: boolean | number | string | null;
   }>({});
-  const [textAreaValue, setTextAreaValue] = useState<string>("");
+  const [textAreaValue, setTextAreaValue] = useState<Record<string, string>>(
+    {}
+  );
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setTextAreaValue(e.target.value);
+  const handleTextareaChange = (columnName: string, value: string) => {
+    setTextAreaValue((prev) => ({
+      ...prev,
+      [columnName]: value,
+    }));
   };
 
   // Fetch jenis_sarana berdasarkan id_item
@@ -122,12 +127,13 @@ const ItemsForm = () => {
       (column) => {
         if (
           column.column_name !== "id_item" &&
-          column.column_name !== "id_inspeksi"
+          column.column_name !== "id_inspeksi" &&
+          column.column_name !== "createdAt"
         ) {
           let value = selectedValue[column.column_name];
 
           if (column.data_type === "character varying") {
-            value = textAreaValue;
+            value = textAreaValue[column.column_name] || "";
           }
 
           if (column.data_type === "integer" && typeof value === "string") {
@@ -146,14 +152,13 @@ const ItemsForm = () => {
 
     console.log(dataToInsert); // Debugging sebelum insert
 
-    const { data, error } = await supabase
-      .from(table_name)
-      .insert([dataToInsert]);
+    const { error } = await supabase.from(table_name).insert([dataToInsert]);
+    // .select() for debugging only
 
     if (error) {
       console.error("Error inserting data: ", error.message);
     } else {
-      console.log("Data inserted successfully", data);
+      // console.log("Data inserted successfully", data);
       alert("Data berhasil disimpan!");
     }
   };
@@ -201,7 +206,8 @@ const ItemsForm = () => {
           .filter(
             (column) =>
               column.column_name !== "id_item" &&
-              column.column_name !== "id_inspeksi"
+              column.column_name !== "id_inspeksi" &&
+              column.column_name !== "createdAt"
           )
           .map((column, index) => {
             return (
@@ -251,8 +257,11 @@ const ItemsForm = () => {
                 )}
                 {column.data_type === "character varying" && (
                   <textarea
-                    value={textAreaValue}
-                    onChange={handleTextareaChange}
+                    key={column.name}
+                    value={textAreaValue[column.column_name] || ""}
+                    onChange={(e) =>
+                      handleTextareaChange(column.column_name, e.target.value)
+                    }
                     placeholder="Insert text here"
                     className="h-[8vw] py-[0.2vw] px-[0.4vw] border border-black rounded-[0.5vw]"
                   />
