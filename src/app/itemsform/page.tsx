@@ -12,8 +12,20 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+type Lokasi = {
+  lokasi_id: number;
+  nama_lokasi: string;
+}
+
+type TitikLokasi = {
+  id_titik_lokasi: number;
+  nama_titik_lokasi: string;
+}
+
 const ItemsForm = () => {
-  const [lokasi, setLokasi] = useState<{ lokasi_id: number; nama_lokasi: string }[]>([]);
+  const [lokasiList, setLokasiList] = useState<Lokasi[]>([]);
+  const [titikLokasiList, setTitikLokasiList] = useState<TitikLokasi[]>([]);
+  const [selectedLokasi, setSelectedLokasi] = useState("");
   const [jenisSarana, setJenisSarana] = useState<string>("");
   const [columnName, setColumnName] = useState<Record<string, string>[]>([]);
   const [selectedValue, setSelectedValue] = useState<{
@@ -54,20 +66,50 @@ const ItemsForm = () => {
     fetch_jenis_sarana();
   }, [id]);
 
-  
-  //Fetch titik lokasi
+
   useEffect(() => {
-    async function fetchLokasi() {
-      const res = await fetch("/api/upload-titik-lokasi", {
-        method: "GET"
-      });
-      const data = await res.json();
-      setLokasi(data);
-    }
+    const fetchLokasi = async () => {
+      try {
+        const response = await fetch("/api/titik-lokasi");
+        const result : {data: Lokasi[]} = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Gagal mengambil data lokasi");
+        }
+
+        setLokasiList(result.data);
+      } catch (error) {
+        console.error("Error fetching lokasi:", error.message);
+      }
+    };
+
     fetchLokasi();
   }, []);
 
-  // Fetch nama kolom dari tabel inspeksi berdasarkan jenis_sarana
+    // Fetch titik lokasi berdasarkan lokasi_id
+  useEffect(() => {
+    if (selectedLokasi) {
+      const fetchTitikLokasi = async () => {
+        try {
+          const response = await fetch(`/api/titik-lokasi?lokasi_id=${selectedLokasi}`);
+          const result = await response.json();
+
+          if (!response.ok) {
+            throw new Error(result.error || "Gagal mengambil data titik lokasi");
+          }
+
+          setTitikLokasiList(result.data);
+        } catch (error) {
+          console.error("Error fetching titik lokasi:", error.message);
+        }
+      };
+
+      fetchTitikLokasi();
+    } else {
+      setTitikLokasiList([]);
+    }
+  }, [selectedLokasi]);
+
   useEffect(() => {
     if (!jenisSarana) return;
 
@@ -89,7 +131,8 @@ const ItemsForm = () => {
     };
 
     fetchColumnNames();
-    getTitikLokasi();
+    fetchLokasi();
+    fetchTitikLokasi();
   }, [jenisSarana]);
 
   // Mengubah nilai dropdown menjadi boolean (Yes = true, No = false)
@@ -180,22 +223,6 @@ const ItemsForm = () => {
     }
   };
 
-  const getTitikLokasi = async () => {
-    try {
-      const res = await fetch("/api/titik-lokasi", {
-        method: "GET",
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch locations");
-      }
-
-      const data = await res.json();
-      console.log("Lokasi:", data);
-    } catch (error) {
-      console.error("Error fetching locations:", error);
-    }
-  };
 
   return (
     <div className="w-screen h-screen overflow-x-hidden bg-[#fcfcfc] flex flex-col items-center">
@@ -285,10 +312,10 @@ const ItemsForm = () => {
                         column.data_type
                       )
                     }
-                    options={[
-                      { label: "Lokasi 1", value: "1" },
-                      { label: "Lokasi 2", value: "2" },
-                    ]}
+                    options={lokasiList.map((lokasi) => ({
+                      label: lokasi.nama_lokasi,
+                      value: String(lokasi.lokasi_id),
+                    }))}
                   />
                 )}
                 {column.data_type === "character varying" && (
