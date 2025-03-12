@@ -37,7 +37,7 @@ const UploadForm = () => {
     const fetchLokasi = async () => {
       const { data, error } = await supabase
         .from("lokasi")
-        .select(`lokasi_id, "nama lokasi"`);
+        .select(`lokasi_id, "nama_lokasi"`);
 
       if (error) {
         console.error("Error fetching lokasi:", error.message);
@@ -45,7 +45,7 @@ const UploadForm = () => {
         setLokasiList(
           data.map((lokasi) => ({
             lokasi_id: lokasi.lokasi_id,
-            nama_lokasi: lokasi["nama lokasi"],
+            nama_lokasi: lokasi["nama_lokasi"],
           }))
         );
       }
@@ -59,7 +59,7 @@ const UploadForm = () => {
     if (formData.lokasi_id) {
       const fetchTitikLokasi = async () => {
         const { data, error } = await supabase
-          .from("titik lokasi")
+          .from("titik_lokasi")
           .select(`id_titik_lokasi, "nama_titik_lokasi"`)
           .eq("lokasi_id", formData.lokasi_id);
 
