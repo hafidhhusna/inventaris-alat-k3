@@ -15,12 +15,12 @@ const supabase = createClient(
 type Lokasi = {
   lokasi_id: number;
   nama_lokasi: string;
-}
+};
 
 type TitikLokasi = {
   id_titik_lokasi: number;
   nama_titik_lokasi: string;
-}
+};
 
 const ItemsForm = () => {
   const [lokasiList, setLokasiList] = useState<Lokasi[]>([]);
@@ -66,41 +66,46 @@ const ItemsForm = () => {
     fetch_jenis_sarana();
   }, [id]);
 
-
   useEffect(() => {
     const fetchLokasi = async () => {
       try {
         const response = await fetch("/api/titik-lokasi");
-        const result : {data: Lokasi[]} = await response.json();
+        const result: { data: Lokasi[] } = await response.json();
 
         if (!response.ok) {
-          throw new Error(result.error || "Gagal mengambil data lokasi");
+          throw new Error("Gagal mengambil data lokasi");
         }
 
         setLokasiList(result.data);
+        // console.log("lokasi:", result.data);
       } catch (error) {
-        console.error("Error fetching lokasi:", error.message);
+        console.error("Error fetching lokasi:", error);
       }
     };
 
     fetchLokasi();
   }, []);
 
-    // Fetch titik lokasi berdasarkan lokasi_id
+  // Fetch titik lokasi berdasarkan lokasi_id
   useEffect(() => {
     if (selectedLokasi) {
       const fetchTitikLokasi = async () => {
         try {
-          const response = await fetch(`/api/titik-lokasi?lokasi_id=${selectedLokasi}`);
+          const response = await fetch(
+            `/api/titik-lokasi?lokasi_id=${selectedLokasi}`
+          );
           const result = await response.json();
 
           if (!response.ok) {
-            throw new Error(result.error || "Gagal mengambil data titik lokasi");
+            throw new Error(
+              result.error || "Gagal mengambil data titik lokasi"
+            );
           }
 
           setTitikLokasiList(result.data);
+          // console.log("titik lokasi:", result.data);
         } catch (error) {
-          console.error("Error fetching titik lokasi:", error.message);
+          console.error("Error fetching titik lokasi:", error);
         }
       };
 
@@ -131,8 +136,6 @@ const ItemsForm = () => {
     };
 
     fetchColumnNames();
-    fetchLokasi();
-    fetchTitikLokasi();
   }, [jenisSarana]);
 
   // Mengubah nilai dropdown menjadi boolean (Yes = true, No = false)
@@ -144,18 +147,26 @@ const ItemsForm = () => {
     console.log(
       `Column: ${columnName}, Value: ${value}, ColumnDataType: ${columnDataType}`
     );
-    if (columnDataType === "boolean") {
+
+    if (columnName === "lokasi_id") {
+      setSelectedLokasi(value); // Update selectedLokasi when Lokasi Id changes
+
+      // Reset id_titik_lokasi when lokasi_id changes
       setSelectedValue((prev) => ({
         ...prev,
-        [columnName]: value === "Yes",
-      }));
-    } else if (columnDataType === "integer") {
-      const intValue = parseInt(value);
-      setSelectedValue((prev) => ({
-        ...prev,
-        [columnName]: intValue,
+        id_titik_lokasi: "", // Clear previous selection
       }));
     }
+
+    setSelectedValue((prev) => ({
+      ...prev,
+      [columnName]:
+        columnDataType === "boolean"
+          ? value === "Yes"
+          : columnDataType === "integer"
+          ? parseInt(value)
+          : value,
+    }));
   };
 
   // Format nama kolom agar lebih readable
@@ -186,9 +197,9 @@ const ItemsForm = () => {
         if (
           column.column_name !== "id_item" &&
           column.column_name !== "id_inspeksi" &&
-          column.column_name !== "createdAt" &&
-          column.column_name !== "id_titik_lokasi" &&
-          column.column_name !== "lokasi_id"
+          column.column_name !== "createdAt"
+          // column.column_name !== "id_titik_lokasi" &&
+          // column.column_name !== "lokasi_id"
         ) {
           let value = selectedValue[column.column_name];
 
@@ -222,7 +233,6 @@ const ItemsForm = () => {
       alert("Data berhasil disimpan!");
     }
   };
-
 
   return (
     <div className="w-screen h-screen overflow-x-hidden bg-[#fcfcfc] flex flex-col items-center">
@@ -268,9 +278,9 @@ const ItemsForm = () => {
             (column) =>
               column.column_name !== "id_item" &&
               column.column_name !== "id_inspeksi" &&
-              column.column_name !== "createdAt" &&
-              column.column_name !== "id_titik_lokasi" &&
-              column.column_name !== "lokasi_id"
+              column.column_name !== "createdAt"
+            // column.column_name !== "id_titik_lokasi" &&
+            // column.column_name !== "lokasi_id"
           )
           .map((column, index) => {
             return (
@@ -300,11 +310,13 @@ const ItemsForm = () => {
                     ]}
                   />
                 )}
-                {column.data_type === "integer" && (
+                {column.column_name === "lokasi_id" && (
                   <Dropdown
-                    value={String(
-                      selectedValue[column.column_name] || "Status Condition"
-                    )}
+                    value={
+                      selectedValue[column.column_name]
+                        ? String(selectedValue[column.column_name])
+                        : "Status Condition"
+                    }
                     onChange={(e) =>
                       handleDropdownChange(
                         column.column_name,
@@ -318,6 +330,38 @@ const ItemsForm = () => {
                     }))}
                   />
                 )}
+
+                {column.column_name === "id_titik_lokasi" && (
+                  <Dropdown
+                    value={
+                      selectedValue[column.column_name]
+                        ? String(selectedValue[column.column_name])
+                        : "Status Condition"
+                    }
+                    onChange={(e) =>
+                      handleDropdownChange(
+                        column.column_name,
+                        e.target.value,
+                        column.data_type
+                      )
+                    }
+                    options={titikLokasiList
+                      .filter(() => {
+                        // Cari lokasi_id dari lokasiList yang sesuai dengan id_titik_lokasi
+                        const lokasi = lokasiList.find(
+                          (l) => l.lokasi_id === selectedValue["lokasi_id"]
+                        );
+                        return lokasi
+                          ? lokasi.lokasi_id === selectedValue["lokasi_id"]
+                          : false;
+                      })
+                      .map((titikLokasi) => ({
+                        label: titikLokasi.nama_titik_lokasi,
+                        value: String(titikLokasi.id_titik_lokasi),
+                      }))}
+                  />
+                )}
+
                 {column.data_type === "character varying" && (
                   <textarea
                     key={column.column_name}

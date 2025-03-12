@@ -25,6 +25,7 @@ interface Item {
   lokasi: string;
   gambar: string;
   deskripsi: string;
+  nomor_ser: string;
 }
 
 const source = [
@@ -222,6 +223,9 @@ const TrackerPage = () => {
                       >
                         form inspeksi item {selectedItem.id_item}
                       </Link>
+                      <h1 className="w-full text-[1vw] flex items-center justify-center">
+                        Nomor Seri: {selectedItem.nomor_ser}
+                      </h1>
                     </div>
                   </div>
                 </div>
