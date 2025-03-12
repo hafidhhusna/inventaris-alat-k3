@@ -10,7 +10,7 @@ export default function TitikLokasiForm() {
   // Fetch data lokasi dari API
   useEffect(() => {
     async function fetchLokasi() {
-      const res = await fetch("/api/titik-lokasi", {
+      const res = await fetch("/api/upload-titik-lokasi", {
         method: "GET"
       });
       const data = await res.json();
@@ -21,7 +21,7 @@ export default function TitikLokasiForm() {
 
   // Handle submit data ke API titik-lokasi
   const onSubmit = async (data: any) => {
-    const res = await fetch("/api/titik-lokasi", {
+    const res = await fetch("/api/upload-titik-lokasi", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),

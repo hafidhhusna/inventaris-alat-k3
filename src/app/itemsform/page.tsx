@@ -13,6 +13,7 @@ const supabase = createClient(
 );
 
 const ItemsForm = () => {
+  const [lokasi, setLokasi] = useState<{ lokasi_id: number; nama_lokasi: string }[]>([]);
   const [jenisSarana, setJenisSarana] = useState<string>("");
   const [columnName, setColumnName] = useState<Record<string, string>[]>([]);
   const [selectedValue, setSelectedValue] = useState<{
@@ -52,6 +53,19 @@ const ItemsForm = () => {
 
     fetch_jenis_sarana();
   }, [id]);
+
+  
+  //Fetch titik lokasi
+  useEffect(() => {
+    async function fetchLokasi() {
+      const res = await fetch("/api/upload-titik-lokasi", {
+        method: "GET"
+      });
+      const data = await res.json();
+      setLokasi(data);
+    }
+    fetchLokasi();
+  }, []);
 
   // Fetch nama kolom dari tabel inspeksi berdasarkan jenis_sarana
   useEffect(() => {

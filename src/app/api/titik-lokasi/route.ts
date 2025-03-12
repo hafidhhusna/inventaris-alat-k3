@@ -3,31 +3,35 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function POST(req: Request) {
+export async function GET(req: Request) {
   try {
-    const { lokasi_id, nama_titik_lokasi } = await req.json();
+    // Ambil parameter lokasi_id dari query string
+    const { searchParams } = new URL(req.url);
+    const lokasi_id = searchParams.get("lokasi_id");
 
-    const newTitikLokasi = await prisma.titik_lokasi.create({
-      data: {
-        lokasi_id: parseInt(lokasi_id),
-        nama_titik_lokasi,
+    if (!lokasi_id) {
+      return NextResponse.json(
+        { error: "Parameter lokasi_id diperlukan" },
+        { status: 400 }
+      );
+    }
+
+    // Query ke database dengan Prisma
+    const titikLokasi = await prisma.titik_lokasi.findMany({
+      where: {
+        lokasi_id: Number(lokasi_id),
+      },
+      select: {
+        id_titik_lokasi: true,
+        nama_titik_lokasi: true,
       },
     });
 
-    return NextResponse.json(newTitikLokasi, { status: 201 });
+    return NextResponse.json(titikLokasi, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: "Gagal menyimpan data" }, { status: 500 });
-  }
-}
-
-export async function GET() {
-  try {
-    const lokasi = await prisma.lokasi.findMany({
-      select: { lokasi_id: true, nama_lokasi: true },
-    });
-
-    return NextResponse.json(lokasi, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: "Gagal mengambil data" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Terjadi kesalahan server", details: (error as Error).message },
+      { status: 500 }
+    );
   }
 }
