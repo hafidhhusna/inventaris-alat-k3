@@ -16,7 +16,10 @@ export async function POST(req: Request) {
 
     return NextResponse.json(newTitikLokasi, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: "Gagal menyimpan data" }, { status: 500 });
+    return NextResponse.json(
+      { msg: "Gagal menyimpan data", error: error },
+      { status: 500 }
+    );
   }
 }
 
@@ -28,6 +31,9 @@ export async function GET() {
 
     return NextResponse.json(lokasi, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: "Gagal mengambil data" }, { status: 500 });
+    return NextResponse.json(
+      { msg: "Gagal mengambil data", error: error },
+      { status: 500 }
+    );
   }
 }

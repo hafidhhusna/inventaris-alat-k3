@@ -75,6 +75,7 @@ const ItemsForm = () => {
     };
 
     fetchColumnNames();
+    getTitikLokasi();
   }, [jenisSarana]);
 
   // Mengubah nilai dropdown menjadi boolean (Yes = true, No = false)
@@ -128,7 +129,9 @@ const ItemsForm = () => {
         if (
           column.column_name !== "id_item" &&
           column.column_name !== "id_inspeksi" &&
-          column.column_name !== "createdAt"
+          column.column_name !== "createdAt" &&
+          column.column_name !== "id_titik_lokasi" &&
+          column.column_name !== "lokasi_id"
         ) {
           let value = selectedValue[column.column_name];
 
@@ -160,6 +163,23 @@ const ItemsForm = () => {
     } else {
       // console.log("Data inserted successfully", data);
       alert("Data berhasil disimpan!");
+    }
+  };
+
+  const getTitikLokasi = async () => {
+    try {
+      const res = await fetch("/api/titik-lokasi", {
+        method: "GET",
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch locations");
+      }
+
+      const data = await res.json();
+      console.log("Lokasi:", data);
+    } catch (error) {
+      console.error("Error fetching locations:", error);
     }
   };
 
@@ -207,7 +227,9 @@ const ItemsForm = () => {
             (column) =>
               column.column_name !== "id_item" &&
               column.column_name !== "id_inspeksi" &&
-              column.column_name !== "createdAt"
+              column.column_name !== "createdAt" &&
+              column.column_name !== "id_titik_lokasi" &&
+              column.column_name !== "lokasi_id"
           )
           .map((column, index) => {
             return (
@@ -257,7 +279,7 @@ const ItemsForm = () => {
                 )}
                 {column.data_type === "character varying" && (
                   <textarea
-                    key={column.name}
+                    key={column.column_name}
                     value={textAreaValue[column.column_name] || ""}
                     onChange={(e) =>
                       handleTextareaChange(column.column_name, e.target.value)
