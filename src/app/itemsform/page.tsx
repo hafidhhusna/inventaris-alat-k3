@@ -6,6 +6,7 @@ import Dropdown from "@/components/Dropdown";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
+import Camera from "@/components/Camera";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -373,6 +374,8 @@ const ItemsForm = () => {
                     className="h-[8vw] py-[0.2vw] px-[0.4vw] border border-black rounded-[0.5vw]"
                   />
                 )}
+
+                {column.column_name == "gambar" && <Camera />}
                 <h1 className="text-[1.302vw]">
                   {formatColumnName(column.column_name)}
                 </h1>
