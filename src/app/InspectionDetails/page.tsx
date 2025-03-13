@@ -13,8 +13,27 @@ const supabase = createClient(
 const InspectionDetails = () => {
   const [jenisSarana, setJenisSarana] = useState<string>("");
   const [columnName, setColumnName] = useState<Record<string, string>[]>([]);
+  const [items, setItems] = useState<Record<string, string>[]>([]);
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await fetch(`/api/rekapitulasi-inspeksi/${id}`);
+        const data = await response.json();
+        // console.log(data);
+        if (data) {
+          setItems(data);
+          console.log("data:", data);
+        }
+      } catch (error) {
+        console.error("Error fetching items:", error);
+      }
+    };
+
+    fetchItems();
+  }, []);
 
   useEffect(() => {
     const fetch_jenis_sarana = async () => {
@@ -71,16 +90,36 @@ const InspectionDetails = () => {
       <h1 className="w-full flex items-center justify-center font-bold text-[3vw]">
         {jenisSarana}
       </h1>
-      <table className="mt-[2vw]">
-        <thead className="border-b border-black font-bold text-[1vw]">
-          <tr>
-            {columnName.map((item, index) => (
-              <th key={index}>{formatColumnName(item.column_name)}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      {Object.keys(items).map((tableName, index) => (
+        <div key={index}>
+          <h2 className="font-bold text-lg">{tableName}</h2>
+          <table className="border mt-2">
+            <thead>
+              <tr>
+                {items[tableName].length > 0 &&
+                  Object.keys(items[tableName][0]).map((key, idx) => (
+                    <th key={idx} className="border px-4 py-2">
+                      {key.replace(/_/g, " ")}
+                    </th>
+                  ))}
+              </tr>
+            </thead>
+            <tbody>
+              {items[tableName].map(
+                (row: Record<string, any>, rowIndex: number) => (
+                  <tr key={rowIndex}>
+                    {Object.values(row).map((value, colIndex) => (
+                      <td key={colIndex} className="border px-4 py-2">
+                        {String(value)}
+                      </td>
+                    ))}
+                  </tr>
+                )
+              )}
+            </tbody>
+          </table>
+        </div>
+      ))}
       {/* {columnName.map((item, index) => (
         <div key={index}>{item.column_name}</div>
       ))} */}
