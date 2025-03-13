@@ -1,11 +1,52 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "@/components/NavBar";
 import BarChart from "@/components/BarChart";
 import { ChartData, ChartOptions } from "chart.js";
 
 const Readiness = () => {
+  const [chartData, setChartData] = useState<ChartData<"bar"> | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/rekapitulasi"); // Sesuaikan dengan endpoint API-mu
+        if (!response.ok) {
+          throw new Error("Gagal mengambil data");
+        }
+        const result = await response.json();
+
+        if (result.data) {
+          const labels = result.data.map((lokasi: any) => lokasi.lokasi);
+          const dataValues = result.data.map((lokasi: any) => lokasi.persentase_ready.replace("%", ""));
+
+          const formattedData: ChartData<"bar"> = {
+            labels,
+            datasets: [
+              {
+                label: "Readiness Percentage",
+                data: dataValues.map(Number),
+                borderWidth: 1,
+                borderRadius: 10,
+                backgroundColor: "rgba(0, 146, 182, 0.5)",
+              },
+            ],
+          };
+
+          setChartData(formattedData);
+        }
+      } catch (error) {
+        console.error("Error fetching chart data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const sendToTelegram = async (message: string, chatId: string) => {
     try {
       const response = await fetch("/api/sendToTelegram", {
@@ -34,21 +75,9 @@ const Readiness = () => {
     return (
       `${dataset.label || "No Label"}\n` +
       labels
-        .map((label, index) => `${label}: ${dataset.data[index] ?? "N/A"}`)
+        .map((label, index) => `${label}: ${dataset.data[index] ?? "N/A"}%`)
         .join("\n")
     );
-  };
-
-  const data: ChartData<"bar"> = {
-    labels: ["JKT", "JKT", "SBY", "SBY", "DIY", "DIY"],
-    datasets: [
-      {
-        label: "Recap Data",
-        data: [10, 20, 15, 25, 30, 18],
-        borderWidth: 1,
-        borderRadius: 10,
-      },
-    ],
   };
 
   const options: ChartOptions<"bar"> = {
@@ -61,6 +90,7 @@ const Readiness = () => {
     scales: {
       y: {
         beginAtZero: true,
+        max: 100,
       },
       x: {
         ticks: {
@@ -84,25 +114,28 @@ const Readiness = () => {
           <div className="w-[2.656vw] h-[2.552vw] bg-gradient-to-r from-[#0091B6] to-[#51B5DD] rounded-r-[1vw] rounded-l-[0.2vw]"></div>
         </div>
       </div>
-      {/* <Header /> */}
       <div className="w-full h-full px-[15vw] pt-[2vw] flex relative">
         <div className="w-[59.271vw] h-[39vw] rounded-[0.781vw] shadow-xl p-[1vw] relative">
           <h1 className="font-bold text-[1.458vw] mb-[0.5vw]">
             Recent Updates
           </h1>
-          <div className="w-full flex items-center justify-between mb-[1vw]">
-            <div className="w-[12.552vw] h-[5.365vw] rounded-[1vw] shadow-lg"></div>
-            <div className="w-[12.552vw] h-[5.365vw] rounded-[1vw] shadow-lg"></div>
-            <div className="w-[12.552vw] h-[5.365vw] rounded-[1vw] shadow-lg"></div>
-            <div className="w-[12.552vw] h-[5.365vw] rounded-[1vw] shadow-lg"></div>
-          </div>
-          <BarChart data={data} options={options}></BarChart>
-          <button
-            className=" rounded-[0.3vw] w-[7vw] h-[2vw] bg-[#0092b6] absolute right-0 bottom-[-2.5vw] font-bold text-white text-[0.7vw] hover:bg-[#007a99] active:bg-[#00637d]"
-            onClick={() => sendToTelegram(formatChartData(data), "6594147857")}
-          >
-            Send to Telegram
-          </button>
+          {loading ? (
+            <p>Loading data...</p>
+          ) : chartData ? (
+            <>
+              <BarChart data={chartData} options={options} />
+              <button
+                className="rounded-[0.3vw] w-[7vw] h-[2vw] bg-[#0092b6] absolute right-0 bottom-[-2.5vw] font-bold text-white text-[0.7vw] hover:bg-[#007a99] active:bg-[#00637d]"
+                onClick={() =>
+                  sendToTelegram(formatChartData(chartData), "6594147857")
+                }
+              >
+                Send to Telegram
+              </button>
+            </>
+          ) : (
+            <p>No data available</p>
+          )}
         </div>
       </div>
     </div>

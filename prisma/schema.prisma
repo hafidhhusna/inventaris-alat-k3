@@ -55,6 +55,95 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model item {
+  id_item                         Int                               @id @default(autoincrement())
+  lokasi_id                       Int                               @default(autoincrement())
+  jenis_sarana                    String?                           @db.VarChar
+  nama_item                       String?                           @db.VarChar
+  nomor_ser                       String?                           @db.VarChar
+  lokasi                          String?                           @db.VarChar
+  titik_lokasi                    String?                           @db.VarChar
+  spesifikasi                     String?                           @db.VarChar
+  tanggal_pembelian               DateTime?                         @db.Date
+  pemasok                         String?                           @db.VarChar
+  PIC                             String?                           @db.VarChar
+  gambar                          String?
+  status_pemasangan               Boolean?
+  id_titik_lokasi                 Int                               @default(autoincrement())
+  deskripsi                       String?                           @db.VarChar
+  inspeksi_APAP                   inspeksi_APAP[]
+  inspeksi_detector               inspeksi_detector[]
+  inspeksi_hidran_bangunan        inspeksi_hidran_bangunan[]
+  inspeksi_hidran_halaman         inspeksi_hidran_halaman[]
+  inspeksi_kotak_p3k              inspeksi_kotak_p3k[]
+  inspeksi_ruang_mns              inspeksi_ruang_mns[]
+  inspeksi_rumah_pompa_hidran     inspeksi_rumah_pompa_hidran[]
+  inspeksi_sarana_jalan_keluar    inspeksi_sarana_jalan_keluar[]
+  inspeksi_scba                   inspeksi_scba[]
+  inspeksi_spill_containment_room inspeksi_spill_containment_room[]
+  inspeksi_sprinkler              inspeksi_sprinkler[]
+  lokasi_titik_lokasi             titik_lokasi                      @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
+  lokasi_lokasi                   lokasi                            @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
+  rekapitulasi_bulanan            rekapitulasi_bulanan[]
+  rekapitulasi_mingguan           rekapitulasi_mingguan[]
+}
+
+model lokasi {
+  lokasi_id                       Int                               @id @default(autoincrement())
+  nama_lokasi                     String?                           @db.VarChar
+  inspeksi_APAP                   inspeksi_APAP[]
+  inspeksi_detector               inspeksi_detector[]
+  inspeksi_hidran_bangunan        inspeksi_hidran_bangunan[]
+  inspeksi_hidran_halaman         inspeksi_hidran_halaman[]
+  inspeksi_kotak_p3k              inspeksi_kotak_p3k[]
+  inspeksi_ruang_mns              inspeksi_ruang_mns[]
+  inspeksi_pompa_hidran           inspeksi_rumah_pompa_hidran[]
+  inspeksi_sarana_jalan_keluar    inspeksi_sarana_jalan_keluar[]
+  inspeksi_scba                   inspeksi_scba[]
+  inspeksi_spill_containment_room inspeksi_spill_containment_room[]
+  inspeksi_sprinkler              inspeksi_sprinkler[]
+  item                            item[]
+  titik_lokasi                    titik_lokasi[]
+}
+
+model rekapitulasi_bulanan {
+  rekap_bulanan_id Int       @id @default(autoincrement())
+  bulan            String?   @db.VarChar
+  tanggal          DateTime?
+  id_item          Int       @default(autoincrement())
+  foto             String?
+  item             item      @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model rekapitulasi_mingguan {
+  rekap_mingguan_id Int       @id @default(autoincrement())
+  minggu_ke         Int?
+  tanggal           DateTime?
+  id_item           Int       @default(autoincrement())
+  foto              String?
+  item              item      @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model inspeksi_sprinkler {
+  id_inspeksi                Int          @id(map: "inspeksi sprinkler_pkey") @default(autoincrement())
+  kondisi_internal_pipa      Boolean
+  katup_kontrol              Boolean
+  koneksi_pemadam_kebakaran  Boolean
+  penyangga                  Boolean
+  kepala_sprinkler           Boolean
+  sprinkler_cadangan         Boolean
+  perangkat_pengawasan_katup Boolean
+  perangkat_alarm_aliran_air Boolean
+  catatan                    String?      @db.VarChar
+  gambar                          String?
+  lokasi_id                  Int
+  id_titik_lokasi            Int
+  id_item                    Int
+  item                       item         @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction, map: "inspeksi sprinkler_id_item_fkey")
+  lokasi_titik_lokasi        titik_lokasi @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
+  lokasi_lokasi              lokasi       @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
 model inspeksi_APAP {
   lokasi               String?      @db.VarChar
   visibilitas          Boolean?
@@ -256,95 +345,6 @@ model inspeksi_spill_containment_room {
   item                                  item?        @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
   lokasi_titik_lokasi                   titik_lokasi @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
   lokasi_lokasi                         lokasi       @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model item {
-  id_item                         Int                               @id @default(autoincrement())
-  lokasi_id                       Int                               @default(autoincrement())
-  jenis_sarana                    String?                           @db.VarChar
-  nama_item                       String?                           @db.VarChar
-  nomor_ser                       String?                           @db.VarChar
-  lokasi                          String?                           @db.VarChar
-  titik_lokasi                    String?                           @db.VarChar
-  spesifikasi                     String?                           @db.VarChar
-  tanggal_pembelian               DateTime?                         @db.Date
-  pemasok                         String?                           @db.VarChar
-  PIC                             String?                           @db.VarChar
-  gambar                          String?
-  status_pemasangan               Boolean?
-  id_titik_lokasi                 Int                               @default(autoincrement())
-  deskripsi                       String?                           @db.VarChar
-  inspeksi_APAP                   inspeksi_APAP[]
-  inspeksi_detector               inspeksi_detector[]
-  inspeksi_hidran_bangunan        inspeksi_hidran_bangunan[]
-  inspeksi_hidran_halaman         inspeksi_hidran_halaman[]
-  inspeksi_kotak_p3k              inspeksi_kotak_p3k[]
-  inspeksi_ruang_mns              inspeksi_ruang_mns[]
-  inspeksi_rumah_pompa_hidran     inspeksi_rumah_pompa_hidran[]
-  inspeksi_sarana_jalan_keluar    inspeksi_sarana_jalan_keluar[]
-  inspeksi_scba                   inspeksi_scba[]
-  inspeksi_spill_containment_room inspeksi_spill_containment_room[]
-  inspeksi_sprinkler              inspeksi_sprinkler[]
-  lokasi_titik_lokasi             titik_lokasi                      @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
-  lokasi_lokasi                   lokasi                            @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
-  rekapitulasi_bulanan            rekapitulasi_bulanan[]
-  rekapitulasi_mingguan           rekapitulasi_mingguan[]
-}
-
-model lokasi {
-  lokasi_id                       Int                               @id @default(autoincrement())
-  nama_lokasi                     String?                           @db.VarChar
-  inspeksi_APAP                   inspeksi_APAP[]
-  inspeksi_detector               inspeksi_detector[]
-  inspeksi_hidran_bangunan        inspeksi_hidran_bangunan[]
-  inspeksi_hidran_halaman         inspeksi_hidran_halaman[]
-  inspeksi_kotak_p3k              inspeksi_kotak_p3k[]
-  inspeksi_ruang_mns              inspeksi_ruang_mns[]
-  inspeksi_pompa_hidran           inspeksi_rumah_pompa_hidran[]
-  inspeksi_sarana_jalan_keluar    inspeksi_sarana_jalan_keluar[]
-  inspeksi_scba                   inspeksi_scba[]
-  inspeksi_spill_containment_room inspeksi_spill_containment_room[]
-  inspeksi_sprinkler              inspeksi_sprinkler[]
-  item                            item[]
-  titik_lokasi                    titik_lokasi[]
-}
-
-model rekapitulasi_bulanan {
-  rekap_bulanan_id Int       @id @default(autoincrement())
-  bulan            String?   @db.VarChar
-  tanggal          DateTime?
-  id_item          Int       @default(autoincrement())
-  foto             String?
-  item             item      @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model rekapitulasi_mingguan {
-  rekap_mingguan_id Int       @id @default(autoincrement())
-  minggu_ke         Int?
-  tanggal           DateTime?
-  id_item           Int       @default(autoincrement())
-  foto              String?
-  item              item      @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model inspeksi_sprinkler {
-  id_inspeksi                Int          @id(map: "inspeksi sprinkler_pkey") @default(autoincrement())
-  kondisi_internal_pipa      Boolean
-  katup_kontrol              Boolean
-  koneksi_pemadam_kebakaran  Boolean
-  penyangga                  Boolean
-  kepala_sprinkler           Boolean
-  sprinkler_cadangan         Boolean
-  perangkat_pengawasan_katup Boolean
-  perangkat_alarm_aliran_air Boolean
-  catatan                    String?      @db.VarChar
-  gambar                          String?
-  lokasi_id                  Int
-  id_titik_lokasi            Int
-  id_item                    Int
-  item                       item         @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction, map: "inspeksi sprinkler_id_item_fkey")
-  lokasi_titik_lokasi        titik_lokasi @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
-  lokasi_lokasi              lokasi       @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model titik_lokasi {
