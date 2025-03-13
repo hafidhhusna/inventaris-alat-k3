@@ -167,6 +167,15 @@ const TrackerPage = () => {
                         className="w-[25vw] h-[17vw]"
                       />
                     </div>
+                    <Link
+                      href={{
+                        pathname: "/InspectionDetails",
+                        query: { id: selectedItem.id_item },
+                      }}
+                      className="absolute right-[4vw] text-blue-600"
+                    >
+                      recap
+                    </Link>
                     <table className="mt-[5vw] w-full">
                       <thead className="border-b border-black font-bold text-[0.938vw] italic">
                         <tr>
@@ -197,9 +206,20 @@ const TrackerPage = () => {
                     >
                       <IoIosClose className="text-[4vw]"></IoIosClose>
                     </button>
-                    <h1 className="text-[2.5vw] font-bold">
-                      Silahkan <br /> Scan QR Berikut
-                    </h1>
+                    <div className="flex flex-col items-start justify-center">
+                      <h1 className="text-[1.823vw] font-bold">
+                        Nama <br />{" "}
+                        <span className="text-[2.5vw] font-bold">
+                          {selectedItem.nama_item}
+                        </span>
+                      </h1>
+                      <h1 className="text-[1.823vw] font-bold mt-[1vw]">
+                        Nomor SN <br />{" "}
+                        <span className="text-[2.5vw] font-bold">
+                          {selectedItem.nomor_ser}
+                        </span>
+                      </h1>
+                    </div>
                     <div className="p-[0.2vw] border rounded-[0.3vw] shadow-md">
                       <Canvas
                         text={`${process.env.NEXT_PUBLIC_WEB_URI}/ItemsForm?id=${selectedItem.id_item}`}
@@ -224,7 +244,7 @@ const TrackerPage = () => {
                         form inspeksi item {selectedItem.id_item}
                       </Link>
                       <h1 className="w-full text-[1vw] flex items-center justify-center">
-                        Nomor Seri: {selectedItem.nomor_ser}
+                        {/* Nomor Seri: {selectedItem.nomor_ser} */}
                       </h1>
                     </div>
                   </div>

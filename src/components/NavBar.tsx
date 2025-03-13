@@ -6,9 +6,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Cookies from "js-cookie";
 import { FaArrowTrendUp } from "react-icons/fa6";
+import { FaFireExtinguisher } from "react-icons/fa6";
 import { IoPersonSharp } from "react-icons/io5";
 import { IoMdSettings } from "react-icons/io";
 import { RiLogoutBoxLine } from "react-icons/ri";
+import { FiUpload } from "react-icons/fi";
 
 const sources = [
   {
@@ -19,11 +21,25 @@ const sources = [
     linkto: "/Profile",
   },
   {
-    id: "tracker",
-    src_img: <FaArrowTrendUp className="fill-current" />,
-    text: "Tracker",
+    id: "items",
+    src_img: <FaFireExtinguisher className="fill-current" />,
+    text: "Items",
     classnames: "text-[1.432vw]",
     linkto: "/Tracker",
+  },
+  {
+    id: "upload",
+    src_img: <FiUpload className="fill-current" />,
+    text: "Upload",
+    classnames: "text-[1.432vw]",
+    linkto: "/upload",
+  },
+  {
+    id: "overview",
+    src_img: <FaArrowTrendUp className="fill-current" />,
+    text: "Overview",
+    classnames: "text-[1.719vw]",
+    linkto: "/Readiness",
   },
   {
     id: "settings",
@@ -82,7 +98,7 @@ const NavBar: React.FC = () => {
                 {item.src_img}
               </div>
             </div>
-            <h1 className="text-[1vw]">{item.text}</h1>
+            <h1 className="text-[1vw] font-bold">{item.text}</h1>
           </Link>
         </div>
       ))}
@@ -105,7 +121,7 @@ const NavBar: React.FC = () => {
             <RiLogoutBoxLine className="fill-current" />
           </div>
         </div>
-        <h1 className="text-[1vw]">Log Out</h1>
+        <h1 className="text-[1vw] font-bold">Log Out</h1>
       </button>
     </div>
   );
