@@ -15,6 +15,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { IoIosClose } from "react-icons/io";
+import { RiUploadLine } from "react-icons/ri";
 import { useQRCode } from "next-qrcode";
 
 const ITEMS_PER_PAGE = 8;
@@ -99,7 +100,23 @@ const TrackerPage = () => {
         <NavBar />
       </div>
       <Header />
-
+      <div className="w-[45.573vw] h-[3.802vw] flex items-center justify-center ml-[7vw]">
+        <h1 className="text-[3.021vw]">
+          <span className="font-bold ">Inspection</span> Element
+        </h1>
+        <div className="flex items-center justify-center ml-[2vw]">
+          <h1 className="text-[1.042vw]">
+            Unggah Elemen <br />
+            Inspeksi Baru
+          </h1>
+          <Link
+            href="/NewElement"
+            className="w-[3.333vw] h-[3.333vw] rounded-full bg-[#37BBCB] flex items-center justify-center text-white text-[1.5vw] ml-[0.5vw]"
+          >
+            <RiUploadLine></RiUploadLine>
+          </Link>
+        </div>
+      </div>
       <div className="w-full px-[15vw] pt-[2vw] grid grid-rows-2 grid-cols-4 gap-y-[2vw]">
         {loading ? (
           <p className="text-center col-span-4">Loading...</p>
@@ -108,10 +125,11 @@ const TrackerPage = () => {
             <React.Fragment key={item.id_item}>
               <button
                 onClick={() => {
-                  console.log(item);
+                  console.log("item:", item);
                   setIsOpen(true);
                   setSelectedItem(item);
-                  console.log(selectedItem);
+                  console.log("selectedItem:", selectedItem);
+                  // console.log();
                 }}
                 className="w-[11.797vw] h-[16vw] rounded-[1.5vw] bg-white shadow-md flex flex-col items-center justify-center relative p-4 hover:bg-gray-100"
               >
@@ -123,7 +141,7 @@ const TrackerPage = () => {
                   className="w-full h-[10vw] object-cover rounded-[1vw] mb-2"
                 />
                 <h1 className="text-[0.819vw] font-bold">{item.nama_item}</h1>
-                <p className="text-[0.7vw] text-gray-500">{item.lokasi}</p>
+                {/* <p className="text-[0.7vw] text-gray-500">{item.lokasi}</p> */}
               </button>
 
               {isOpen && selectedItem && (
@@ -167,16 +185,22 @@ const TrackerPage = () => {
                         className="w-[25vw] h-[17vw]"
                       />
                     </div>
-                    <Link
-                      href={{
-                        pathname: "/InspectionDetails",
-                        query: { id: selectedItem.id_item },
-                      }}
-                      className="absolute right-[4vw] text-blue-600"
-                    >
-                      recap
-                    </Link>
-                    <table className="mt-[5vw] w-full">
+                    <div className="flex items-center">
+                      <h1 className="text-[1.042vw] mr-[1vw] border-b-[0.2vw] border-black">
+                        Inspection Log
+                      </h1>
+                      <div className="w-[10.521vw] h-[2.917vw] rounded-[0.5vw] bg-black text-white flex items-center justify-center italic ml-[1vw]">
+                        <Link
+                          href={{
+                            pathname: "/InspectionDetails",
+                            query: { id: selectedItem.id_item },
+                          }}
+                        >
+                          More Details
+                        </Link>
+                      </div>
+                    </div>
+                    <table className="mt-[2vw] w-full">
                       <thead className="border-b border-black font-bold text-[0.938vw] italic">
                         <tr>
                           <th>Inspection Location</th>
