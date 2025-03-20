@@ -25,7 +25,7 @@ const InspectionDetails = () => {
         // console.log(data);
         if (data) {
           setItems(data);
-          console.log("data:", data);
+          // console.log("data:", data);
         }
       } catch (error) {
         console.error("Error fetching items:", error);
@@ -53,6 +53,7 @@ const InspectionDetails = () => {
     };
 
     fetch_jenis_sarana();
+    // console.log(typeof jenisSarana);
   }, [id]);
 
   useEffect(() => {
@@ -88,15 +89,15 @@ const InspectionDetails = () => {
   return (
     <div className="w-screen h-screen">
       <h1 className="w-full flex items-center justify-center font-bold text-[3vw]">
-        {jenisSarana}
+        {formatColumnName(jenisSarana)}
       </h1>
       {Object.keys(items).map((tableName, index) => (
         <div key={index}>
-          <h2 className="font-bold text-lg">{tableName}</h2>
           <table className="border mt-2">
             <thead>
               <tr>
-                {items[tableName].length > 0 &&
+                {Array.isArray(items[tableName]) &&
+                  items[tableName].length > 0 &&
                   Object.keys(items[tableName][0]).map((key, idx) => (
                     <th key={idx} className="border px-4 py-2">
                       {key.replace(/_/g, " ")}
@@ -105,16 +106,24 @@ const InspectionDetails = () => {
               </tr>
             </thead>
             <tbody>
-              {items[tableName].map(
-                (row: Record<string, any>, rowIndex: number) => (
-                  <tr key={rowIndex}>
-                    {Object.values(row).map((value, colIndex) => (
-                      <td key={colIndex} className="border px-4 py-2">
-                        {String(value)}
-                      </td>
-                    ))}
-                  </tr>
+              {Array.isArray(items[tableName]) ? (
+                items[tableName].map(
+                  (row: Record<string, any>, rowIndex: number) => (
+                    <tr key={rowIndex}>
+                      {Object.values(row).map((value, colIndex) => (
+                        <td key={colIndex} className="border px-4 py-2">
+                          {String(value)}
+                        </td>
+                      ))}
+                    </tr>
+                  )
                 )
+              ) : (
+                <tr>
+                  <td className="px-[1vw] py-[4vw] font-bold text-[2vw] text-red-500">
+                    No Data Available
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
