@@ -173,6 +173,10 @@ const TrackerPage = () => {
                             />
                           </button>
                         </div>
+                        <h1 className="text-[1vw]">
+                          Lokasi:{" "}
+                          {selectedItem.nama_lokasi?.nama_lokasi ?? "unknown"}
+                        </h1>
                         <h1 className="w-[36vw] h-[7.969vw] text-[1vw] text-justify mt-[1vw]">
                           {selectedItem.deskripsi}
                         </h1>
