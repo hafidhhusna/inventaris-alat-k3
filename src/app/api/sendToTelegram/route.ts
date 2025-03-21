@@ -20,7 +20,8 @@ export async function POST(req: Request) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: chatId.trim(),
-        text: message,
+        text: `${message}\n\nPastikan inspeksi dan perawatan rutin dilakuka sesuai prosedur untuk meningkatkan keandalan sarana tanggap darurat
+        \nSalam Safety\nTetap waspada dan prioritaskan keselamatan setiap saat!`,
       }),
     });
 

@@ -26,7 +26,7 @@ const Readiness = () => {
             labels,
             datasets: [
               {
-                label: "Readiness Percentage",
+                label: "Persentase Kesiapan",
                 data: dataValues.map(Number),
                 borderWidth: 1,
                 borderRadius: 10,
@@ -127,7 +127,7 @@ const Readiness = () => {
               <button
                 className="rounded-[0.3vw] w-[7vw] h-[2vw] bg-[#0092b6] absolute right-0 bottom-[-2.5vw] font-bold text-white text-[0.7vw] hover:bg-[#007a99] active:bg-[#00637d]"
                 onClick={() =>
-                  sendToTelegram(formatChartData(chartData), "6594147857")
+                  sendToTelegram(formatChartData(chartData), "6380736334")
                 }
               >
                 Send to Telegram

@@ -32,7 +32,7 @@ const sources = [
     src_img: <FiUpload className="fill-current" />,
     text: "Upload",
     classnames: "text-[1.432vw]",
-    linkto: "/upload",
+    linkto: "/NewElement",
   },
   {
     id: "overview",
