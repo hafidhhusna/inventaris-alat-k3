@@ -2,13 +2,18 @@ import { useRef, useState, useEffect } from "react";
 import { Camera as CameraIcon } from "lucide-react";
 import Image from "next/image";
 
-const Camera = () => {
+interface CameraProps {
+  onCapture: (image: string) => void;
+}
+
+const Camera = ({ onCapture }: CameraProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
 
+  // Mulai kamera
   const startCamera = async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
@@ -22,6 +27,7 @@ const Camera = () => {
     }
   };
 
+  // Hentikan kamera
   const stopCamera = () => {
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
@@ -30,19 +36,21 @@ const Camera = () => {
     }
   };
 
+  // Tangkap gambar dari video
   const captureFrame = () => {
     if (videoRef.current && canvasRef.current) {
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
 
       if (context) {
-        canvas.width = videoRef.current?.videoWidth;
-        canvas.height = videoRef.current?.videoHeight;
+        canvas.width = videoRef.current.videoWidth;
+        canvas.height = videoRef.current.videoHeight;
 
         context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
         const imageUrl = canvas.toDataURL("image/png");
         setCapturedImage(imageUrl);
+        onCapture(imageUrl); // Kirim ke komponen induk
       }
     }
   };
@@ -51,19 +59,21 @@ const Camera = () => {
     if (videoRef.current && stream) {
       videoRef.current.srcObject = stream;
     }
-  }, [stream]); // Ensure this runs when stream updates
+  }, [stream]);
 
   return (
     <div className="flex flex-col items-center">
+      {/* Tombol untuk menyalakan & mematikan kamera */}
       <button
         type="button"
         onClick={isCameraOn ? stopCamera : startCamera}
-        className="p-2 bg-blue-500 text-white rounded-md"
+        className="p-2 bg-blue-500 text-white rounded-md flex items-center"
       >
         <CameraIcon className="mr-2" />
         {isCameraOn ? "Stop Camera" : "Start Camera"}
       </button>
 
+      {/* Video Preview */}
       {isCameraOn && stream && (
         <div>
           <video
@@ -81,18 +91,22 @@ const Camera = () => {
           </button>
         </div>
       )}
+
+      {/* Menampilkan gambar yang diambil */}
       {capturedImage && (
         <div className="mt-4">
           <h3 className="text-lg font-bold">Captured Image:</h3>
           <Image
             src={capturedImage}
-            width={10000}
-            height={10000}
+            width={320}
+            height={240}
             alt="Captured frame"
             className="mt-2 w-80 border-2 border-gray-500"
           />
         </div>
       )}
+
+      {/* Canvas (hidden) untuk menangkap gambar */}
       <canvas ref={canvasRef} className="hidden" />
     </div>
   );

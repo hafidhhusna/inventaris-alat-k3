@@ -35,6 +35,9 @@ const ItemsForm = () => {
   const [textAreaValue, setTextAreaValue] = useState<Record<string, string>>(
     {}
   );
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
@@ -139,6 +142,34 @@ const ItemsForm = () => {
     fetchColumnNames();
   }, [jenisSarana]);
 
+  //Upload Gambar
+  const uploadImage = async (imageBase64: string) => {
+    if (!imageBase64) return null;
+  
+    const fileName = `image_${Date.now()}.png`; // Buat nama file unik
+    const filePath = `inspeksi/${fileName}`;
+  
+    // Convert Base64 ke Blob
+    const blob = await (await fetch(imageBase64)).blob();
+  
+    // Upload ke Supabase Storage
+    const { data, error } = await supabase.storage.from("test-bucket").upload(filePath, blob);
+  
+    if (error) {
+      console.error("Error uploading image:", error.message);
+      return null;
+    }
+
+    console.log("Data Gambar : ", data)
+  
+    // Dapatkan URL gambar
+    const { data: publicUrl } = supabase.storage.from("test-bucket").getPublicUrl(filePath);
+    console.log("Image URL : ", publicUrl.publicUrl)
+    return publicUrl.publicUrl;
+  };
+  
+  
+
   // Mengubah nilai dropdown menjadi boolean (Yes = true, No = false)
   const handleDropdownChange = (
     columnName: string,
@@ -189,9 +220,20 @@ const ItemsForm = () => {
 
     const table_name = `inspeksi_${jenisSarana}`;
 
+    // let imageUrl = null;
+    if(capturedImage){
+      const uploadedUrl = await uploadImage(capturedImage);
+      setImageUrl(uploadedUrl)
+
+    }
+    console.log("Final Image URL : ", imageUrl)
+
     const dataToInsert: { [key: string]: string | number | boolean | null } = {
       id_item: id,
+      gambar: imageUrl,
+      ...selectedValue,
     };
+
 
     columnName.forEach(
       (column) => {
@@ -222,7 +264,7 @@ const ItemsForm = () => {
       [columnName]
     );
 
-    console.log(dataToInsert); // Debugging sebelum insert
+    console.log("Data to Insert : ", dataToInsert); // Debugging sebelum insert
 
     const { error } = await supabase.from(table_name).insert([dataToInsert]);
     // .select() for debugging only
@@ -375,7 +417,7 @@ const ItemsForm = () => {
                   />
                 )}
 
-                {column.column_name == "gambar" && <Camera />}
+                {column.column_name == "gambar" && <Camera onCapture={(image) => setCapturedImage(image)}/>}
                 <h1 className="text-[1.302vw]">
                   {formatColumnName(column.column_name)}
                 </h1>

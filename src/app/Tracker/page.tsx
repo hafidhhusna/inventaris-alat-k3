@@ -250,7 +250,7 @@ const TrackerPage = () => {
                     </div>
                     <div className="p-[0.2vw] border rounded-[0.3vw] shadow-md">
                       <Canvas
-                        text={`${process.env.NEXT_PUBLIC_WEB_URI}/ItemsForm?id=${selectedItem.id_item}`}
+                        text={`${window.location.origin}/ItemsForm?id=${selectedItem.id_item}`}
                         options={{
                           errorCorrectionLevel: "M",
                           margin: 3,
