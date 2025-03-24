@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   context: { params: { id_item: string } }
 ) {
   const { id_item } = await context.params;
