@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { message, chatId } = await req.json();
+    const { message} = await req.json();
     const botToken = process.env.NEXT_PUBLIC_HTTP_API_TOKEN;
-    // const chatId = process.env.NEXT_PUBLIC_CHAT_ID;
+    const chatId = process.env.NEXT_PUBLIC_CHAT_ID;
 
     if (!botToken || !chatId) {
       return NextResponse.json(
