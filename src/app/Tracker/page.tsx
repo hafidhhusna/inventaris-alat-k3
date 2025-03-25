@@ -27,14 +27,12 @@ interface Item {
   gambar: string;
   deskripsi: string;
   nomor_ser: string;
+  nama_lokasi?: {
+    nama_lokasi: string;
+  };
+  tanggal_pembelian: string;
+  status_pemasangan: boolean;
 }
-
-const source = [
-  { inspect_loc: "Data 1", inspect_date: "Data 1", inspect_status: "Data 1" },
-  { inspect_loc: "Data 1", inspect_date: "Data 1", inspect_status: "Data 1" },
-  { inspect_loc: "Data 1", inspect_date: "Data 1", inspect_status: "Data 1" },
-  { inspect_loc: "Data 1", inspect_date: "Data 1", inspect_status: "Data 1" },
-];
 
 const TrackerPage = () => {
   const [items, setItems] = useState<Item[]>([]);
@@ -213,13 +211,13 @@ const TrackerPage = () => {
                         </tr>
                       </thead>
                       <tbody className="text-[0.938vw] text-center">
-                        {source.map((item, index) => (
-                          <tr key={index} className="border-b border-black">
-                            <td>{item.inspect_loc}</td>
-                            <td>{item.inspect_date}</td>
-                            <td>{item.inspect_status}</td>
-                          </tr>
-                        ))}
+                        <tr className="border-b border-black">
+                          <td>
+                            {selectedItem.nama_lokasi?.nama_lokasi ?? "unknown"}
+                          </td>
+                          <td>{selectedItem.tanggal_pembelian}</td>
+                          <td>{selectedItem.status_pemasangan}</td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>

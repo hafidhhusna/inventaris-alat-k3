@@ -25,23 +25,28 @@ export const authOptions: NextAuthOptions = {
 
         try {
           const user = await login(credentials.email, credentials.password);
+
+          if (!user) {
+            return null;
+          }
+
           return {
             id: user.id,
-            name: user.name,
-            email: user.email,
+            name: user.name ?? "Unknown", // Ensure name is a string
+            email: user.email ?? "", // Ensure email is a string
             role: user.role,
           };
         } catch (error) {
           console.error("Auth error:", error);
-          throw error;
+          return null;
         }
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      if(trigger == "update" && session){
-        return{...token, ...session.user};
+      if (trigger == "update" && session) {
+        return { ...token, ...session.user };
       }
       if (user) {
         return {
