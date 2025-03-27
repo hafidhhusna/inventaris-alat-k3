@@ -115,7 +115,7 @@ export const SignUpForm: React.FC = () => {
             /> */}
 
             <Dropdown
-              value={role || "status condition"}
+              value={role || ""}
               onChange={(e) => handleDropdownChange(e.target.value)}
               options={[
                 { label: "Admin", value: "ADMIN" },
