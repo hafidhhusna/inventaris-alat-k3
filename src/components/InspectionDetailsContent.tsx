@@ -15,12 +15,13 @@ const InspectionDetails = () => {
   const [jenisSarana, setJenisSarana] = useState<string>("");
   const [columnName, setColumnName] = useState<Record<string, string>[]>([]);
   const [items, setItems] = useState<Record<string, any[]>>({});
-  const [id, setId] = useState<string | null>(null);
+  // const [id, setId] = useState<string | null>(null);
 
   const searchParams = useSearchParams();
-  useEffect(() => {
-    setId(searchParams.get("id"));
-  }, [searchParams]);
+
+  const id = searchParams.get("id");
+
+  console.log("Fetching data for ID:", id);
 
   useEffect(() => {
     const fetchItems = async () => {

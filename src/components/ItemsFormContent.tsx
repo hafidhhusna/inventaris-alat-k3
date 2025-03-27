@@ -38,12 +38,10 @@ const ItemsForm = () => {
   // const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [id, setId] = useState<string | null>(null);
 
   const searchParams = useSearchParams();
-  useEffect(() => {
-    setId(searchParams.get("id"));
-  }, [searchParams]);
+
+  const id = searchParams.get("id");
 
   const handleTextareaChange = (columnName: string, value: string) => {
     setTextAreaValue((prev) => ({

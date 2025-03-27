@@ -7,13 +7,10 @@ export async function GET(
   req: NextRequest,
   context: { params: { id_item: string } }
 ) {
-  const { id_item } = await context.params;
+  const { id_item } = context.params;
 
   if (isNaN(Number(id_item))) {
-    return NextResponse.json(
-      { error: "ID item tidak valid" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "ID item tidak valid" }, { status: 400 });
   }
 
   try {
