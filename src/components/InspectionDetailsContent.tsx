@@ -25,6 +25,7 @@ const InspectionDetails = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
+        console.log("id:", id);
         const response = await fetch(`/api/rekapitulasi-inspeksi/${id}`);
         const data = await response.json();
         // console.log(data);
