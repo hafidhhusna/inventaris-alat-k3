@@ -15,8 +15,12 @@ const InspectionDetails = () => {
   const [jenisSarana, setJenisSarana] = useState<string>("");
   const [columnName, setColumnName] = useState<Record<string, string>[]>([]);
   const [items, setItems] = useState<Record<string, any[]>>({});
+  const [id, setId] = useState<string | null>(null);
+
   const searchParams = useSearchParams();
-  const id = searchParams.get("id");
+  useEffect(() => {
+    setId(searchParams.get("id"));
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchItems = async () => {
