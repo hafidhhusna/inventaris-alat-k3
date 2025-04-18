@@ -32,6 +32,10 @@ interface Item {
   };
   tanggal_pembelian: string;
   status_pemasangan: boolean;
+  PIC : string;
+  titik_lokasi : number;
+  pemasok: string;
+  spesifikasi : string;
 }
 
 const TrackerPage = () => {
@@ -93,288 +97,205 @@ const TrackerPage = () => {
   // console.log(selectedItem);
 
   return (
-    <div className="w-screen h-screen flex flex-col relative bg-[#fff] text-[#000]">
+    <div className="w-screen min-h-screen flex flex-col bg-white text-black">
       <div className="absolute">
-        <NavBar />
+        <NavBar/>
       </div>
       <Header />
-      <div className="w-[45.573vw] h-[3.802vw] flex items-center justify-center ml-[7vw]">
-        <h1 className="text-[3.021vw]">
-          <span className="font-bold ">Inspection</span> Element
-        </h1>
-        <div className="flex items-center justify-center ml-[2vw]">
-          <h1 className="text-[1.042vw]">
-            Unggah Elemen <br />
-            Inspeksi Baru
-          </h1>
+      <div className="px-[10vw] pt-[1vw]">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-[2vw] font-bold">Data Items (Inspection Element)</h1>
           <Link
             href="/NewElement"
-            className="w-[3.333vw] h-[3.333vw] rounded-full bg-[#37BBCB] flex items-center justify-center text-white text-[1.5vw] ml-[0.5vw]"
+            className="bg-[#37BBCB] text-white px-4 py-2 rounded-full flex items-center"
           >
-            <RiUploadLine></RiUploadLine>
+            <RiUploadLine className="mr-2" />
+            Tambah Item
           </Link>
         </div>
-      </div>
-      <div className="w-full px-[15vw] pt-[2vw] grid grid-rows-2 grid-cols-4 gap-y-[2vw]">
+  
         {loading ? (
-          <p className="text-center col-span-4">Loading...</p>
-        ) : paginatedItems.length > 0 ? (
-          paginatedItems.map((item) => (
-            <React.Fragment key={item.id_item}>
-              <button
-                onClick={() => {
-                  console.log("item:", item);
-                  setIsOpen(true);
-                  setSelectedItem(item);
-                  console.log("selectedItem:", selectedItem);
-                  // console.log();
-                }}
-                className="w-[11.797vw] h-[16vw] rounded-[1.5vw] bg-white shadow-md flex flex-col items-center justify-center relative p-4 hover:bg-gray-100"
-              >
-                <Image
-                  src={item.gambar || "/placeholder.jpg"}
-                  alt={item.nama_item}
-                  width={10000}
-                  height={100000}
-                  className="w-full h-[10vw] object-cover rounded-[1vw] mb-2"
-                />
-                <h1 className="text-[0.819vw] font-bold">{item.nama_item}</h1>
-                {/* <p className="text-[0.7vw] text-gray-500">{item.lokasi}</p> */}
-              </button>
-
-              {isOpen && selectedItem && (
-                <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-25 z-10">
-                  <div className="w-[75vw] h-[44.271vw] bg-white p-[4vw] relative">
-                    <button
-                      className="text-[1vw] absolute right-[0.5vw] top-[0.5vw]"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <IoIosClose className="text-[4vw]"></IoIosClose>
-                    </button>
-                    <div className="flex justify-between">
-                      <div className="flex flex-col pr-[4vw]">
-                        <div className="flex items-center justify-between">
-                          <h1 className="text-[2.448vw] font-bold">
-                            {/* {formatColumnName(selectedItem.nama_item)} */}
-                            {selectedItem.nama_item}
-                          </h1>
-                          <button
-                            className="text-[2vw]"
-                            onClick={() => setQrOpen(true)}
-                          >
-                            <Image
-                              src="/images/qr.png"
-                              alt="qr code"
-                              width={10000}
-                              height={10000}
-                              className="w-[5.365vw] h-[5.417vw]"
-                            />
-                          </button>
-                        </div>
-                        <h1 className="text-[1vw]">
-                          Lokasi:{" "}
-                          {selectedItem.nama_lokasi?.nama_lokasi ?? "unknown"}
-                        </h1>
-                        <h1 className="w-[36vw] h-[7.969vw] text-[1vw] text-justify mt-[1vw]">
-                          {selectedItem.deskripsi}
-                        </h1>
-                      </div>
-                      <Image
-                        src={selectedItem.gambar || "/placeholder.jpg"}
-                        alt={selectedItem.nama_item}
-                        width={10000}
-                        height={10000}
-                        className="w-[25vw] h-[17vw]"
-                      />
-                    </div>
-                    <div className="flex items-center">
-                      <h1 className="text-[1.042vw] mr-[1vw] border-b-[0.2vw] border-black">
-                        Inspection Log
-                      </h1>
-                      <div className="w-[10.521vw] h-[2.917vw] rounded-[0.5vw] bg-black text-white flex items-center justify-center italic ml-[1vw]">
-                        <Link
-                          href={{
-                            pathname: "/InspectionDetails",
-                            query: { id: selectedItem.id_item },
-                          }}
-                        >
-                          More Details
-                        </Link>
-                      </div>
-                    </div>
-                    <table className="mt-[2vw] w-full">
-                      <thead className="border-b border-black font-bold text-[0.938vw] italic">
-                        <tr>
-                          <th>Inspection Location</th>
-                          <th>Date of Location</th>
-                          <th>Inspection Status</th>
-                        </tr>
-                      </thead>
-                      <tbody className="text-[0.938vw] text-center">
-                        <tr className="border-b border-black">
-                          <td>
-                            {selectedItem.nama_lokasi?.nama_lokasi ?? "unknown"}
-                          </td>
-                          <td>{selectedItem.tanggal_pembelian}</td>
-                          <td>{selectedItem.status_pemasangan}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
-              {qrOpen && selectedItem && (
-                <div className="fixed inset-0 flex justify-center items-center z-20">
-                  <div className="w-[75vw] h-[44.271vw] bg-white p-[3vw] relative flex items-center justify-evenly">
-                    <button
-                      className="text-[1vw] absolute right-[0.5vw] top-[0.5vw]"
-                      onClick={() => setQrOpen(false)}
-                    >
-                      <IoIosClose className="text-[4vw]"></IoIosClose>
-                    </button>
-                    <div className="flex flex-col items-start justify-center">
-                      <h1 className="text-[1.823vw] font-bold">
-                        Nama <br />{" "}
-                        <span className="text-[2.5vw] font-bold">
-                          {selectedItem.nama_item}
-                        </span>
-                      </h1>
-                      <h1 className="text-[1.823vw] font-bold mt-[1vw]">
-                        Nomor SN <br />{" "}
-                        <span className="text-[2.5vw] font-bold">
-                          {selectedItem.nomor_ser}
-                        </span>
-                      </h1>
-                    </div>
-                    <div className="p-[0.2vw] border rounded-[0.3vw] shadow-md">
-                      <Canvas
-                        text={`${window.location.origin}/ItemsForm?id=${selectedItem.id_item}`}
-                        options={{
-                          errorCorrectionLevel: "M",
-                          margin: 3,
-                          scale: 4,
-                          width: 400,
-                          color: {
-                            dark: "#000",
-                            light: "#fff",
-                          },
-                        }}
-                      />
-                      <Link
-                        href={{
-                          pathname: "/ItemsForm",
-                          query: { id: selectedItem.id_item },
-                        }}
-                        className="w-full flex items-center justify-center text-blue-600 underline"
-                      >
-                        form inspeksi item {selectedItem.id_item}
-                      </Link>
-                      <h1 className="w-full text-[1vw] flex items-center justify-center">
-                        {/* Nomor Seri: {selectedItem.nomor_ser} */}
-                      </h1>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </React.Fragment>
-          ))
+          <p className="text-center">Loading...</p>
+        ) : items.length === 0 ? (
+          <p className="text-center">Tidak ada item tersedia.</p>
         ) : (
-          <p className="text-center col-span-4">Tidak ada item tersedia.</p>
+          <div className="overflow-x-auto">
+            <table className="min-w-full border border-gray-300 text-sm">
+              <thead className="bg-gray-100 text-left">
+                <tr>
+                  <th className="px-4 py-2 border">No</th>
+                  <th className="px-4 py-2 border">Nama Item</th>
+                  <th className="px-4 py-2 border">Nomor Seri</th>
+                  <th className="px-4 py-2 border">Lokasi</th>
+                  <th className="px-4 py-2 border">Titik Lokasi</th>
+                  <th className="px-4 py-2 border">Spesifikasi</th>
+                  <th className="px-4 py-2 border">Tanggal Pembelian</th>
+                  <th className="px-4 py-2 border">Pemasok</th>
+                  <th className="px-4 py-2 border">PIC</th>
+                  <th className="px-4 py-2 border">Status</th>
+                  <th className="px-4 py-2 border">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedItems.map((item, index) => (
+                  <tr key={item.id_item} className="hover:bg-gray-50">
+                    <td className="px-4 py-2 border">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
+                    <td className="px-4 py-2 border">{item.nama_item}</td>
+                    <td className="px-4 py-2 border">{item.nomor_ser}</td>
+                    <td className="px-4 py-2 border">{item.lokasi}</td>
+                    <td className="px-4 py-2 border">{item.titik_lokasi}</td>
+                    <td className="px-4 py-2 border">{item.spesifikasi}</td>
+                    <td className="px-4 py-2 border">{item.tanggal_pembelian}</td>
+                    <td className="px-4 py-2 border">{item.pemasok}</td>
+                    <td className="px-4 py-2 border">{item.PIC}</td>
+                    <td className="px-4 py-2 border">
+                      {item.status_pemasangan ? "Terpasang" : "Belum"}
+                    </td>
+                    <td className="px-4 py-2 border space-x-2">
+                      <button
+                        onClick={() => {
+                          setSelectedItem(item);
+                          setIsOpen(true);
+                        }}
+                        className="bg-blue-500 text-white px-2 py-1 rounded text-xs"
+                      >
+                        Detail
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedItem(item);
+                          setQrOpen(true);
+                        }}
+                        className="bg-green-500 text-white px-2 py-1 rounded text-xs"
+                      >
+                        QR
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="mt-[2vw] flex justify-center">
-          <Pagination>
-            <PaginationContent>
-              {/* Previous Button */}
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handlePageChange(currentPage - 1);
-                  }}
-                  className={
-                    currentPage === 1 ? "opacity-50 pointer-events-none" : ""
-                  }
-                />
-              </PaginationItem>
-
-              {/* First Page & Left Ellipsis */}
-              {currentPage > 2 && (
-                <>
-                  <PaginationItem>
-                    <PaginationLink
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handlePageChange(1);
-                      }}
-                    >
-                      1
-                    </PaginationLink>
-                  </PaginationItem>
-                  {currentPage > 3 && <PaginationEllipsis />}
-                </>
-              )}
-
-              {/* Dynamic Page Numbers */}
-              {getPaginationRange().map((page) => (
-                <PaginationItem key={page}>
-                  <PaginationLink
+  
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="mt-6 flex justify-center">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
                     href="#"
                     onClick={(e) => {
                       e.preventDefault();
-                      handlePageChange(page);
+                      handlePageChange(currentPage - 1);
                     }}
                     className={
-                      currentPage === page ? "bg-gray-300 font-bold" : ""
+                      currentPage === 1 ? "opacity-50 pointer-events-none" : ""
                     }
-                  >
-                    {page}
-                  </PaginationLink>
+                  />
                 </PaginationItem>
-              ))}
-
-              {/* Right Ellipsis & Last Page */}
-              {currentPage < totalPages - 1 && (
-                <>
-                  {currentPage < totalPages - 2 && <PaginationEllipsis />}
-                  <PaginationItem>
+  
+                {getPaginationRange().map((page) => (
+                  <PaginationItem key={page}>
                     <PaginationLink
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
-                        handlePageChange(totalPages);
+                        handlePageChange(page);
                       }}
+                      className={
+                        currentPage === page ? "bg-gray-300 font-bold" : ""
+                      }
                     >
-                      {totalPages}
+                      {page}
                     </PaginationLink>
                   </PaginationItem>
-                </>
-              )}
-
-              {/* Next Button */}
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handlePageChange(currentPage + 1);
-                  }}
-                  className={
-                    currentPage === totalPages
-                      ? "opacity-50 pointer-events-none"
-                      : ""
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      )}
+                ))}
+  
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handlePageChange(currentPage + 1);
+                    }}
+                    className={
+                      currentPage === totalPages
+                        ? "opacity-50 pointer-events-none"
+                        : ""
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
+  
+        {/* Detail Modal */}
+        {isOpen && selectedItem && (
+          <div className="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-30">
+            <div className="bg-white w-[60vw] p-6 rounded-lg relative">
+              <button
+                onClick={() => setIsOpen(false)}
+                className="absolute top-3 right-3 text-2xl"
+              >
+                <IoIosClose />
+              </button>
+              <h2 className="text-xl font-bold mb-2">{selectedItem.nama_item}</h2>
+              <p><strong>Nomor Seri:</strong> {selectedItem.nomor_ser}</p>
+              <p><strong>Lokasi:</strong> {selectedItem.lokasi}</p>
+              <p><strong>Titik Lokasi:</strong> {selectedItem.titik_lokasi}</p>
+              <p><strong>Spesifikasi:</strong> {selectedItem.spesifikasi}</p>
+              <p><strong>Tanggal Pembelian:</strong> {selectedItem.tanggal_pembelian}</p>
+              <p><strong>Pemasok:</strong> {selectedItem.pemasok}</p>
+              <p><strong>PIC:</strong> {selectedItem.PIC}</p>
+              <p><strong>Status:</strong> {selectedItem.status_pemasangan ? "Terpasang" : "Belum"}</p>
+              <p><strong>Deskripsi:</strong> {selectedItem.deskripsi}</p>
+              <Link
+                href={{ pathname: "/InspectionDetails", query: { id: selectedItem.id_item } }}
+                className="inline-block mt-4 text-blue-600 underline"
+              >
+                Lihat Detail Inspeksi
+              </Link>
+            </div>
+          </div>
+        )}
+  
+        {/* QR Modal */}
+        {qrOpen && selectedItem && (
+          <div className="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-30">
+            <div className="bg-white w-[50vw] p-6 rounded-lg relative flex flex-col items-center">
+              <button
+                onClick={() => setQrOpen(false)}
+                className="absolute top-3 right-3 text-2xl"
+              >
+                <IoIosClose />
+              </button>
+              <h2 className="text-xl font-bold mb-4">{selectedItem.nama_item}</h2>
+              <Canvas
+                text={`${window.location.origin}/ItemsForm?id=${selectedItem.id_item}`}
+                options={{
+                  errorCorrectionLevel: "M",
+                  margin: 3,
+                  scale: 4,
+                  width: 200,
+                  color: {
+                    dark: "#000",
+                    light: "#fff",
+                  },
+                }}
+              />
+              <Link
+                href={{ pathname: "/ItemsForm", query: { id: selectedItem.id_item } }}
+                className="mt-2 text-blue-600 underline"
+              >
+                Form Inspeksi untuk Item #{selectedItem.id_item}
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
