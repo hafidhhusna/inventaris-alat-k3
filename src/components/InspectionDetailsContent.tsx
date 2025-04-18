@@ -28,20 +28,19 @@ const InspectionDetails = () => {
       try {
         console.log("id:", id);
         const response = await fetch(`/api/rekapitulasi-inspeksi/${id}`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            "Content-Type" : "application/json"
+            "Content-Type": "application/json",
           },
         });
 
-        if(!response.ok){
+        if (!response.ok) {
           throw new Error(`Error : ${response.status}`);
         }
         const data = await response.json();
-        // console.log(data);
         if (data) {
           setItems(data);
-          // console.log("data:", data);
+          console.log("data:", data);
         }
       } catch (error) {
         console.error("Error fetching items:", error);
@@ -112,7 +111,7 @@ const InspectionDetails = () => {
         <div key={index}>
           <table className="border mt-2">
             <thead>
-              <tr>
+              <tr className="bg-gray-100">
                 {Array.isArray(items[tableName]) &&
                   items[tableName].length > 0 &&
                   Object.keys(items[tableName][0]).map((key, idx) => (

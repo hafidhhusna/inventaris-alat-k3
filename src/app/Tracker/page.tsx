@@ -32,10 +32,10 @@ interface Item {
   };
   tanggal_pembelian: string;
   status_pemasangan: boolean;
-  PIC : string;
-  titik_lokasi : number;
+  PIC: string;
+  titik_lokasi: number;
   pemasok: string;
-  spesifikasi : string;
+  spesifikasi: string;
 }
 
 const TrackerPage = () => {
@@ -112,12 +112,14 @@ const TrackerPage = () => {
   return (
     <div className="w-screen min-h-screen flex flex-col bg-white text-black">
       <div className="absolute">
-        <NavBar/>
+        <NavBar />
       </div>
       <Header />
       <div className="px-[10vw] pt-[1vw]">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-[2vw] font-bold">Data Items (Inspection Element)</h1>
+          <h1 className="text-[2vw] font-bold">
+            Data Items (Inspection Element)
+          </h1>
           <Link
             href="/NewElement"
             className="bg-[#37BBCB] text-white px-4 py-2 rounded-full flex items-center"
@@ -126,7 +128,7 @@ const TrackerPage = () => {
             Tambah Item
           </Link>
         </div>
-  
+
         {loading ? (
           <p className="text-center">Loading...</p>
         ) : items.length === 0 ? (
@@ -152,13 +154,17 @@ const TrackerPage = () => {
               <tbody>
                 {paginatedItems.map((item, index) => (
                   <tr key={item.id_item} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 border">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
+                    <td className="px-4 py-2 border">
+                      {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
+                    </td>
                     <td className="px-4 py-2 border">{item.nama_item}</td>
                     <td className="px-4 py-2 border">{item.nomor_ser}</td>
                     <td className="px-4 py-2 border">{item.lokasi}</td>
                     <td className="px-4 py-2 border">{item.titik_lokasi}</td>
                     <td className="px-4 py-2 border">{item.spesifikasi}</td>
-                    <td className="px-4 py-2 border">{item.tanggal_pembelian}</td>
+                    <td className="px-4 py-2 border">
+                      {item.tanggal_pembelian}
+                    </td>
                     <td className="px-4 py-2 border">{item.pemasok}</td>
                     <td className="px-4 py-2 border">{item.PIC}</td>
                     <td className="px-4 py-2 border">
@@ -190,61 +196,7 @@ const TrackerPage = () => {
             </table>
           </div>
         )}
-  
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="mt-6 flex justify-center">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handlePageChange(currentPage - 1);
-                    }}
-                    className={
-                      currentPage === 1 ? "opacity-50 pointer-events-none" : ""
-                    }
-                  />
-                </PaginationItem>
-  
-                {getPaginationRange().map((page) => (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handlePageChange(page);
-                      }}
-                      className={
-                        currentPage === page ? "bg-gray-300 font-bold" : ""
-                      }
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                ))}
-  
-                <PaginationItem>
-                  <PaginationNext
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handlePageChange(currentPage + 1);
-                    }}
-                    className={
-                      currentPage === totalPages
-                        ? "opacity-50 pointer-events-none"
-                        : ""
-                    }
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
-        )}
-  
+
         {/* Detail Modal */}
         {isOpen && selectedItem && (
           <div className="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-30">
@@ -255,18 +207,43 @@ const TrackerPage = () => {
               >
                 <IoIosClose />
               </button>
-              <h2 className="text-xl font-bold mb-2">{selectedItem.nama_item}</h2>
-              <p><strong>Nomor Seri:</strong> {selectedItem.nomor_ser}</p>
-              <p><strong>Lokasi:</strong> {selectedItem.lokasi}</p>
-              <p><strong>Titik Lokasi:</strong> {selectedItem.titik_lokasi}</p>
-              <p><strong>Spesifikasi:</strong> {selectedItem.spesifikasi}</p>
-              <p><strong>Tanggal Pembelian:</strong> {selectedItem.tanggal_pembelian}</p>
-              <p><strong>Pemasok:</strong> {selectedItem.pemasok}</p>
-              <p><strong>PIC:</strong> {selectedItem.PIC}</p>
-              <p><strong>Status:</strong> {selectedItem.status_pemasangan ? "Terpasang" : "Belum"}</p>
-              <p><strong>Deskripsi:</strong> {selectedItem.deskripsi}</p>
+              <h2 className="text-xl font-bold mb-2">
+                {selectedItem.nama_item}
+              </h2>
+              <p>
+                <strong>Nomor Seri:</strong> {selectedItem.nomor_ser}
+              </p>
+              <p>
+                <strong>Lokasi:</strong> {selectedItem.lokasi}
+              </p>
+              <p>
+                <strong>Titik Lokasi:</strong> {selectedItem.titik_lokasi}
+              </p>
+              <p>
+                <strong>Spesifikasi:</strong> {selectedItem.spesifikasi}
+              </p>
+              <p>
+                <strong>Tanggal Pembelian:</strong>
+                {selectedItem.tanggal_pembelian}
+              </p>
+              <p>
+                <strong>Pemasok:</strong> {selectedItem.pemasok}
+              </p>
+              <p>
+                <strong>PIC:</strong> {selectedItem.PIC}
+              </p>
+              <p>
+                <strong>Status:</strong>
+                {selectedItem.status_pemasangan ? "Terpasang" : "Belum"}
+              </p>
+              <p>
+                <strong>Deskripsi:</strong> {selectedItem.deskripsi}
+              </p>
               <Link
-                href={{ pathname: "/InspectionDetails", query: { id: selectedItem.id_item } }}
+                href={{
+                  pathname: "/InspectionDetails",
+                  query: { id: selectedItem.id_item },
+                }}
                 className="inline-block mt-4 text-blue-600 underline"
               >
                 Lihat Detail Inspeksi
@@ -274,7 +251,7 @@ const TrackerPage = () => {
             </div>
           </div>
         )}
-  
+
         {/* QR Modal */}
         {qrOpen && selectedItem && (
           <div className="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-30">
@@ -285,27 +262,55 @@ const TrackerPage = () => {
               >
                 <IoIosClose />
               </button>
-              <h2 className="text-xl font-bold mb-4">{selectedItem.nama_item}</h2>
-              <div ref={qrCanvasRef} className="bg-white p-2 shadow rounded">
-              <Canvas
-                text={`${window.location.origin}/ItemsForm?id=${selectedItem.id_item}`}
-                options={{
-                  errorCorrectionLevel: "M",
-                  margin: 3,
-                  scale: 4,
-                  width: 200,
-                  color: {
-                    dark: "#000",
-                    light: "#fff",
-                  },
-                }}
-              />
-              </div>
               <button
                 onClick={downloadQRCode}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"></button>
+                className="mb-[1vw] px-[3vw] py-[0.7vw] bg-gradient-to-r from-blue-600 to-blue-300 text-white rounded-md hover:bg-blue-700 font-bold"
+              >
+                Generate QR Code
+              </button>
+              <div
+                ref={qrCanvasRef}
+                className="bg-white shadow rounded flex items-center p-2 border border-blue-600 relative"
+              >
+                <Canvas
+                  text={`${window.location.origin}/ItemsForm?id=${selectedItem.id_item}`}
+                  options={{
+                    errorCorrectionLevel: "M",
+                    margin: 3,
+                    scale: 4,
+                    width: 200,
+                    color: {
+                      dark: "#000",
+                      light: "#fff",
+                    },
+                  }}
+                />
+                <div>
+                  <Image
+                    src="/images/LOGO INSPEKTRA PLUS 3.png"
+                    alt="Logo Inspektra"
+                    width={10000}
+                    height={10000}
+                    className="w-[5vw] h-[2vw] absolute top-[1vw] right-[0.5vw]"
+                  />
+                  <h2 className="text-[1.5vw] font-bold mb-[0.5vw]">
+                    Name: {selectedItem.nama_item}
+                  </h2>
+                  <h2 className="text-[1.5vw] font-bold">
+                    SN: {selectedItem.nomor_ser}
+                  </h2>
+                  <h2 className="text-[0.8vw] mt-[0.5vw] text-red-700 font-bold">
+                    SCAN FOR INSPECTION <br />
+                    AND MORE DETAIL
+                  </h2>
+                </div>
+              </div>
+
               <Link
-                href={{ pathname: "/ItemsForm", query: { id: selectedItem.id_item } }}
+                href={{
+                  pathname: "/ItemsForm",
+                  query: { id: selectedItem.id_item },
+                }}
                 className="mt-2 text-blue-600 underline"
               >
                 Form Inspeksi untuk Item #{selectedItem.id_item}
