@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import NavBar from "@/components/NavBar";
 import Header from "@/components/Header";
 import {
@@ -47,6 +47,7 @@ const TrackerPage = () => {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
   const { Canvas } = useQRCode();
+  const qrCanvasRef = useRef<HTMLDivElement>(null);
 
   // Fetch items from API
   useEffect(() => {
@@ -80,6 +81,18 @@ const TrackerPage = () => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
+  };
+
+  const downloadQRCode = () => {
+    if (!qrCanvasRef.current) return;
+    const canvas = qrCanvasRef.current.querySelector("canvas");
+    if (!canvas) return;
+
+    const url = canvas.toDataURL("image/png");
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `qr-item-${selectedItem?.id_item}.png`;
+    link.click();
   };
 
   // Function to determine pagination numbers
@@ -273,6 +286,7 @@ const TrackerPage = () => {
                 <IoIosClose />
               </button>
               <h2 className="text-xl font-bold mb-4">{selectedItem.nama_item}</h2>
+              <div ref={qrCanvasRef} className="bg-white p-2 shadow rounded">
               <Canvas
                 text={`${window.location.origin}/ItemsForm?id=${selectedItem.id_item}`}
                 options={{
@@ -286,6 +300,10 @@ const TrackerPage = () => {
                   },
                 }}
               />
+              </div>
+              <button
+                onClick={downloadQRCode}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"></button>
               <Link
                 href={{ pathname: "/ItemsForm", query: { id: selectedItem.id_item } }}
                 className="mt-2 text-blue-600 underline"
