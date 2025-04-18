@@ -58,6 +58,8 @@ export async function GET(
       Object.entries(inspeksiTables).filter(([_, value]) => value.length > 0)
     );
 
+    console.log('Filtered Response : ', filteredResponse)
+
     if (Object.keys(filteredResponse).length === 0) {
       return NextResponse.json(
         { message: "Tidak ada data inspeksi untuk id_item ini" },
