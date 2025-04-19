@@ -23,17 +23,16 @@ const ITEMS_PER_PAGE = 8;
 interface Item {
   id_item: number;
   nama_item: string;
+  jenis_sarana : string;
   lokasi: string;
   gambar: string;
   deskripsi: string;
-  nomor_ser: string;
-  nama_lokasi?: {
-    nama_lokasi: string;
-  };
+  nomor_seri: string | number;
+  nama_lokasi?: string;
   tanggal_pembelian: string;
   status_pemasangan: boolean;
   PIC: string;
-  titik_lokasi: number;
+  titik_lokasi?: string;
   pemasok: string;
   spesifikasi: string;
 }
@@ -59,6 +58,7 @@ const TrackerPage = () => {
         const data = await response.json();
         if (data.success) {
           setItems(data.items);
+          console.log("Data in FE : ", data.items)
         }
       } catch (error) {
         console.error("Error fetching items:", error);
@@ -172,6 +172,7 @@ const TrackerPage = () => {
                 <tr>
                   <th className="px-4 py-2 border">No</th>
                   <th className="px-4 py-2 border">Nama Item</th>
+                  <th className="px-4 py-2 border">Jenis Sarana</th>
                   <th className="px-4 py-2 border">Nomor Seri</th>
                   <th className="px-4 py-2 border">Lokasi</th>
                   <th className="px-4 py-2 border">Titik Lokasi</th>
@@ -190,8 +191,9 @@ const TrackerPage = () => {
                       {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
                     </td>
                     <td className="px-4 py-2 border">{item.nama_item}</td>
-                    <td className="px-4 py-2 border">{item.nomor_ser}</td>
-                    <td className="px-4 py-2 border">{item.lokasi}</td>
+                    <td className="px-4 py-2 border">{item.jenis_sarana}</td>
+                    <td className="px-4 py-2 border">{item.nomor_seri}</td>
+                    <td className="px-4 py-2 border">{item.nama_lokasi}</td>
                     <td className="px-4 py-2 border">{item.titik_lokasi}</td>
                     <td className="px-4 py-2 border">{item.spesifikasi}</td>
                     <td className="px-4 py-2 border">
@@ -303,10 +305,10 @@ const TrackerPage = () => {
                 {selectedItem.nama_item}
               </h2>
               <p>
-                <strong>Nomor Seri:</strong> {selectedItem.nomor_ser}
+                <strong>Nomor Seri:</strong> {selectedItem.nomor_seri}
               </p>
               <p>
-                <strong>Lokasi:</strong> {selectedItem.lokasi}
+                <strong>Lokasi:</strong> {selectedItem.nama_lokasi}
               </p>
               <p>
                 <strong>Titik Lokasi:</strong> {selectedItem.titik_lokasi}
@@ -389,7 +391,7 @@ const TrackerPage = () => {
                     Name: {selectedItem.nama_item}
                   </h2>
                   <h2 className="text-[1.5vw] font-bold">
-                    SN: {selectedItem.nomor_ser}
+                    SN: {selectedItem.nomor_seri}
                   </h2>
                   <h2 className="text-[0.8vw] mt-[0.5vw] text-red-700 font-bold">
                     SCAN FOR INSPECTION <br />
@@ -472,8 +474,8 @@ const TrackerPage = () => {
                       <input 
                         type="text" 
                         className="w-full border p-2 rounded"
-                        value={editItem.nomor_ser}
-                        onChange={(e) => setEditItem({...editItem, nomor_ser: e.target.value})
+                        value={editItem.nomor_seri}
+                        onChange={(e) => setEditItem({...editItem, nomor_seri: e.target.value})
                         }
                         />
                     </div>
