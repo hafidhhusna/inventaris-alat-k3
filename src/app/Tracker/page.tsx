@@ -23,6 +23,7 @@ const ITEMS_PER_PAGE = 8;
 interface Item {
   id_item: number;
   nama_item: string;
+  jenis_sarana : string;
   lokasi: string;
   gambar: string;
   deskripsi: string;
@@ -171,6 +172,7 @@ const TrackerPage = () => {
                 <tr>
                   <th className="px-4 py-2 border">No</th>
                   <th className="px-4 py-2 border">Nama Item</th>
+                  <th className="px-4 py-2 border">Jenis Sarana</th>
                   <th className="px-4 py-2 border">Nomor Seri</th>
                   <th className="px-4 py-2 border">Lokasi</th>
                   <th className="px-4 py-2 border">Titik Lokasi</th>
@@ -189,6 +191,7 @@ const TrackerPage = () => {
                       {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
                     </td>
                     <td className="px-4 py-2 border">{item.nama_item}</td>
+                    <td className="px-4 py-2 border">{item.jenis_sarana}</td>
                     <td className="px-4 py-2 border">{item.nomor_seri}</td>
                     <td className="px-4 py-2 border">{item.nama_lokasi}</td>
                     <td className="px-4 py-2 border">{item.titik_lokasi}</td>
