@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { message} = await req.json();
+    const {bulan, tahun, data} = await req.json();
     const botToken = process.env.NEXT_PUBLIC_HTTP_API_TOKEN;
     const chatId = process.env.NEXT_PUBLIC_CHAT_ID;
 
@@ -13,6 +13,19 @@ export async function POST(req: Request) {
       );
     }
 
+    const formattedMessage = `
+      Laporan Kesiapan untuk Bulan ${bulan} Tahun ${tahun}:
+
+      ${data.map((lokasi: any) => {
+        return `${lokasi.lokasi} : ${lokasi.persentase_ready}% Kesiapan`;
+      }).join("\n")}
+
+      Pastikan inspeksi dan perawatan rutin dilakukan sesuai prosedur untuk meningkatkan keandalan sarana tanggap darurat.
+
+      Salam Safety,
+      Tetap waspada dan prioritaskan keselamatan setiap saat!
+    `;
+
     const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
 
     const response = await fetch(url, {
@@ -20,14 +33,14 @@ export async function POST(req: Request) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: chatId.trim(),
-        text: `${message}\n\nPastikan inspeksi dan perawatan rutin dilakuka sesuai prosedur untuk meningkatkan keandalan sarana tanggap darurat
-        \nSalam Safety\nTetap waspada dan prioritaskan keselamatan setiap saat!`,
+        text: formattedMessage,
       }),
     });
 
-    const data = await response.json();
 
-    if (!response.ok) {
+    const responseData = await response.json();
+
+    if (!responseData.ok) {
       return NextResponse.json({ error: data.description }, { status: 500 });
     }
 

@@ -4,48 +4,65 @@ import React, { useEffect, useState } from "react";
 import NavBar from "@/components/NavBar";
 import BarChart from "@/components/BarChart";
 import { ChartData, ChartOptions } from "chart.js";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Readiness = () => {
   const [chartData, setChartData] = useState<ChartData<"bar"> | null>(null);
   const [loading, setLoading] = useState(true);
+  const [bulan, setBulan] = useState<number | null>(null);
+  const [tahun, setTahun] = useState<number | null>(null);
+
+  const [startDate, setStartDate] = useState<Date | null>(null);
+
+  const handleDateChange = (date: Date | null) => {
+    if(date){
+      setStartDate(date);
+      setBulan(date.getMonth()+1);
+      setTahun(date.getFullYear());
+    }
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/api/rekapitulasi"); // Sesuaikan dengan endpoint API-mu
-        if (!response.ok) {
-          throw new Error("Gagal mengambil data");
+    if(bulan && tahun){
+      const fetchData = async () => {
+        try {
+          setLoading(true);
+          const response = await fetch(`/api/rekapitulasi?bulan=${bulan}&tahun=${tahun}`); // Sesuaikan dengan endpoint API-mu
+          if (!response.ok) {
+            throw new Error("Gagal mengambil data");
+          }
+          const result = await response.json();
+  
+          if (result.data) {
+            const labels = result.data.map((lokasi: any) => lokasi.lokasi);
+            const dataValues = result.data.map((lokasi: any) => lokasi.persentase_ready.replace("%", ""));
+  
+            const formattedData: ChartData<"bar"> = {
+              labels,
+              datasets: [
+                {
+                  label: "Persentase Kesiapan",
+                  data: dataValues.map(Number),
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  backgroundColor: "rgba(0, 146, 182, 0.5)",
+                },
+              ],
+            };
+  
+            setChartData(formattedData);
+          }
+        } catch (error) {
+          console.error("Error fetching chart data:", error);
+        } finally {
+          setLoading(false);
         }
-        const result = await response.json();
+      };
 
-        if (result.data) {
-          const labels = result.data.map((lokasi: any) => lokasi.lokasi);
-          const dataValues = result.data.map((lokasi: any) => lokasi.persentase_ready.replace("%", ""));
-
-          const formattedData: ChartData<"bar"> = {
-            labels,
-            datasets: [
-              {
-                label: "Persentase Kesiapan",
-                data: dataValues.map(Number),
-                borderWidth: 1,
-                borderRadius: 10,
-                backgroundColor: "rgba(0, 146, 182, 0.5)",
-              },
-            ],
-          };
-
-          setChartData(formattedData);
-        }
-      } catch (error) {
-        console.error("Error fetching chart data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+      fetchData();
+    }
+  }, [bulan, tahun]);
 
   const sendToTelegram = async (message: string, chatId: string) => {
     try {
@@ -119,6 +136,21 @@ const Readiness = () => {
           <h1 className="font-bold text-[1.458vw] mb-[0.5vw]">
             Recent Updates
           </h1>
+          <div className="mb-4">
+            <label 
+              htmlFor="calendar"
+              className="block text-lg font-semibold">
+                Pilih Bulan dan Tahun :
+              </label>
+              <DatePicker
+                selected={startDate}
+                onChange={handleDateChange}
+                dateFormat="MM/yyyy"
+                showMonthYearPicker
+                showFullMonthYearPicker
+                className="w-full p-2 border rounded"
+                placeholderText="Pilih Bulan dan Tahun"/>
+          </div>
           {loading ? (
             <p>Loading data...</p>
           ) : chartData ? (
