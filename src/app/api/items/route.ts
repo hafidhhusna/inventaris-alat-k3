@@ -7,8 +7,9 @@ export async function GET() {
   try {
     const items = await prisma.item.findMany({
       include: {
-        nama_lokasi : {select : {nama_lokasi: true}}
+        nama_lokasi : {select : {nama_lokasi: true}},
       },
+      where : {is_deleted : false},
       orderBy: { id_item: "asc" },
     });
 

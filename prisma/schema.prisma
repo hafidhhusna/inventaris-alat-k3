@@ -71,6 +71,7 @@ model item {
   status_pemasangan               Boolean?
   id_titik_lokasi                 Int                               @default(autoincrement())
   deskripsi                       String?                           @db.VarChar
+  is_deleted                      Boolean                           @default(false)
   inspeksi_APAP                   inspeksi_APAP[]
   inspeksi_detector               inspeksi_detector[]
   inspeksi_hidran_bangunan        inspeksi_hidran_bangunan[]
@@ -139,7 +140,7 @@ model inspeksi_sprinkler {
   lokasi_id                  Int
   id_titik_lokasi            Int
   id_item                    Int
-  item                       item         @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction, map: "inspeksi sprinkler_id_item_fkey")
+  item                       item         @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction, map: "inspeksi sprinkler_id_item_fkey")
   lokasi_titik_lokasi        titik_lokasi @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
   lokasi_lokasi              lokasi       @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -160,7 +161,7 @@ model inspeksi_APAP {
   gambar                          String?
   lokasi_id            Int
   id_titik_lokasi      Int
-  item                 item?        @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  item                 item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
   lokasi_titik_lokasi  titik_lokasi @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
   lokasi_lokasi        lokasi       @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -180,7 +181,7 @@ model inspeksi_detector {
   gambar                          String?
   id_titik_lokasi     Int
   lokasi_id           Int
-  item                item?        @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  item                item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
   lokasi_titik_lokasi titik_lokasi @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
   lokasi_lokasi       lokasi       @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -199,7 +200,7 @@ model inspeksi_hidran_bangunan {
   gambar                          String?
   id_titik_lokasi                  Int
   lokasi_id                        Int
-  item                             item?        @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  item                             item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
   lokasi_titik_lokasi              titik_lokasi @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
   lokasi_lokasi                    lokasi       @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -218,7 +219,7 @@ model inspeksi_hidran_halaman {
   gambar                          String?
   id_titik_lokasi                 Int
   lokasi_id                       Int
-  item                            item?        @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  item                            item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
   lokasi_titik_lokasi             titik_lokasi @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
   lokasi_lokasi                   lokasi       @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -240,7 +241,7 @@ model inspeksi_kotak_p3k {
   gambar                          String?
   id_titik_lokasi         Int
   lokasi_id               Int
-  item                    item?        @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  item                    item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
   lokasi_titik_lokasi     titik_lokasi @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
   lokasi_lokasi           lokasi       @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -266,7 +267,7 @@ model inspeksi_ruang_mns {
   gambar                          String?
   id_titik_lokasi              Int
   lokasi_id                    Int
-  item                         item?        @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  item                         item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
   lokasi_titik_lokasi          titik_lokasi @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
   lokasi_lokasi                lokasi       @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -289,7 +290,7 @@ model inspeksi_rumah_pompa_hidran {
   gambar                          String?
   id_titik_lokasi                         Int
   lokasi_id                               Int
-  item                                    item?        @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  item                                    item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
   lokasi_titik_lokasi                     titik_lokasi @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
   lokasi_lokasi                           lokasi       @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -307,7 +308,7 @@ model inspeksi_sarana_jalan_keluar {
   gambar                          String?
   id_titik_lokasi     Int
   lokasi_id           Int
-  item                item?        @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  item                item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
   lokasi_titik_lokasi titik_lokasi @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
   lokasi_lokasi       lokasi       @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -325,7 +326,7 @@ model inspeksi_scba {
   gambar                          String?
   id_titik_lokasi        Int
   lokasi_id              Int
-  item                   item?        @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  item                   item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
   lokasi_titik_lokasi    titik_lokasi @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
   lokasi_lokasi          lokasi       @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -342,7 +343,7 @@ model inspeksi_spill_containment_room {
   gambar                          String?
   id_titik_lokasi                       Int
   lokasi_id                             Int
-  item                                  item?        @relation(fields: [id_item], references: [id_item], onDelete: NoAction, onUpdate: NoAction)
+  item                                  item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
   lokasi_titik_lokasi                   titik_lokasi @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
   lokasi_lokasi                         lokasi       @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
 }
