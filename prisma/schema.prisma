@@ -137,6 +137,7 @@ model inspeksi_sprinkler {
   perangkat_alarm_aliran_air Boolean
   catatan                    String?      @db.VarChar
   gambar                          String?
+  createdAt                  DateTime @default(now())
   lokasi_id                  Int
   id_titik_lokasi            Int
   id_item                    Int
