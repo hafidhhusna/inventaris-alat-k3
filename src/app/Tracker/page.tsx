@@ -45,6 +45,8 @@ const TrackerPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editItem, setEditItem] = useState<Item | null>(null);
 
   const { Canvas } = useQRCode();
   const qrCanvasRef = useRef<HTMLDivElement>(null);
@@ -82,6 +84,36 @@ const TrackerPage = () => {
       setCurrentPage(page);
     }
   };
+
+  const handleEdit = (item : Item) => {
+    setEditItem(item);
+    setIsEditOpen(true);
+  }
+
+  const handleDelete = async (id : number) =>{
+    const confirmed = confirm("Apakah Anda Yakin ingin Menghapus Item?")
+    if(!confirmed) return;
+
+    try{
+      const response = await fetch(`/api/items/${id}`, {
+        method : "DELETE",
+      });
+
+      const result = await response.json();
+
+      if(response.ok){
+        //Refresh data setelah hapus
+        setItems((prevItems) => prevItems.filter((item) => item.id_item !== id));
+        alert("Item Berhasil Dihapus!");
+      } else{
+        console.error("Gagal Menghapus : ", result.error)
+        alert("Gagal Menghapus Item.");
+      }
+    } catch (error){
+      console.error("Error Deleting Item : ", error);
+      alert("Terjadi Kesalahan saat Menghapus");
+    }
+  }
 
   const downloadQRCode = () => {
     if (!qrCanvasRef.current) return;
@@ -181,6 +213,18 @@ const TrackerPage = () => {
                         Detail
                       </button>
                       <button
+                        onClick={() => handleEdit(item)}
+                        className="bg-yellow-500 text-white px-2 py-1 rounded text-xs"
+                      >
+                          Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item.id_item)}
+                        className="bg-red-500 text-white px-2 py-1 rounded text-xs"
+                      >
+                          Delete
+                      </button>
+                      <button
                         onClick={() => {
                           setSelectedItem(item);
                           setQrOpen(true);
@@ -196,6 +240,54 @@ const TrackerPage = () => {
             </table>
           </div>
         )}
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <Pagination className="mt-4">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePageChange(currentPage - 1);
+                  }}
+                />
+              </PaginationItem>
+
+              {getPaginationRange().map((page, idx) => (
+                <PaginationItem key={idx}>
+                  <PaginationLink
+                    href="#"
+                    isActive={page === currentPage}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handlePageChange(page);
+                    }}
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              {totalPages > 3 && currentPage < totalPages - 1 && (
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              )}
+
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePageChange(currentPage + 1);
+                  }}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
+
 
         {/* Detail Modal */}
         {isOpen && selectedItem && (
@@ -315,6 +407,96 @@ const TrackerPage = () => {
               >
                 Form Inspeksi untuk Item #{selectedItem.id_item}
               </Link>
+            </div>
+          </div>
+        )}
+
+        {isEditOpen && editItem && (
+          <div className="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-30">
+            <div className="bg-white w-[50vw] p-6 rounded-lg relative">
+              <button
+                onClick={() => setIsEditOpen(false)}
+                className="absolute top-3 right-3 text-2x1"
+                >
+                  <IoIosClose/>
+                </button>
+                <h2 className="text-x1 font-bold mb-4">
+                  Edit Item
+                </h2>
+                <form 
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    if(!editItem) return;
+
+                    const {id_item, nama_lokasi, ...updateData} = editItem;
+
+                    const response = await fetch(`/api/items/${id_item}`, {
+                      method: "PUT",
+                      headers: {
+                        "Content-Type" : "application/json",
+                      },
+                      body: JSON.stringify(updateData)
+                    });
+
+                    if(response.ok){
+                      alert("Item Berhasil Diperbarui!");
+                      setIsEditOpen(false);
+                      //Reload Data
+                      const updated = await response.json();
+                      setItems((prev) => 
+                        prev.map((item) => (item.id_item === id_item ? updated.data : item))
+                    );
+                    } else{
+                      const result = await response.json();
+                      alert("Gagal Update : " + result.error);
+                    }
+                  }}
+                  className="space-y-4"
+                  >
+                    <div>
+                      <label className="block font-semibold">
+                        Nama Item
+                      </label>
+                      <input 
+                        type="text" 
+                        className="w-full border p-2 rounded"
+                        value={editItem.nama_item}
+                        onChange={(e) => setEditItem({...editItem, nama_item: e.target.value})
+                        }
+                        />
+                    </div>
+                    <div>
+                      <label className="block font-semibold">
+                        Nomor Seri
+                      </label>
+                      <input 
+                        type="text" 
+                        className="w-full border p-2 rounded"
+                        value={editItem.nomor_ser}
+                        onChange={(e) => setEditItem({...editItem, nomor_ser: e.target.value})
+                        }
+                        />
+                    </div>
+                    <div>
+                      <label className="block font-semibold">
+                        Spesifikasi
+                      </label>
+                      <input 
+                        type="text" 
+                        className="w-full border p-2 rounded"
+                        value={editItem.spesifikasi}
+                        onChange={(e) => setEditItem({...editItem, spesifikasi: e.target.value})
+                        }
+                        />
+                    </div>
+                    <div className="flex justify-end">
+                      <button
+                        type="submit"
+                        className="bg-blue-600 text-white px-4 py-2 rounded">
+                          Simpan Perubahan
+                        </button>
+                    </div>
+                  </form>
             </div>
           </div>
         )}
