@@ -72,8 +72,10 @@ const TrackerPage = () => {
     fetchItems();
   }, []);
 
-  const filteredItems = items.filter((item) =>
-    item.nama_item.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredItems = items.filter(
+    (item) =>
+      item.nama_item.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.lokasi.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Total Pages
