@@ -13,13 +13,10 @@ export const LoginForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
-
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // router.push("/signup")
-    // setLoading(true); // Aktifkan loading
 
     if (!email || !password) {
       setError("Email and password are required!");
@@ -34,13 +31,11 @@ export const LoginForm: React.FC = () => {
       redirect: false,
     });
 
-    console.log("Login results : ", result);
-    setLoading(false); // Matikan loading setelah selesai
+    setLoading(false);
 
     if (result?.error) {
       setError("Invalid email or password");
     } else {
-      console.log("Login Success! Redirecting...");
       router.push("/Tracker");
     }
   };
@@ -48,9 +43,11 @@ export const LoginForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col mt-12 max-w-full text-lg w-[720px] max-md:mt-10 max-md:ml-1.5"
+      className="flex flex-col gap-4 w-full max-w-[400px] text-base mt-6"
     >
-      {error && <p className="text-red-500">{error}</p>}
+      {error && (
+        <p className="text-red-500 text-sm text-center font-medium">{error}</p>
+      )}
 
       <InputField
         type="email"
@@ -72,19 +69,17 @@ export const LoginForm: React.FC = () => {
         Login
       </Button>
 
-      <div className="flex gap-2.5 self-center mt-8 max-w-full text-sm font-light tracking-tight leading-none w-[234px]">
-        <div className="grow flex">
-          <h1 className="mr-[0.5vw]">Or</h1>
-          <Link href="/signup" className="text-blue-600 underline">
-            Register
-          </Link>
-        </div>
-        <div
-          className="object-contain shrink-0 w-px bg-black"
-          role="separator"
-          aria-hidden="true"
-        />
-        <div className="grow shrink w-[141px]">Forgot Your Password?</div>
+      <div className="mt-4 text-sm text-center text-gray-700">
+        <span className="mr-1">Don't have an account?</span>
+        <Link href="/signup" className="text-blue-600 underline">
+          Register
+        </Link>
+      </div>
+
+      <div className="mt-2 text-sm text-center text-gray-600">
+        <Link href="#" className="hover:underline">
+          Forgot your password?
+        </Link>
       </div>
     </form>
   );

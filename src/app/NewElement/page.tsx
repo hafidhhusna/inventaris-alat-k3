@@ -18,25 +18,30 @@ const source = [
 
 const NewElement = () => {
   return (
-    <div className="w-screen h-screen flex flex-col relative bg-[#fff] text-[#000]">
+    <div className="w-full h-screen flex flex-col relative bg-[#fff] text-[#000]">
       <div className="absolute">
         <NavBar />
       </div>
       <Header />
-      <div className="w-full px-[12vw] py-[2vw]">
-        <h1 className="text-[3.021vw]">
+      <div className="w-full px-[5%] py-[2vw] max-md:px-4 max-md:py-4">
+        <h1 className="text-[3.021vw] text-center max-md:text-[5vw]">
           <span className="font-bold">Tambah</span> Element Baru
         </h1>
-        <div className="flex mt-[1vw]">
+        <div className="flex flex-wrap justify-center mt-[1vw] max-md:mt-4">
           {source.map((item, index) => (
-            <div key={index} className="mr-[3vw] flex flex-col items-center">
+            <div
+              key={index}
+              className="mr-[3vw] flex flex-col items-center max-md:mr-[5vw] mb-4 max-md:mb-6"
+            >
               <Link
                 href={item.linkto}
-                className="w-[16.146vw] h-[16.146vw] rounded-[0.1vw] bg-[#37BBCB] flex items-center justify-center text-white text-[7vw]"
+                className="w-[16.146vw] h-[16.146vw] rounded-[0.1vw] bg-[#37BBCB] flex items-center justify-center text-white text-[7vw] max-md:w-[40vw] max-md:h-[40vw] max-md:text-[10vw]"
               >
                 {item.icon}
               </Link>
-              <h1 className="text-[1.563vw] mt-[0.5vw]">{item.text}</h1>
+              <h1 className="text-[1.563vw] mt-[0.5vw] text-center max-md:text-[4vw]">
+                {item.text}
+              </h1>
             </div>
           ))}
         </div>

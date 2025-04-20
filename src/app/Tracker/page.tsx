@@ -23,7 +23,7 @@ const ITEMS_PER_PAGE = 8;
 interface Item {
   id_item: number;
   nama_item: string;
-  jenis_sarana : string;
+  jenis_sarana: string;
   lokasi: string;
   gambar: string;
   deskripsi: string;
@@ -46,6 +46,8 @@ const TrackerPage = () => {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editItem, setEditItem] = useState<Item | null>(null);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { Canvas } = useQRCode();
   const qrCanvasRef = useRef<HTMLDivElement>(null);
@@ -58,7 +60,7 @@ const TrackerPage = () => {
         const data = await response.json();
         if (data.success) {
           setItems(data.items);
-          console.log("Data in FE : ", data.items)
+          console.log("Data in FE : ", data.items);
         }
       } catch (error) {
         console.error("Error fetching items:", error);
@@ -70,11 +72,14 @@ const TrackerPage = () => {
     fetchItems();
   }, []);
 
-  // Total Pages
-  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+  const filteredItems = items.filter((item) =>
+    item.nama_item.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  // Slice items for current page
-  const paginatedItems = items.slice(
+  // Total Pages
+  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
+
+  const paginatedItems = filteredItems.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
@@ -85,35 +90,48 @@ const TrackerPage = () => {
     }
   };
 
-  const handleEdit = (item : Item) => {
+  const handleEdit = (item: Item) => {
     setEditItem(item);
     setIsEditOpen(true);
-  }
+  };
 
-  const handleDelete = async (id : number) =>{
-    const confirmed = confirm("Apakah Anda Yakin ingin Menghapus Item?")
-    if(!confirmed) return;
+  const handleDelete = async (id: number) => {
+    const confirmed = confirm("Apakah Anda Yakin ingin Menghapus Item?");
+    if (!confirmed) return;
 
-    try{
+    try {
       const response = await fetch(`/api/items/${id}`, {
-        method : "DELETE",
+        method: "DELETE",
       });
 
       const result = await response.json();
 
-      if(response.ok){
+      if (response.ok) {
         //Refresh data setelah hapus
-        setItems((prevItems) => prevItems.filter((item) => item.id_item !== id));
+        setItems((prevItems) =>
+          prevItems.filter((item) => item.id_item !== id)
+        );
         alert("Item Berhasil Dihapus!");
-      } else{
-        console.error("Gagal Menghapus : ", result.error)
+      } else {
+        console.error("Gagal Menghapus : ", result.error);
         alert("Gagal Menghapus Item.");
       }
-    } catch (error){
+    } catch (error) {
       console.error("Error Deleting Item : ", error);
       alert("Terjadi Kesalahan saat Menghapus");
     }
-  }
+  };
+
+  const handleSortByDate = () => {
+    const sortedItems = [...items].sort((a, b) => {
+      const dateA = new Date(a.tanggal_pembelian).getTime();
+      const dateB = new Date(b.tanggal_pembelian).getTime();
+      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+    });
+
+    setItems(sortedItems);
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
 
   const downloadQRCode = () => {
     if (!qrCanvasRef.current) return;
@@ -146,19 +164,33 @@ const TrackerPage = () => {
       <div className="absolute">
         <NavBar />
       </div>
-      <Header />
+      <Header
+        searchQuery={searchQuery}
+        onSearchChange={(value) => {
+          setSearchQuery(value);
+          setCurrentPage(1); // reset to page 1 on new search
+        }}
+      />
       <div className="px-[10vw] pt-[1vw]">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-[2vw] font-bold">
+        <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-4 gap-2">
+          <h1 className="md:text-[2vw] text-[4vw] font-bold">
             Data Items (Inspection Element)
           </h1>
-          <Link
-            href="/NewElement"
-            className="bg-[#37BBCB] text-white px-4 py-2 rounded-full flex items-center"
-          >
-            <RiUploadLine className="mr-2" />
-            Tambah Item
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-start">
+            <button
+              onClick={handleSortByDate}
+              className="bg-gray-200 text-black px-2 md:px-4 py-2 rounded-full md:text-sm hover:bg-gray-300 w-full sm:w-auto"
+            >
+              Sort by Tanggal Pembelian ({sortOrder === "asc" ? "⬆️" : "⬇️"})
+            </button>
+            <Link
+              href="/NewElement"
+              className="bg-[#37BBCB] text-white px-4 py-2 rounded-full flex items-center text-sm justify-center w-full sm:w-auto"
+            >
+              <RiUploadLine className="mr-2" />
+              Tambah Item
+            </Link>
+          </div>
         </div>
 
         {loading ? (
@@ -218,13 +250,13 @@ const TrackerPage = () => {
                         onClick={() => handleEdit(item)}
                         className="bg-yellow-500 text-white px-2 py-1 rounded text-xs"
                       >
-                          Edit
+                        Edit
                       </button>
                       <button
                         onClick={() => handleDelete(item.id_item)}
                         className="bg-red-500 text-white px-2 py-1 rounded text-xs"
                       >
-                          Delete
+                        Delete
                       </button>
                       <button
                         onClick={() => {
@@ -290,7 +322,6 @@ const TrackerPage = () => {
           </Pagination>
         )}
 
-
         {/* Detail Modal */}
         {isOpen && selectedItem && (
           <div className="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-30">
@@ -348,23 +379,25 @@ const TrackerPage = () => {
 
         {/* QR Modal */}
         {qrOpen && selectedItem && (
-          <div className="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-30">
-            <div className="bg-white w-[50vw] p-6 rounded-lg relative flex flex-col items-center">
+          <div className="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-30 px-4">
+            <div className="bg-white w-full max-w-xl p-6 rounded-lg relative flex flex-col items-center">
               <button
                 onClick={() => setQrOpen(false)}
                 className="absolute top-3 right-3 text-2xl"
               >
                 <IoIosClose />
               </button>
+
               <button
                 onClick={downloadQRCode}
-                className="mb-[1vw] px-[3vw] py-[0.7vw] bg-gradient-to-r from-blue-600 to-blue-300 text-white rounded-md hover:bg-blue-700 font-bold"
+                className="mb-4 px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-300 text-white rounded-md hover:bg-blue-700 font-bold text-sm sm:text-base"
               >
                 Generate QR Code
               </button>
+
               <div
                 ref={qrCanvasRef}
-                className="bg-white shadow rounded flex items-center p-2 border border-blue-600 relative"
+                className="bg-white shadow rounded flex flex-col sm:flex-row items-center sm:items-start p-4 border border-blue-600 relative w-full"
               >
                 <Canvas
                   text={`${window.location.origin}/ItemsForm?id=${selectedItem.id_item}`}
@@ -379,21 +412,21 @@ const TrackerPage = () => {
                     },
                   }}
                 />
-                <div>
+                <div className="sm:ml-4 mt-4 sm:mt-0 w-full text-center sm:text-left">
                   <Image
                     src="/images/LOGO INSPEKTRA PLUS 3.png"
                     alt="Logo Inspektra"
-                    width={10000}
-                    height={10000}
-                    className="w-[5vw] h-[2vw] absolute top-[1vw] right-[0.5vw]"
+                    width={100}
+                    height={100}
+                    className="w-24 h-auto mb-2 mx-auto sm:mx-0"
                   />
-                  <h2 className="text-[1.5vw] font-bold mb-[0.5vw]">
+                  <h2 className="text-lg sm:text-xl font-bold">
                     Name: {selectedItem.nama_item}
                   </h2>
-                  <h2 className="text-[1.5vw] font-bold">
+                  <h2 className="text-lg sm:text-xl font-bold">
                     SN: {selectedItem.nomor_seri}
                   </h2>
-                  <h2 className="text-[0.8vw] mt-[0.5vw] text-red-700 font-bold">
+                  <h2 className="text-xs sm:text-sm mt-2 text-red-700 font-bold">
                     SCAN FOR INSPECTION <br />
                     AND MORE DETAIL
                   </h2>
@@ -405,7 +438,7 @@ const TrackerPage = () => {
                   pathname: "/ItemsForm",
                   query: { id: selectedItem.id_item },
                 }}
-                className="mt-2 text-blue-600 underline"
+                className="mt-4 text-blue-600 underline text-sm sm:text-base text-center"
               >
                 Form Inspeksi untuk Item #{selectedItem.id_item}
               </Link>
@@ -419,86 +452,84 @@ const TrackerPage = () => {
               <button
                 onClick={() => setIsEditOpen(false)}
                 className="absolute top-3 right-3 text-2x1"
-                >
-                  <IoIosClose/>
-                </button>
-                <h2 className="text-x1 font-bold mb-4">
-                  Edit Item
-                </h2>
-                <form 
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    if(!editItem) return;
+              >
+                <IoIosClose />
+              </button>
+              <h2 className="text-x1 font-bold mb-4">Edit Item</h2>
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!editItem) return;
 
-                    const {id_item, nama_lokasi, ...updateData} = editItem;
+                  const { id_item, nama_lokasi, ...updateData } = editItem;
 
-                    const response = await fetch(`/api/items/${id_item}`, {
-                      method: "PUT",
-                      headers: {
-                        "Content-Type" : "application/json",
-                      },
-                      body: JSON.stringify(updateData)
-                    });
+                  const response = await fetch(`/api/items/${id_item}`, {
+                    method: "PUT",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(updateData),
+                  });
 
-                    if(response.ok){
-                      alert("Item Berhasil Diperbarui!");
-                      setIsEditOpen(false);
-                      //Reload Data
-                      const updated = await response.json();
-                      setItems((prev) => 
-                        prev.map((item) => (item.id_item === id_item ? updated.data : item))
+                  if (response.ok) {
+                    alert("Item Berhasil Diperbarui!");
+                    setIsEditOpen(false);
+                    //Reload Data
+                    const updated = await response.json();
+                    setItems((prev) =>
+                      prev.map((item) =>
+                        item.id_item === id_item ? updated.data : item
+                      )
                     );
-                    } else{
-                      const result = await response.json();
-                      alert("Gagal Update : " + result.error);
+                  } else {
+                    const result = await response.json();
+                    alert("Gagal Update : " + result.error);
+                  }
+                }}
+                className="space-y-4"
+              >
+                <div>
+                  <label className="block font-semibold">Nama Item</label>
+                  <input
+                    type="text"
+                    className="w-full border p-2 rounded"
+                    value={editItem.nama_item}
+                    onChange={(e) =>
+                      setEditItem({ ...editItem, nama_item: e.target.value })
                     }
-                  }}
-                  className="space-y-4"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold">Nomor Seri</label>
+                  <input
+                    type="text"
+                    className="w-full border p-2 rounded"
+                    value={editItem.nomor_seri}
+                    onChange={(e) =>
+                      setEditItem({ ...editItem, nomor_seri: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold">Spesifikasi</label>
+                  <input
+                    type="text"
+                    className="w-full border p-2 rounded"
+                    value={editItem.spesifikasi}
+                    onChange={(e) =>
+                      setEditItem({ ...editItem, spesifikasi: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    className="bg-blue-600 text-white px-4 py-2 rounded"
                   >
-                    <div>
-                      <label className="block font-semibold">
-                        Nama Item
-                      </label>
-                      <input 
-                        type="text" 
-                        className="w-full border p-2 rounded"
-                        value={editItem.nama_item}
-                        onChange={(e) => setEditItem({...editItem, nama_item: e.target.value})
-                        }
-                        />
-                    </div>
-                    <div>
-                      <label className="block font-semibold">
-                        Nomor Seri
-                      </label>
-                      <input 
-                        type="text" 
-                        className="w-full border p-2 rounded"
-                        value={editItem.nomor_seri}
-                        onChange={(e) => setEditItem({...editItem, nomor_seri: e.target.value})
-                        }
-                        />
-                    </div>
-                    <div>
-                      <label className="block font-semibold">
-                        Spesifikasi
-                      </label>
-                      <input 
-                        type="text" 
-                        className="w-full border p-2 rounded"
-                        value={editItem.spesifikasi}
-                        onChange={(e) => setEditItem({...editItem, spesifikasi: e.target.value})
-                        }
-                        />
-                    </div>
-                    <div className="flex justify-end">
-                      <button
-                        type="submit"
-                        className="bg-blue-600 text-white px-4 py-2 rounded">
-                          Simpan Perubahan
-                        </button>
-                    </div>
-                  </form>
+                    Simpan Perubahan
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}
