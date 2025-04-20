@@ -46,7 +46,7 @@ const Readiness = () => {
               labels,
               datasets: [
                 {
-                  label: "Persentase Kesiapan",
+                  label: `Persentase Kesiapan Bulan ${bulan} Tahun ${tahun}`,
                   data: dataValues.map(Number),
                   borderWidth: 1,
                   borderRadius: 10,
@@ -70,6 +70,8 @@ const Readiness = () => {
 
   const sendToTelegram = async (message: string, chatId: string) => {
     try {
+      // const message = formatChartData(chartData);
+      // const formattedMessage = `Laporan Kesiapan Bulan ${bulan}, Tahun ${tahun}\n\n${message}`;
       const response = await fetch("/api/sendToTelegram", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

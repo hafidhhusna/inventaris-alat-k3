@@ -96,7 +96,6 @@ export async function GET(req : NextRequest) {
             inspeksi_detector: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
               select: {
-                lokasi: true,
                 penghalang_detektor: true,
                 kerusakan_fisik: true,
                 audible_dan_visible: true,

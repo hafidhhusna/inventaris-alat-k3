@@ -84,14 +84,14 @@ model item {
   inspeksi_spill_containment_room inspeksi_spill_containment_room[]
   inspeksi_sprinkler              inspeksi_sprinkler[]
   lokasi_titik_lokasi             titik_lokasi                      @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
-  nama_lokasi                   lokasi                            @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
+  nama_lokasi                     lokasi                            @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
   rekapitulasi_bulanan            rekapitulasi_bulanan[]
   rekapitulasi_mingguan           rekapitulasi_mingguan[]
 }
 
 model lokasi {
   lokasi_id                       Int                               @id @default(autoincrement())
-  nama_lokasi                     String?                           @db.VarChar @unique
+  nama_lokasi                     String?                           @unique @db.VarChar
   inspeksi_APAP                   inspeksi_APAP[]
   inspeksi_detector               inspeksi_detector[]
   inspeksi_hidran_bangunan        inspeksi_hidran_bangunan[]
@@ -136,18 +136,17 @@ model inspeksi_sprinkler {
   perangkat_pengawasan_katup Boolean
   perangkat_alarm_aliran_air Boolean
   catatan                    String?      @db.VarChar
-  gambar                          String?
-  createdAt                  DateTime @default(now())
+  gambar                     String?
   lokasi_id                  Int
   id_titik_lokasi            Int
   id_item                    Int
+  createdAt                  DateTime     @default(now())
   item                       item         @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction, map: "inspeksi sprinkler_id_item_fkey")
   lokasi_titik_lokasi        titik_lokasi @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
   lokasi_lokasi              lokasi       @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model inspeksi_APAP {
-  lokasi               String?      @db.VarChar
   visibilitas          Boolean?
   kemudahan_akses      Boolean?
   tekanan              Boolean?
@@ -155,11 +154,11 @@ model inspeksi_APAP {
   segel_pengaman       Boolean?
   selang_dan_nozel     Boolean?
   abnormalitas_fisik   Boolean?
-  karetban_roda_kereta String?      @db.VarChar
+  karetban_roda_kereta Boolean?      
   id_inspeksi          Int          @id @default(autoincrement())
   id_item              Int?
   createdAt            DateTime?    @default(now())
-  gambar                          String?
+  gambar               String?
   lokasi_id            Int
   id_titik_lokasi      Int
   item                 item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
@@ -169,17 +168,16 @@ model inspeksi_APAP {
 
 model inspeksi_detector {
   id_inspeksi         Int          @id @default(autoincrement())
-  lokasi              Boolean?
   penghalang_detektor Boolean?
   kerusakan_fisik     Boolean?
-  derajat_kebersihan  String?      @db.VarChar
+  derajat_kebersihan  Boolean?      
   audible_dan_visible Boolean?
   lampu               Boolean?
   power_supply        Boolean?
   prosedur_manufaktur Boolean?
   id_item             Int?
   createdAt           DateTime?    @default(now())
-  gambar                          String?
+  gambar              String?
   id_titik_lokasi     Int
   lokasi_id           Int
   item                item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
@@ -198,7 +196,7 @@ model inspeksi_hidran_bangunan {
   kabinet_penyimpanan              Boolean?
   id_item                          Int?
   createdAt                        DateTime?    @default(now())
-  gambar                          String?
+  gambar                           String?
   id_titik_lokasi                  Int
   lokasi_id                        Int
   item                             item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
@@ -239,7 +237,7 @@ model inspeksi_kotak_p3k {
   buku_panduan_daftar_isi Boolean?
   id_item                 Int?
   createdAt               DateTime?    @default(now())
-  gambar                          String?
+  gambar                  String?
   id_titik_lokasi         Int
   lokasi_id               Int
   item                    item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
@@ -265,7 +263,7 @@ model inspeksi_ruang_mns {
   pemantauan_alat_komunikasi   Boolean?
   id_item                      Int?
   createdAt                    DateTime?    @default(now())
-  gambar                          String?
+  gambar                       String?
   id_titik_lokasi              Int
   lokasi_id                    Int
   item                         item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
@@ -288,7 +286,7 @@ model inspeksi_rumah_pompa_hidran {
   buku_petunjuk_perkakas_khusus_sparepart Boolean?
   id_item                                 Int?
   createdAt                               DateTime?    @default(now())
-  gambar                          String?
+  gambar                                  String?
   id_titik_lokasi                         Int
   lokasi_id                               Int
   item                                    item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
@@ -306,7 +304,7 @@ model inspeksi_sarana_jalan_keluar {
   tangga_kebakaran    Boolean?
   id_item             Int?
   createdAt           DateTime?    @default(now())
-  gambar                          String?
+  gambar              String?
   id_titik_lokasi     Int
   lokasi_id           Int
   item                item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
@@ -324,7 +322,7 @@ model inspeksi_scba {
   regulator              Boolean?
   id_item                Int?
   createdAt              DateTime?    @default(now())
-  gambar                          String?
+  gambar                 String?
   id_titik_lokasi        Int
   lokasi_id              Int
   item                   item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
@@ -341,7 +339,7 @@ model inspeksi_spill_containment_room {
   sistem_penanggulangan_keadaan_darurat Boolean?
   id_item                               Int?
   createdAt                             DateTime?    @default(now())
-  gambar                          String?
+  gambar                                String?
   id_titik_lokasi                       Int
   lokasi_id                             Int
   item                                  item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
@@ -352,7 +350,7 @@ model inspeksi_spill_containment_room {
 model titik_lokasi {
   id_titik_lokasi                 Int                               @id(map: "titik lokasi_pkey") @default(autoincrement())
   lokasi_id                       Int                               @default(autoincrement())
-  nama_titik_lokasi               String?                           @db.VarChar @unique
+  nama_titik_lokasi               String?                           @unique @db.VarChar
   inspeksi_APAP                   inspeksi_APAP[]
   inspeksi_detector               inspeksi_detector[]
   inspeksi_hidran_bangunan        inspeksi_hidran_bangunan[]
