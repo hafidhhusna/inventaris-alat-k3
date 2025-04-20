@@ -17,6 +17,7 @@ import Image from "next/image";
 import { IoIosClose } from "react-icons/io";
 import { RiUploadLine } from "react-icons/ri";
 import { useQRCode } from "next-qrcode";
+import { getSession } from "next-auth/react";
 
 const ITEMS_PER_PAGE = 8;
 

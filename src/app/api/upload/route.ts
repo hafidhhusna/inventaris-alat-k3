@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       } else {
         const {data : newLokasi, error : lokasiError} = await supabase
         .from("lokasi")
-        .insert({nama_lokasi : body.new_lokasi_name})
+        .insert({nama_lokasi : body.new_lokasi_name.trim()})
         .select()
         .single();
 
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
         const{data: newTitikLokasiData, error: titikError} = await supabase
         .from("titik_lokasi")
         .insert({
-          nama_titik_lokasi : body.new_titik_lokasi_name,
+          nama_titik_lokasi : body.new_titik_lokasi_name.trim(),
           lokasi_id : lokasiId,
         })
         .select()
@@ -84,7 +84,9 @@ export async function POST(req: NextRequest) {
         pemasok: body.pemasok,
         PIC: body.PIC,
         gambar: body.gambar || null,
+        status: body.status || "PENDING",
         status_pemasangan: body.status_pemasangan === "Terpasang",
+        // uploadedBy : body.uploadedBy,
       },
     ]);
 
