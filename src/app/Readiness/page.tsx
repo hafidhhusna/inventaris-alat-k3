@@ -46,7 +46,7 @@ const Readiness = () => {
               labels,
               datasets: [
                 {
-                  label: "Persentase Kesiapan",
+                  label: `Persentase Kesiapan Bulan ${bulan}, Tahun ${tahun}`,
                   data: dataValues.map(Number),
                   borderWidth: 1,
                   borderRadius: 10,
@@ -70,6 +70,8 @@ const Readiness = () => {
 
   const sendToTelegram = async (message: string, chatId: string) => {
     try {
+      // const message = formatChartData(chartData);
+      // const formattedMessage = `Laporan Kesiapan Bulan ${bulan}, Tahun ${tahun}\n\n${message}`;
       const response = await fetch("/api/sendToTelegram", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -145,7 +147,7 @@ const Readiness = () => {
       <div className="w-full flex-1 px-4 sm:px-[15vw] pt-4 sm:pt-[2vw] flex justify-center">
         <div className="w-full sm:w-[59.271vw] h-auto sm:h-[39vw] rounded-xl shadow-xl p-4 sm:p-[1vw] relative">
           <h1 className="font-bold text-lg sm:text-[1.458vw] mb-2">
-            Recent Updates
+            Recent Updates Bulan
           </h1>
 
           {/* Date Picker */}
