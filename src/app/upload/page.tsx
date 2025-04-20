@@ -31,6 +31,8 @@ const UploadForm = () => {
   const [titikLokasiList, setTitikLokasiList] = useState<
     { id_titik_lokasi: number; nama_titik_lokasi: string }[]
   >([]);
+  const [newLokasiName, setNewLokasiName] = useState("");
+  const [newTitikLokasiName, setNewTitikLokasiName] = useState("");
 
   // Fetch daftar lokasi
   useEffect(() => {
@@ -85,12 +87,29 @@ const UploadForm = () => {
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const {name, value} = e.target;
 
-    // Reset titik lokasi jika lokasi berubah
-    if (e.target.name === "lokasi_id") {
-      setFormData((prev) => ({ ...prev, id_titik_lokasi: "" }));
+    if(name === "lokasi_id"){
+      setFormData((prev) => ({
+        ...prev,
+        lokasi_id: value,
+        id_titik_lokasi: "",
+      }))
+      return;
     }
+
+    if(name === "id_titik_lokasi"){
+      setFormData((prev) => ({
+        ...prev,
+        id_titik_lokasi:value,
+      }))
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]:value,
+    }))
   };
 
   // Handle perubahan input file
@@ -106,6 +125,41 @@ const UploadForm = () => {
     setLoading(true);
 
     let imageUrl = "";
+    let lokasiId = formData.lokasi_id;
+    let titikLokasiId = formData.id_titik_lokasi;
+
+    if(lokasiId === "new" && newLokasiName){
+      const {data, error} = await supabase
+        .from("lokasi")
+        .insert({nama_lokasi : newLokasiName})
+        .select()
+        .single();
+
+        if(error){
+          alert("Gagal Menambah Lokasi Baru : Lokasi Sudah Ada");
+          setLoading(false);
+          return;
+        }
+
+        lokasiId = data.lokasi_id;
+    }
+
+    if(titikLokasiId === "new" && newTitikLokasiName){
+      const {data, error} = await supabase
+        .from("titik_lokasi")
+        .insert({nama_titik_lokasi : newTitikLokasiName, lokasi_id : lokasiId})
+        .select()
+        .single();
+
+
+        if(error){
+          alert("Gagal Menambah Titik Lokasi Baru : Titik Lokasi Sudah Ada");
+          setLoading(false);
+          return;
+        }
+
+        titikLokasiId = data
+    }
 
     if (file) {
       const fileExt = file.name.split(".").pop();
@@ -135,7 +189,12 @@ const UploadForm = () => {
     const response = await fetch("/api/upload", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...formData, gambar: imageUrl }),
+      body: JSON.stringify({
+         ...formData,
+          gambar: imageUrl,
+          new_lokasi_name : formData.lokasi_id === "new" ? newLokasiName : null,
+          new_titik_lokasi_name: formData.id_titik_lokasi === "new" ? newTitikLokasiName : null,
+         }),
     });
 
     const result = await response.json();
@@ -221,7 +280,20 @@ const UploadForm = () => {
               {lokasi.nama_lokasi}
             </option>
           ))}
+          <option value="new">
+            + Tambah Lokasi Baru
+          </option>
         </select>
+        {/* Input Lokasi Baru */}
+        {formData.lokasi_id === "new" && (
+          <input 
+          type="text"
+          placeholder="Masukkan Lokasi Baru"
+          value={newLokasiName}
+          onChange={(e) => setNewLokasiName(e.target.value)}
+          className="mb-2 p-2 w-full border rounded"
+          required />
+        )}
 
         {/* Dropdown Titik Lokasi */}
         <select
@@ -240,7 +312,20 @@ const UploadForm = () => {
               {titik.nama_titik_lokasi}
             </option>
           ))}
+          <option value="new">
+            + Tambah Titik Lokasi Baru
+          </option>
         </select>
+        {/* Input Titik Lokasi Baru */}
+        {formData.id_titik_lokasi === "new" && (
+          <input 
+          type="text"
+          placeholder="Masukkan Titik Lokasi Baru" 
+          value={newTitikLokasiName}
+          onChange={(e) => setNewTitikLokasiName(e.target.value)}
+          className="mb-2 p-2 w-full border rounded"
+          required/>
+        )}
 
         <input
           type="text"
