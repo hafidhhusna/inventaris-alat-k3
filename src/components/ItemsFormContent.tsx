@@ -279,43 +279,46 @@ const ItemsForm = () => {
   };
 
   return (
-    <div className="w-screen h-screen overflow-x-hidden bg-[#fcfcfc] flex flex-col items-center">
+    <div className="w-full min-h-screen overflow-x-hidden bg-[#fcfcfc] flex flex-col items-center">
       {/* Header */}
-      <div className="w-full h-[5.156vw] p-[2vw] flex items-center justify-between bg-[#fff]">
+      <div className="w-full p-4 flex items-center justify-between bg-white shadow-md">
         <Image
           src="/images/LOGO INSPEKTRA PLUS 3.png"
           width={10000}
           height={10000}
           alt="logo Inspektra"
-          className="w-[9.427vw] h-[3.281vw]"
+          className="w-32 h-auto sm:w-[9.427vw] sm:h-[3.281vw]"
         />
         <Link
           href="/Tracker"
-          className="w-[13.802vw] h-[2.656vw] bg-[#51B5DD] rounded-[2.5vw] text-[1.042vw] text-white flex items-center justify-center font-bold"
+          className="bg-[#51B5DD] rounded-full px-4 py-2 sm:px-[2vw] sm:py-[0.5vw] text-white text-sm sm:text-[1.042vw] font-bold"
         >
           Tutup Form
         </Link>
       </div>
 
       {/* Title */}
-      <h1 className="p-[1vw] drop-shadow-md bg-[#fff] mt-[2vw] rounded-[0.521vw] text-[2.083vw]">
-        Inspeksi {formatColumnName(jenisSarana)}
-      </h1>
-      <h1 className="mt-[1vw] text-[1.302vw]">
-        Formulir Inspeksi Alat Pemadam Api
-      </h1>
-
-      {/* Separator */}
-      <div className="w-[48.125vw] h-[0.052vw] bg-black mt-[0.5vw]"></div>
-      <div className="w-[48.125vw] flex justify-evenly py-[0.78vw] text-[1.302vw]">
-        <h1>Elemen</h1>
-        <h1>Status Inspeksi</h1>
+      <div className="text-center mt-6 sm:mt-[2vw]">
+        <h1 className="text-xl sm:text-[2.083vw] font-semibold bg-white px-4 py-2 rounded shadow-md">
+          Inspeksi {formatColumnName(jenisSarana)}
+        </h1>
+        <h2 className="text-base sm:text-[1.302vw] mt-2">
+          Formulir Inspeksi Alat Pemadam Api
+        </h2>
       </div>
 
-      {/* Formulir */}
+      {/* Separator */}
+      <div className="w-11/12 sm:w-[48.125vw] h-[1px] bg-black my-4"></div>
+
+      <div className="w-11/12 sm:w-[48.125vw] flex justify-evenly py-2 sm:py-[0.78vw] text-base sm:text-[1.302vw] font-medium">
+        <span>Elemen</span>
+        <span>Status Inspeksi</span>
+      </div>
+
+      {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col w-[48.125vw] my-[2vw]"
+        className="w-11/12 sm:w-[48.125vw] flex flex-col gap-4 my-4"
       >
         {columnName
           .filter(
@@ -323,113 +326,111 @@ const ItemsForm = () => {
               column.column_name !== "id_item" &&
               column.column_name !== "id_inspeksi" &&
               column.column_name !== "createdAt"
-            // column.column_name !== "id_titik_lokasi" &&
-            // column.column_name !== "lokasi_id"
           )
-          .map((column, index) => {
-            return (
-              <div
-                key={index}
-                className="flex justify-between mb-[1vw] relative"
-              >
-                {column.data_type === "boolean" && (
-                  <Dropdown
-                    value={
-                      selectedValue[column.column_name] === true
-                        ? "Yes"
-                        : selectedValue[column.column_name] === false
-                        ? "No"
-                        : "Status Condition"
-                    }
-                    onChange={(e) =>
-                      handleDropdownChange(
-                        column.column_name,
-                        e.target.value,
-                        column.data_type
-                      )
-                    }
-                    options={[
-                      { label: "Yes", value: "Yes" },
-                      { label: "No", value: "No" },
-                    ]}
-                  />
-                )}
-                {column.column_name === "lokasi_id" && (
-                  <Dropdown
-                    value={
-                      selectedValue[column.column_name]
-                        ? String(selectedValue[column.column_name])
-                        : "Status Condition"
-                    }
-                    onChange={(e) =>
-                      handleDropdownChange(
-                        column.column_name,
-                        e.target.value,
-                        column.data_type
-                      )
-                    }
-                    options={lokasiList.map((lokasi) => ({
-                      label: lokasi.nama_lokasi,
-                      value: String(lokasi.lokasi_id),
+          .map((column, index) => (
+            <div
+              key={index}
+              className="flex flex-col sm:flex-row sm:justify-between gap-2 items-start sm:items-center"
+            >
+              {column.data_type === "boolean" && (
+                <Dropdown
+                  value={
+                    selectedValue[column.column_name] === true
+                      ? "Yes"
+                      : selectedValue[column.column_name] === false
+                      ? "No"
+                      : "Status Condition"
+                  }
+                  onChange={(e) =>
+                    handleDropdownChange(
+                      column.column_name,
+                      e.target.value,
+                      column.data_type
+                    )
+                  }
+                  options={[
+                    { label: "Yes", value: "Yes" },
+                    { label: "No", value: "No" },
+                  ]}
+                />
+              )}
+
+              {column.column_name === "lokasi_id" && (
+                <Dropdown
+                  value={
+                    selectedValue[column.column_name]
+                      ? String(selectedValue[column.column_name])
+                      : "Pilih Lokasi"
+                  }
+                  onChange={(e) =>
+                    handleDropdownChange(
+                      column.column_name,
+                      e.target.value,
+                      column.data_type
+                    )
+                  }
+                  options={lokasiList.map((lokasi) => ({
+                    label: lokasi.nama_lokasi,
+                    value: String(lokasi.lokasi_id),
+                  }))}
+                />
+              )}
+
+              {column.column_name === "id_titik_lokasi" && (
+                <Dropdown
+                  value={
+                    selectedValue[column.column_name]
+                      ? String(selectedValue[column.column_name])
+                      : "Pilih Titik Lokasi"
+                  }
+                  onChange={(e) =>
+                    handleDropdownChange(
+                      column.column_name,
+                      e.target.value,
+                      column.data_type
+                    )
+                  }
+                  options={titikLokasiList
+                    .filter(() => {
+                      const lokasi = lokasiList.find(
+                        (l) => l.lokasi_id === selectedValue["lokasi_id"]
+                      );
+                      return lokasi
+                        ? lokasi.lokasi_id === selectedValue["lokasi_id"]
+                        : false;
+                    })
+                    .map((titikLokasi) => ({
+                      label: titikLokasi.nama_titik_lokasi,
+                      value: String(titikLokasi.id_titik_lokasi),
                     }))}
-                  />
-                )}
+                />
+              )}
 
-                {column.column_name === "id_titik_lokasi" && (
-                  <Dropdown
-                    value={
-                      selectedValue[column.column_name]
-                        ? String(selectedValue[column.column_name])
-                        : "Status Condition"
-                    }
-                    onChange={(e) =>
-                      handleDropdownChange(
-                        column.column_name,
-                        e.target.value,
-                        column.data_type
-                      )
-                    }
-                    options={titikLokasiList
-                      .filter(() => {
-                        // Cari lokasi_id dari lokasiList yang sesuai dengan id_titik_lokasi
-                        const lokasi = lokasiList.find(
-                          (l) => l.lokasi_id === selectedValue["lokasi_id"]
-                        );
-                        return lokasi
-                          ? lokasi.lokasi_id === selectedValue["lokasi_id"]
-                          : false;
-                      })
-                      .map((titikLokasi) => ({
-                        label: titikLokasi.nama_titik_lokasi,
-                        value: String(titikLokasi.id_titik_lokasi),
-                      }))}
-                  />
-                )}
+              {column.data_type === "character varying" && (
+                <textarea
+                  key={column.column_name}
+                  value={textAreaValue[column.column_name] || ""}
+                  onChange={(e) =>
+                    handleTextareaChange(column.column_name, e.target.value)
+                  }
+                  placeholder="Insert text here"
+                  className="w-full sm:w-2/3 h-24 p-2 border border-black rounded"
+                />
+              )}
 
-                {column.data_type === "character varying" && (
-                  <textarea
-                    key={column.column_name}
-                    value={textAreaValue[column.column_name] || ""}
-                    onChange={(e) =>
-                      handleTextareaChange(column.column_name, e.target.value)
-                    }
-                    placeholder="Insert text here"
-                    className="h-[8vw] py-[0.2vw] px-[0.4vw] border border-black rounded-[0.5vw]"
-                  />
-                )}
+              {column.column_name == "gambar" && (
+                <Camera onCapture={(image) => setCapturedImage(image)} />
+              )}
 
-                {column.column_name == "gambar" && (
-                  <Camera onCapture={(image) => setCapturedImage(image)} />
-                )}
-                <h1 className="text-[1.302vw]">
-                  {formatColumnName(column.column_name)}
-                </h1>
-              </div>
-            );
-          })}
+              <span className="text-sm sm:text-[1.302vw] font-medium">
+                {formatColumnName(column.column_name)}
+              </span>
+            </div>
+          ))}
+
         <button
           type="submit"
-          className="w-[8vw] h-[2vw] bg-red-600 text-white rounded-[0.5vw] font-bold hover:bg-red-700 active:bg-red-800"
+          className="self-center bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-bold py-2 px-6 rounded text-sm sm:text-base"
         >
           Submit
         </button>
