@@ -91,7 +91,7 @@ model item {
 
 model lokasi {
   lokasi_id                       Int                               @id @default(autoincrement())
-  nama_lokasi                     String?                           @db.VarChar
+  nama_lokasi                     String?                           @db.VarChar @unique
   inspeksi_APAP                   inspeksi_APAP[]
   inspeksi_detector               inspeksi_detector[]
   inspeksi_hidran_bangunan        inspeksi_hidran_bangunan[]
@@ -352,7 +352,7 @@ model inspeksi_spill_containment_room {
 model titik_lokasi {
   id_titik_lokasi                 Int                               @id(map: "titik lokasi_pkey") @default(autoincrement())
   lokasi_id                       Int                               @default(autoincrement())
-  nama_titik_lokasi               String?                           @db.VarChar
+  nama_titik_lokasi               String?                           @db.VarChar @unique
   inspeksi_APAP                   inspeksi_APAP[]
   inspeksi_detector               inspeksi_detector[]
   inspeksi_hidran_bangunan        inspeksi_hidran_bangunan[]

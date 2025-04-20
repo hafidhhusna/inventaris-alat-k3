@@ -12,8 +12,63 @@ export async function POST(req: NextRequest) {
 
     console.log("📥 Received Data:", body); // Debugging input data
 
+    let lokasiId = body.lokasi_id;
+    let titikLokasiId = body.id_titik_lokasi;
+
+    
+
     if (!body.nama_item || !body.nomor_ser || !body.lokasi_id || !body.id_titik_lokasi) {
       return NextResponse.json({ error: "Field tidak boleh kosong" }, { status: 400 });
+    }
+
+    if(body.lokasi_id === "new" && body.new_lokasi_name){
+      const{data : existingLokasi} = await supabase
+        .from("lokasi")
+        .select("lokasi_id")
+        .ilike("nama_lokasi", body.new_lokasi_name.trim())
+
+      if(existingLokasi && existingLokasi.length > 0){
+        lokasiId = existingLokasi[0].lokasi_id;
+      } else {
+        const {data : newLokasi, error : lokasiError} = await supabase
+        .from("lokasi")
+        .insert({nama_lokasi : body.new_lokasi_name})
+        .select()
+        .single();
+
+        if(lokasiError){
+          return NextResponse.json({error : lokasiError.message}, {status:500});
+        }
+
+        lokasiId = newLokasi.lokasi_id;
+      }
+    }
+
+    if(body.id_titik_lokasi === "new" && body.new_titik_lokasi_name){
+      const {data : existingTitikLokasi} = await supabase
+        .from("titik_lokasi")
+        .select("id_titik_lokasi")
+        .ilike("nama_titik_lokasi", body.new_titik_lokasi_name.trim())
+        .eq("lokasi_id", lokasiId);
+
+      if(existingTitikLokasi && existingTitikLokasi.length > 0){
+        titikLokasiId = existingTitikLokasi[0].id_titik_lokasi;
+      } else {
+        const{data: newTitikLokasiData, error: titikError} = await supabase
+        .from("titik_lokasi")
+        .insert({
+          nama_titik_lokasi : body.new_titik_lokasi_name,
+          lokasi_id : lokasiId,
+        })
+        .select()
+        .single();
+
+        if(titikError){
+          return NextResponse.json({error : titikError.message}, {status: 500});
+        }
+
+        titikLokasiId = newTitikLokasiData.id_titik_lokasi;
+      }
     }
 
     const { data, error } = await supabase.from("item").insert([
@@ -22,8 +77,8 @@ export async function POST(req: NextRequest) {
         jenis_sarana: body.jenis_sarana,
         nomor_ser: body.nomor_ser,
         deskripsi: body.deskripsi,
-        lokasi_id: body.lokasi_id,
-        id_titik_lokasi: body.id_titik_lokasi,
+        lokasi_id: lokasiId,
+        id_titik_lokasi: titikLokasiId,
         spesifikasi: body.spesifikasi || "",
         tanggal_pembelian: body.tanggal_pembelian,
         pemasok: body.pemasok,
