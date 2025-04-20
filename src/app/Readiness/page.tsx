@@ -46,7 +46,7 @@ const Readiness = () => {
               labels,
               datasets: [
                 {
-                  label: `Persentase Kesiapan Bulan ${bulan}, Tahun ${tahun}`,
+                  label: `Persentase Kesiapan Bulan ${bulan} Tahun ${tahun}`,
                   data: dataValues.map(Number),
                   borderWidth: 1,
                   borderRadius: 10,
