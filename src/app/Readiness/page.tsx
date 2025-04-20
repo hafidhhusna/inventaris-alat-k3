@@ -147,7 +147,7 @@ const Readiness = () => {
       <div className="w-full flex-1 px-4 sm:px-[15vw] pt-4 sm:pt-[2vw] flex justify-center">
         <div className="w-full sm:w-[59.271vw] h-auto sm:h-[39vw] rounded-xl shadow-xl p-4 sm:p-[1vw] relative">
           <h1 className="font-bold text-lg sm:text-[1.458vw] mb-2">
-            Recent Updates Bulan
+            Recent Updates
           </h1>
 
           {/* Date Picker */}
