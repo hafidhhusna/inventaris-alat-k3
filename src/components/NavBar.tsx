@@ -12,6 +12,7 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 import { FiUpload } from "react-icons/fi";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { RiAdminFill } from "react-icons/ri";
+import { signOut } from "next-auth/react";
 
 type NavBarProps = {
   session : {
@@ -73,11 +74,10 @@ const NavBar: React.FC<NavBarProps> = ({session}) => {
   ];
   const [active, setActive] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
 
   const handleLogout = () => {
-    Cookies.remove("accessToken");
-    router.push("/login");
+    signOut({callbackUrl: "/login"})
+    console.log("Session after Logout : ", session)
   };
 
   return (

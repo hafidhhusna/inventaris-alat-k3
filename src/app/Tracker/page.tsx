@@ -4,6 +4,7 @@ import TrackerPage from "./TrackerPage";
 
 export default async function Tracker() {
   const session = await getAuthSession();
+  console.log(session)
 
   if (!session) {
     redirect("/login");
