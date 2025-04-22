@@ -10,7 +10,10 @@ export async function GET() {
         nama_lokasi : {select : {nama_lokasi: true}},
         lokasi_titik_lokasi : {select : {nama_titik_lokasi : true}},
       },
-      where : {is_deleted : false},
+      where : {
+        is_deleted : false,
+        status : "APPROVED",
+      },
       orderBy: { id_item: "asc" },
     });
 
@@ -27,7 +30,8 @@ export async function GET() {
       tanggal_pembelian : item.tanggal_pembelian,
       pemasok : item.pemasok,
       PIC : item.PIC,
-      status_pemasangan : item.status_pemasangan
+      status_pemasangan : item.status_pemasangan,
+      uploadedBy : item.uploadedBy
     }))
 
     return NextResponse.json({ success: true, items : result});
