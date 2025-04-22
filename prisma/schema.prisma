@@ -17,6 +17,7 @@ model User {
   password      String?
   image         String?
   role          Role      @default(STAFF)
+  // item          item[]
   accounts      Account[]
   sessions      Session[]
 }
@@ -69,8 +70,10 @@ model item {
   PIC                             String?                           @db.VarChar
   gambar                          String?
   status_pemasangan               Boolean?
+  // uploadedBy                      String
   id_titik_lokasi                 Int                               @default(autoincrement())
   deskripsi                       String?                           @db.VarChar
+  status                          ItemStatus                        
   is_deleted                      Boolean                           @default(false)
   inspeksi_APAP                   inspeksi_APAP[]
   inspeksi_detector               inspeksi_detector[]
@@ -87,6 +90,7 @@ model item {
   nama_lokasi                     lokasi                            @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
   rekapitulasi_bulanan            rekapitulasi_bulanan[]
   rekapitulasi_mingguan           rekapitulasi_mingguan[]
+  // User                            User @relation(fields: [uploadedBy], references: [id])
 }
 
 model lokasi {
@@ -370,4 +374,10 @@ enum Role {
   ADMIN
   PELAKSANA
   STAFF
+}
+
+enum ItemStatus{
+  APPROVED
+  PENDING
+  REJECTED
 }
