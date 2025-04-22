@@ -108,6 +108,13 @@ const ItemsForm = () => {
           }
 
           setTitikLokasiList(result.data);
+
+          if(result.data.length === 1){
+            setSelectedValue((prev) => ({
+              ...prev,
+              id_titik_lokasi : result.data[0].id_titik_lokasi,
+            }))
+          }
           // console.log("titik lokasi:", result.data);
         } catch (error) {
           console.error("Error fetching titik lokasi:", error);
@@ -224,24 +231,27 @@ const ItemsForm = () => {
     const table_name = `inspeksi_${jenisSarana}`;
 
     // let imageUrl = null;
+    let uploadedUrl = null
     if (capturedImage) {
-      const uploadedUrl = await uploadImage(capturedImage);
-      setImageUrl(uploadedUrl);
+      uploadedUrl = await uploadImage(capturedImage);
     }
+    setImageUrl(uploadedUrl);
     console.log("Final Image URL : ", imageUrl);
 
     const dataToInsert: { [key: string]: string | number | boolean | null } = {
       id_item: id,
-      gambar: imageUrl,
+      gambar: uploadedUrl,
       ...selectedValue,
     };
 
+    console.log("DataToInserttt : ", dataToInsert)
     columnName.forEach(
       (column) => {
         if (
           column.column_name !== "id_item" &&
           column.column_name !== "id_inspeksi" &&
-          column.column_name !== "createdAt"
+          column.column_name !== "createdAt" &&
+          column.column_name !== "gambar"
           // column.column_name !== "id_titik_lokasi" &&
           // column.column_name !== "lokasi_id"
         ) {
