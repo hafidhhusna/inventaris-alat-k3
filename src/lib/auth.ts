@@ -1,4 +1,4 @@
-import { NextAuthOptions } from "next-auth";
+import { getServerSession, NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { login } from "@/services/register";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
@@ -76,3 +76,7 @@ export const authOptions: NextAuthOptions = {
     error: "/auth/error",
   },
 };
+
+export async function getAuthSession(){
+  return await getServerSession(authOptions);
+}

@@ -58,7 +58,7 @@ const UploadForm = () => {
 
   // Fetch titik lokasi berdasarkan lokasi yang dipilih
   useEffect(() => {
-    if (formData.lokasi_id) {
+    if (formData.lokasi_id && formData.lokasi_id !== "new") {
       const fetchTitikLokasi = async () => {
         const { data, error } = await supabase
           .from("titik_lokasi")
@@ -78,6 +78,8 @@ const UploadForm = () => {
       };
 
       fetchTitikLokasi();
+    } else{
+      setTitikLokasiList([]);
     }
   }, [formData.lokasi_id]);
 
@@ -186,6 +188,8 @@ const UploadForm = () => {
       imageUrl = publicURLData.publicUrl;
     }
 
+    console.log("FormData : ", formData)
+
     const response = await fetch("/api/upload", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -201,6 +205,7 @@ const UploadForm = () => {
 
     if (!response.ok) {
       console.error("Error saving data:", result.error);
+      console.log("Response : ", result)
       alert("Gagal menyimpan data!");
     } else {
       alert("Data berhasil disimpan!");
