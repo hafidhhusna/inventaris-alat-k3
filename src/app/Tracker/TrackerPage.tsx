@@ -76,8 +76,14 @@ const TrackerPage = ({session} : Props) => {
     fetchItems();
   }, []);
 
-  const filteredItems = items.filter((item) =>
-    item.nama_item.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredItems = items.filter(
+    (item) =>
+      item.nama_item?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.nama_lokasi?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.titik_lokasi?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.jenis_sarana?.toLowerCase().includes(searchQuery.toLowerCase())||
+      item.PIC?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.pemasok?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Total Pages

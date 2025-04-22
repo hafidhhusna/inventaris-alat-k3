@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import UploadForm from "./UploadPage";
 
 
-export default async function Tracker(){
+export default async function uploadPage(){
     const session = await getAuthSession();
 
     if(!session){
