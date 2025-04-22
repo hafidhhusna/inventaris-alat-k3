@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, onSearchChange }) => {
             type="text"
             placeholder="Cari Item..."
             value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={(e) => onSearchChange?.(e.target.value)}
             className="border border-gray-300 rounded-full px-4 py-2 pr-10 w-full md:w-[20vw] text-sm"
           />
           <FaMagnifyingGlass className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
