@@ -166,7 +166,7 @@ const TrackerPage = ({session} : Props) => {
   return (
     <div className="w-screen min-h-screen flex flex-col bg-white text-black">
       <div className="absolute">
-        <NavBar />
+        <NavBar session={session} />
       </div>
       <Header
         searchQuery={searchQuery}

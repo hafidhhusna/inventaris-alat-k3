@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({error : "User is Not Logged In!"}, {status:401});
     }
 
-    const uploadedBy = session.user.name;
+    const uploadedBy = session.user.email;
 
     const { data, error } = await supabase.from("item").insert([
       {

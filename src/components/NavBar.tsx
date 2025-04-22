@@ -13,52 +13,64 @@ import { FiUpload } from "react-icons/fi";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { RiAdminFill } from "react-icons/ri";
 
-const sources = [
-  {
-    id: "profile",
-    src_img: <IoPersonSharp className="fill-current" />,
-    text: "Profile",
-    classnames: "text-[4.5vw] md:text-[1.111vw]",
-    linkto: "/Profile",
-  },
-  {
-    id: "items",
-    src_img: <FaFireExtinguisher className="fill-current" />,
-    text: "Items",
-    classnames: "text-[4.5vw] md:text-[1.432vw]",
-    linkto: "/Tracker",
-  },
-  {
-    id: "upload",
-    src_img: <FiUpload className="fill-current" />,
-    text: "Upload",
-    classnames: "text-[4.5vw] md:text-[1.432vw]",
-    linkto: "/NewElement",
-  },
-  {
-    id: "overview",
-    src_img: <FaArrowTrendUp className="fill-current" />,
-    text: "Overview",
-    classnames: "text-[4.5vw] md:text-[1.719vw]",
-    linkto: "/Readiness",
-  },
-  {
-    id: "adminApproval",
-    src_img: <RiAdminFill className="fill-current" />,
-    text: "Approval",
-    classnames: "text-[4.5vw] md:text-[1.719vw]",
-    linkto: "/AdminApproval",
-  },
-  {
-    id: "settings",
-    src_img: <IoMdSettings className="fill-current" />,
-    text: "Settings",
-    classnames: "text-[4.5vw] md:text-[1.719vw]",
-    linkto: "/SettingsPage",
-  },
-];
+type NavBarProps = {
+  session : {
+    user : {
+      name : string;
+      email : string;
+      role : string;
+    }
+  }
+}
 
-const NavBar: React.FC = () => {
+const NavBar: React.FC<NavBarProps> = ({session}) => {
+  const sources = [
+    {
+      id: "profile",
+      src_img: <IoPersonSharp className="fill-current" />,
+      text: "Profile",
+      classnames: "text-[4.5vw] md:text-[1.111vw]",
+      linkto: "/Profile",
+    },
+    {
+      id: "items",
+      src_img: <FaFireExtinguisher className="fill-current" />,
+      text: "Items",
+      classnames: "text-[4.5vw] md:text-[1.432vw]",
+      linkto: "/Tracker",
+    },
+    {
+      id: "upload",
+      src_img: <FiUpload className="fill-current" />,
+      text: "Upload",
+      classnames: "text-[4.5vw] md:text-[1.432vw]",
+      linkto: "/NewElement",
+    },
+    {
+      id: "overview",
+      src_img: <FaArrowTrendUp className="fill-current" />,
+      text: "Overview",
+      classnames: "text-[4.5vw] md:text-[1.719vw]",
+      linkto: "/Readiness",
+    },
+    ...(session?.user?.role === "ADMIN"
+      ? [
+        {
+          id: "adminApproval",
+          src_img: <RiAdminFill className="fill-current" />,
+          text: "Approval",
+          classnames: "text-[4.5vw] md:text-[1.719vw]",
+          linkto: "/AdminApproval",
+        },
+      ] : []),
+    {
+      id: "settings",
+      src_img: <IoMdSettings className="fill-current" />,
+      text: "Settings",
+      classnames: "text-[4.5vw] md:text-[1.719vw]",
+      linkto: "/SettingsPage",
+    },
+  ];
   const [active, setActive] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
