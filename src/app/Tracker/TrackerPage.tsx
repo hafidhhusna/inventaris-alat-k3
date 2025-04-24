@@ -17,6 +17,7 @@ import Image from "next/image";
 import { IoIosClose } from "react-icons/io";
 import { RiUploadLine } from "react-icons/ri";
 import { useQRCode } from "next-qrcode";
+import * as XLSX from "xlsx";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -76,8 +77,30 @@ const TrackerPage = ({session} : Props) => {
     fetchItems();
   }, []);
 
-  const filteredItems = items.filter((item) =>
-    item.nama_item.toLowerCase().includes(searchQuery.toLowerCase())
+  const exportToExcel = (data : any[], fileName = "data_item.xlsx") => {
+    // const formattedData = data.map((item) => ({
+    //   "Nama Item" : item.nama_item,
+    //   "Nomor Seri" : item.nomor_seri,
+    //   "Jenis Sarana" : item.jenis_sarana,
+    //   "Lokasi" : item.nama_lokasi,
+    //   "Status" : item.status
+    // }))
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data Inspeksi");
+
+    XLSX.writeFile(workbook, fileName);
+  }
+
+  const filteredItems = items.filter(
+    (item) =>
+      item.nama_item?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.nama_lokasi?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.titik_lokasi?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.jenis_sarana?.toLowerCase().includes(searchQuery.toLowerCase())||
+      item.PIC?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.pemasok?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Total Pages
@@ -166,7 +189,7 @@ const TrackerPage = ({session} : Props) => {
   return (
     <div className="w-screen min-h-screen flex flex-col bg-white text-black">
       <div className="absolute">
-        <NavBar />
+        <NavBar session={session} />
       </div>
       <Header
         searchQuery={searchQuery}
@@ -194,6 +217,12 @@ const TrackerPage = ({session} : Props) => {
               <RiUploadLine className="mr-2" />
               Tambah Item
             </Link>
+            <button
+              onClick={() => exportToExcel(items)}
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full"
+              >
+              Export ke Excel
+            </button>
           </div>
         </div>
 

@@ -70,7 +70,7 @@ model item {
   PIC                             String?                           @db.VarChar
   gambar                          String?
   status_pemasangan               Boolean?
-  // uploadedBy                      String
+  uploadedBy                      String
   id_titik_lokasi                 Int                               @default(autoincrement())
   deskripsi                       String?                           @db.VarChar
   status                          ItemStatus                        

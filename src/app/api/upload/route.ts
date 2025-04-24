@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -71,6 +73,15 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const session = await getServerSession(authOptions);
+
+    if(!session){
+      alert("Please Login First Before Uploading Item!");
+      return NextResponse.json({error : "User is Not Logged In!"}, {status:401});
+    }
+
+    const uploadedBy = session.user.email;
+
     const { data, error } = await supabase.from("item").insert([
       {
         nama_item: body.nama_item,
@@ -86,7 +97,7 @@ export async function POST(req: NextRequest) {
         gambar: body.gambar || null,
         status: body.status || "PENDING",
         status_pemasangan: body.status_pemasangan === "Terpasang",
-        // uploadedBy : body.uploadedBy,
+        uploadedBy
       },
     ]);
 

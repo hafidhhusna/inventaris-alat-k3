@@ -1,12 +1,13 @@
-"use client";
+import { getAuthSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import ItemsForm from "./ItemsFormPage";
 
-import React, { Suspense } from "react";
-import ItemsFormContent from "@/components/ItemsFormContent";
+export default async function InspectionForm() {
+  const session = await getAuthSession();
 
-export default function ItemsForm() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ItemsFormContent />
-    </Suspense>
-  );
+  if (!session) {
+    redirect("/login");
+  }
+
+  return <ItemsForm session={session} />;
 }

@@ -12,7 +12,7 @@ export async function GET() {
       },
       where : {
         is_deleted : false,
-        status : "APPROVED",
+        status : "PENDING",
       },
       orderBy: { id_item: "asc" },
     });

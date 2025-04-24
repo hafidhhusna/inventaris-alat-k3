@@ -1,12 +1,13 @@
-"use client";
+import { getAuthSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import InspectionDetais from "./InspectionDetailsPage";
 
-import React, { Suspense } from "react";
-import InspectionDetailsContent from "@/components/InspectionDetailsContent";
+export default async function InspectionDetailsPage() {
+  const session = await getAuthSession();
 
-export default function ItemsForm() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <InspectionDetailsContent />
-    </Suspense>
-  );
+  if (!session) {
+    redirect("/login");
+  }
+
+  return <InspectionDetais session={session} />;
 }
