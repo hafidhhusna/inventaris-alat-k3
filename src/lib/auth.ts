@@ -30,6 +30,7 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
+          console.log("User : ", user)
           return {
             id: user.id,
             name: user.name ?? "Unknown", // Ensure name is a string
