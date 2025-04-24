@@ -40,9 +40,9 @@ interface Item {
 
 type Props = {
   session: any;
-}
+};
 
-const TrackerPage = ({session} : Props) => {
+const TrackerPage = ({ session }: Props) => {
   const [items, setItems] = useState<Item[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -77,7 +77,7 @@ const TrackerPage = ({session} : Props) => {
     fetchItems();
   }, []);
 
-  const exportToExcel = (data : any[], fileName = "data_item.xlsx") => {
+  const exportToExcel = (data: any[], fileName = "data_item.xlsx") => {
     // const formattedData = data.map((item) => ({
     //   "Nama Item" : item.nama_item,
     //   "Nomor Seri" : item.nomor_seri,
@@ -91,14 +91,14 @@ const TrackerPage = ({session} : Props) => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Data Inspeksi");
 
     XLSX.writeFile(workbook, fileName);
-  }
+  };
 
   const filteredItems = items.filter(
     (item) =>
       item.nama_item?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.nama_lokasi?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.titik_lokasi?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.jenis_sarana?.toLowerCase().includes(searchQuery.toLowerCase())||
+      item.jenis_sarana?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.PIC?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.pemasok?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -220,7 +220,7 @@ const TrackerPage = ({session} : Props) => {
             <button
               onClick={() => exportToExcel(items)}
               className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full"
-              >
+            >
               Export ke Excel
             </button>
           </div>
@@ -465,16 +465,26 @@ const TrackerPage = ({session} : Props) => {
                   </h2>
                 </div>
               </div>
-
-              <Link
-                href={{
-                  pathname: "/ItemsForm",
-                  query: { id: selectedItem.id_item },
-                }}
-                className="mt-4 text-blue-600 underline text-sm sm:text-base text-center"
-              >
-                Form Inspeksi untuk Item #{selectedItem.id_item}
-              </Link>
+              <div className="w-full flex items-center justify-evenly">
+                <Link
+                  href={{
+                    pathname: "/InspectionDetails",
+                    query: { id: selectedItem.id_item },
+                  }}
+                  className="mt-4 bg-blue-600 text-white font-bold text-sm sm:text-base text-center p-[1vw] rounded-[1vw]"
+                >
+                  Inspection Details
+                </Link>
+                <Link
+                  href={{
+                    pathname: "/ItemsForm",
+                    query: { id: selectedItem.id_item },
+                  }}
+                  className="mt-4 bg-blue-600 text-white font-bold text-sm sm:text-base text-center p-[1vw] rounded-[1vw]"
+                >
+                  Form Inspeksi
+                </Link>
+              </div>
             </div>
           </div>
         )}

@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import Image from "next/image";
+import Link from "next/link";
+import { FaArrowLeft } from "react-icons/fa";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -118,7 +120,13 @@ const InspectionDetails = () => {
   };
 
   return (
-    <div className="w-screen h-screen px-4 py-6">
+    <div className="w-screen h-screen px-4 py-6 relative">
+      <Link
+        href="/Tracker"
+        className="bg-blue-600 text-black text-[1.5vw] sm:text-base w-[2vw] h-[2vw] rounded-full"
+      >
+        <FaArrowLeft />
+      </Link>
       <h1 className="w-full text-center font-bold text-[8vw] md:text-[3vw] mb-2">
         {formatColumnName(jenisSarana)}
       </h1>

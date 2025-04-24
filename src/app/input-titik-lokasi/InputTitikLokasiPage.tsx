@@ -2,20 +2,24 @@
 
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import Link from "next/link";
+import { FaArrowLeft } from "react-icons/fa";
 
 type Props = {
   session: any;
-}
+};
 
-export default function TitikLokasiForm({session} : Props) {
+export default function TitikLokasiForm({ session }: Props) {
   const { register, handleSubmit, reset } = useForm();
-  const [lokasi, setLokasi] = useState<{ lokasi_id: number; nama_lokasi: string }[]>([]);
+  const [lokasi, setLokasi] = useState<
+    { lokasi_id: number; nama_lokasi: string }[]
+  >([]);
 
   // Fetch data lokasi dari API
   useEffect(() => {
     async function fetchLokasi() {
       const res = await fetch("/api/upload-titik-lokasi", {
-        method: "GET"
+        method: "GET",
       });
       const data = await res.json();
       setLokasi(data);
@@ -41,6 +45,12 @@ export default function TitikLokasiForm({session} : Props) {
 
   return (
     <div className="max-w-md mx-auto mt-10">
+      <Link
+        href="/Tracker"
+        className="bg-blue-600 text-black text-[1.5vw] sm:text-base w-[2vw] h-[2vw] rounded-full"
+      >
+        <FaArrowLeft />
+      </Link>
       <h2 className="text-xl font-bold mb-4">Tambah Titik Lokasi</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Dropdown Lokasi */}
