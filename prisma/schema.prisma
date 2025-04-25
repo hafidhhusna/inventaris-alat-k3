@@ -87,7 +87,7 @@ model item {
   inspeksi_spill_containment_room inspeksi_spill_containment_room[]
   inspeksi_sprinkler              inspeksi_sprinkler[]
   lokasi_titik_lokasi             titik_lokasi                      @relation(fields: [id_titik_lokasi], references: [id_titik_lokasi], onDelete: NoAction, onUpdate: NoAction)
-  nama_lokasi                     lokasi                            @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction)
+  nama_lokasi                     lokasi                            @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: Cascade, onUpdate: NoAction)
   rekapitulasi_bulanan            rekapitulasi_bulanan[]
   rekapitulasi_mingguan           rekapitulasi_mingguan[]
   // User                            User @relation(fields: [uploadedBy], references: [id])
