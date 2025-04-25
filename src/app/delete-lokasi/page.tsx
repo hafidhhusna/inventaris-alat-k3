@@ -4,35 +4,53 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
+import { createClient } from "@supabase/supabase-js";
 
 type Props = {
   session: any;
 };
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export default function DeleteTitikLokasi({ session }: Props) {
   const { register, handleSubmit, reset } = useForm();
   const [lokasi, setLokasi] = useState<
     { lokasi_id: number; nama_lokasi: string }[]
   >([]);
+  const [lokasiList, setLokasiList] = useState<
+  { lokasi_id: number; nama_lokasi: string }[]
+>([]);
 
   // Fetch data lokasi dari API
   useEffect(() => {
-    async function fetchLokasi() {
-      const res = await fetch("/api/upload-titik-lokasi", {
-        method: "GET",
-      });
-      const data = await res.json();
-      setLokasi(data);
-    }
+    const fetchLokasi = async () => {
+      const { data, error } = await supabase
+        .from("lokasi")
+        .select(`lokasi_id, "nama_lokasi"`);
+
+      if (error) {
+        console.error("Error fetching lokasi:", error.message);
+      } else {
+        setLokasiList(
+          data.map((lokasi) => ({
+            lokasi_id: lokasi.lokasi_id,
+            nama_lokasi: lokasi["nama_lokasi"],
+          }))
+        );
+      }
+    };
+
     fetchLokasi();
   }, []);
 
   // Handle submit data ke API titik-lokasi
   const onSubmit = async (data: any) => {
-    const res = await fetch("/api/upload-titik-lokasi", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+    const {lokasi_id} = data;
+    const res = await fetch(`/api/lokasi?id=${lokasi_id}`, {
+      method: "DELETE",
     });
 
     if (res.ok) {
@@ -52,7 +70,7 @@ export default function DeleteTitikLokasi({ session }: Props) {
         <FaArrowLeft />
       </Link>
       <h2 className="text-2xl font-bold mb-6 text-center sm:text-left">
-        Hapus Titik Lokasi
+        Hapus Lokasi
       </h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Dropdown Lokasi */}
@@ -63,7 +81,7 @@ export default function DeleteTitikLokasi({ session }: Props) {
             className="border border-gray-300 p-2 rounded w-full text-sm"
           >
             <option value="">Pilih Lokasi</option>
-            {lokasi.map((loc) => (
+            {lokasiList.map((loc) => (
               <option key={loc.lokasi_id} value={loc.lokasi_id}>
                 {loc.nama_lokasi}
               </option>

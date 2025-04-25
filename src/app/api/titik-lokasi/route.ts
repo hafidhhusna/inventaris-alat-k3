@@ -38,24 +38,3 @@ export async function GET(req: Request) {
     );
   }
 }
-
-export async function DELETE(req : NextRequest){
-  try{
-    const {searchParams} = new URL(req.url);
-    const id = searchParams.get("id");
-
-    if(!id){
-      return NextResponse.json({error : "ID Tidak Ditemukan"}, {status:400});
-    }
-
-    const deletedLokasi = await prisma.titik_lokasi.delete({
-      where:{
-        id_titik_lokasi : Number(id),
-      }
-    });
-
-    return NextResponse.json(deletedLokasi, {status:200});
-  } catch(error){
-    return NextResponse.json({error : "Gagal Menghapus Lokasi"}, {status:500})
-  }
-}
