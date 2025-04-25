@@ -151,8 +151,6 @@ model inspeksi_APAP {
   id_item              Int?
   createdAt            DateTime?    @default(now())
   gambar               String?
-  lokasi_id            Int
-  id_titik_lokasi      Int
   item                 item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -169,8 +167,6 @@ model inspeksi_detector {
   id_item             Int?
   createdAt           DateTime?    @default(now())
   gambar              String?
-  id_titik_lokasi     Int
-  lokasi_id           Int
   item                item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -186,8 +182,6 @@ model inspeksi_hidran_bangunan {
   id_item                          Int?
   createdAt                        DateTime?    @default(now())
   gambar                           String?
-  id_titik_lokasi                  Int
-  lokasi_id                        Int
   item                             item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -203,8 +197,6 @@ model inspeksi_hidran_halaman {
   id_item                         Int?
   createdAt                       DateTime?    @default(now())
   gambar                          String?
-  id_titik_lokasi                 Int
-  lokasi_id                       Int
   item                            item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -224,8 +216,6 @@ model inspeksi_kotak_p3k {
   id_item                 Int?
   createdAt               DateTime?    @default(now())
   gambar                  String?
-  id_titik_lokasi         Int
-  lokasi_id               Int
   item                    item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -249,8 +239,6 @@ model inspeksi_ruang_mns {
   id_item                      Int?
   createdAt                    DateTime?    @default(now())
   gambar                       String?
-  id_titik_lokasi              Int
-  lokasi_id                    Int
   item                         item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -300,8 +288,6 @@ model inspeksi_scba {
   id_item                Int?
   createdAt              DateTime?    @default(now())
   gambar                 String?
-  id_titik_lokasi        Int
-  lokasi_id              Int
   item                   item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -315,8 +301,6 @@ model inspeksi_spill_containment_room {
   id_item                               Int?
   createdAt                             DateTime?    @default(now())
   gambar                                String?
-  id_titik_lokasi                       Int
-  lokasi_id                             Int
   item                                  item?        @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
