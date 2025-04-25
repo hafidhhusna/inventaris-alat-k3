@@ -75,7 +75,9 @@ const ItemsForm = () => {
   useEffect(() => {
     const fetchLokasi = async () => {
       try {
-        const response = await fetch("/api/titik-lokasi");
+        const response = await fetch("/api/titik-lokasi", {
+          method : 'GET'
+        });
         const result: { data: Lokasi[] } = await response.json();
 
         if (!response.ok) {
@@ -98,7 +100,9 @@ const ItemsForm = () => {
       const fetchTitikLokasi = async () => {
         try {
           const response = await fetch(
-            `/api/titik-lokasi?lokasi_id=${selectedLokasi}`
+            `/api/titik-lokasi?lokasi_id=${selectedLokasi}`, {
+              method : 'GET'
+            }
           );
           const result = await response.json();
 
