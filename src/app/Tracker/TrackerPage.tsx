@@ -53,6 +53,7 @@ const TrackerPage = ({ session }: Props) => {
   const [editItem, setEditItem] = useState<Item | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isImageOpen, setIsImageOpen] = useState(false);
 
   const { Canvas } = useQRCode();
   const qrCanvasRef = useRef<HTMLDivElement>(null);
@@ -185,6 +186,10 @@ const TrackerPage = ({ session }: Props) => {
   };
 
   // console.log(selectedItem);
+
+  const toggleModal = () => {
+    setIsImageOpen(!isImageOpen);
+  };
 
   return (
     <div className="w-screen min-h-screen flex flex-col bg-white text-black">
@@ -365,14 +370,34 @@ const TrackerPage = ({ session }: Props) => {
               >
                 <IoIosClose />
               </button>
-              {selectedItem?.gambar && (
-                <Image
-                  src={selectedItem.gambar}
-                  alt="foto barang"
-                  width={100}
-                  height={100}
-                  className="w-[4vw] h-[4vw] object-cover"
-                />
+              <button
+                onClick={toggleModal}
+                className="p-[0.5vw] bg-blue-600 rounded-[0.5vw] font-bold text-white mb-[0.9vw]"
+              >
+                View Image
+              </button>
+
+              {/* Modal to display the image */}
+              {isImageOpen && (
+                <div className="fixed top-0 left-0 right-0 bottom-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">
+                  <div className="bg-white p-4 rounded">
+                    <button
+                      onClick={toggleModal}
+                      className="absolute top-4 right-4 text-white"
+                    >
+                      X
+                    </button>
+                    {selectedItem?.gambar && (
+                      <Image
+                        src={selectedItem.gambar}
+                        alt="foto barang"
+                        width={500}
+                        height={500}
+                        className="object-contain"
+                      />
+                    )}
+                  </div>
+                </div>
               )}
               <h2 className="text-xl font-bold mb-2">
                 {selectedItem.nama_item}
