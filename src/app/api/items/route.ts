@@ -25,6 +25,7 @@ export async function GET() {
       nomor_seri : item.nomor_ser,
       nama_lokasi : item.nama_lokasi.nama_lokasi,
       titik_lokasi : item.lokasi_titik_lokasi.nama_titik_lokasi,
+      deskripsi : item.deskripsi,
       jenis_sarana : item.jenis_sarana,
       spesifikasi : item.spesifikasi,
       tanggal_pembelian : item.tanggal_pembelian,

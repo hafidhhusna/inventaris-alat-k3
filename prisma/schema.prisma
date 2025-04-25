@@ -325,7 +325,7 @@ model titik_lokasi {
   lokasi_id                       Int                               @default(autoincrement())
   nama_titik_lokasi               String?                           @unique @db.VarChar
   item                            item[]
-  lokasi                          lokasi                            @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: NoAction, onUpdate: NoAction, map: "titik lokasi_lokasi_id_fkey")
+  lokasi                          lokasi                            @relation(fields: [lokasi_id], references: [lokasi_id], onDelete: Cascade, onUpdate: NoAction, map: "titik lokasi_lokasi_id_fkey")
 
 }
 
