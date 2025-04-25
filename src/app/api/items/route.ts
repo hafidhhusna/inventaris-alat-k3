@@ -29,6 +29,7 @@ export async function GET() {
       spesifikasi : item.spesifikasi,
       tanggal_pembelian : item.tanggal_pembelian,
       pemasok : item.pemasok,
+      gambar : item.gambar,
       PIC : item.PIC,
       status_pemasangan : item.status_pemasangan,
       uploadedBy : item.uploadedBy
