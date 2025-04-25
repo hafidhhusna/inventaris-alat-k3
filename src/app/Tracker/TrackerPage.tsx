@@ -365,6 +365,15 @@ const TrackerPage = ({ session }: Props) => {
               >
                 <IoIosClose />
               </button>
+              {selectedItem?.gambar && (
+                <Image
+                  src={selectedItem.gambar}
+                  alt="foto barang"
+                  width={100}
+                  height={100}
+                  className="w-[4vw] h-[4vw] object-cover"
+                />
+              )}
               <h2 className="text-xl font-bold mb-2">
                 {selectedItem.nama_item}
               </h2>
@@ -397,15 +406,6 @@ const TrackerPage = ({ session }: Props) => {
               <p>
                 <strong>Deskripsi:</strong> {selectedItem.deskripsi}
               </p>
-              <Link
-                href={{
-                  pathname: "/InspectionDetails",
-                  query: { id: selectedItem.id_item },
-                }}
-                className="inline-block mt-4 text-blue-600 underline"
-              >
-                Lihat Detail Inspeksi
-              </Link>
             </div>
           </div>
         )}

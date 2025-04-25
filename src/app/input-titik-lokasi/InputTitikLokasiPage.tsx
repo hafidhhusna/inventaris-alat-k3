@@ -44,19 +44,24 @@ export default function TitikLokasiForm({ session }: Props) {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10">
+    <div className="max-w-md mx-auto mt-10 px-4 sm:px-6 lg:px-8">
       <Link
-        href="/Tracker"
-        className="bg-blue-600 text-black text-[1.5vw] sm:text-base w-[2vw] h-[2vw] rounded-full"
+        href="/NewElement"
+        className="inline-flex items-center justify-center bg-blue-600 text-white text-lg w-10 h-10 rounded-full mb-6 hover:bg-blue-700"
       >
         <FaArrowLeft />
       </Link>
-      <h2 className="text-xl font-bold mb-4">Tambah Titik Lokasi</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <h2 className="text-2xl font-bold mb-6 text-center sm:text-left">
+        Tambah Titik Lokasi
+      </h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Dropdown Lokasi */}
-        <label className="block">
-          Lokasi:
-          <select {...register("lokasi_id")} className="border p-2 w-full">
+        <div>
+          <label className="block text-sm font-medium mb-1">Lokasi</label>
+          <select
+            {...register("lokasi_id")}
+            className="border border-gray-300 p-2 rounded w-full text-sm"
+          >
             <option value="">Pilih Lokasi</option>
             {lokasi.map((loc) => (
               <option key={loc.lokasi_id} value={loc.lokasi_id}>
@@ -64,26 +69,30 @@ export default function TitikLokasiForm({ session }: Props) {
               </option>
             ))}
           </select>
-        </label>
+        </div>
 
         {/* Input Nama Titik Lokasi */}
-        <label className="block">
-          Nama Titik Lokasi:
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            Nama Titik Lokasi
+          </label>
           <input
             type="text"
             {...register("nama_titik_lokasi")}
-            className="border p-2 w-full"
+            className="border border-gray-300 p-2 rounded w-full text-sm"
             required
           />
-        </label>
+        </div>
 
         {/* Submit Button */}
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Simpan
-        </button>
+        <div className="text-center sm:text-left">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 text-sm sm:text-base"
+          >
+            Simpan
+          </button>
+        </div>
       </form>
     </div>
   );

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
+import Link from "next/link";
+import { FaArrowLeft } from "react-icons/fa6";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -9,10 +11,10 @@ const supabase = createClient(
 );
 
 type Props = {
-  session : any
-}
+  session: any;
+};
 
-const UploadForm = ({session} : Props) => {
+const UploadForm = ({ session }: Props) => {
   const [formData, setFormData] = useState({
     jenis_sarana: "",
     nama_item: "",
@@ -25,8 +27,8 @@ const UploadForm = ({session} : Props) => {
     pemasok: "",
     PIC: "",
     status_pemasangan: "",
-    status : "",
-    uploadedBy : ""
+    status: "",
+    uploadedBy: "",
   });
 
   const [file, setFile] = useState<File | null>(null);
@@ -84,7 +86,7 @@ const UploadForm = ({session} : Props) => {
       };
 
       fetchTitikLokasi();
-    } else{
+    } else {
       setTitikLokasiList([]);
     }
   }, [formData.lokasi_id]);
@@ -95,29 +97,29 @@ const UploadForm = ({session} : Props) => {
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
-    const {name, value} = e.target;
+    const { name, value } = e.target;
 
-    if(name === "lokasi_id"){
+    if (name === "lokasi_id") {
       setFormData((prev) => ({
         ...prev,
         lokasi_id: value,
         id_titik_lokasi: "",
-      }))
+      }));
       return;
     }
 
-    if(name === "id_titik_lokasi"){
+    if (name === "id_titik_lokasi") {
       setFormData((prev) => ({
         ...prev,
-        id_titik_lokasi:value,
-      }))
+        id_titik_lokasi: value,
+      }));
       return;
     }
 
     setFormData((prev) => ({
       ...prev,
-      [name]:value,
-    }))
+      [name]: value,
+    }));
   };
 
   // Handle perubahan input file
@@ -136,37 +138,36 @@ const UploadForm = ({session} : Props) => {
     let lokasiId = formData.lokasi_id;
     let titikLokasiId = formData.id_titik_lokasi;
 
-    if(lokasiId === "new" && newLokasiName){
-      const {data, error} = await supabase
+    if (lokasiId === "new" && newLokasiName) {
+      const { data, error } = await supabase
         .from("lokasi")
-        .insert({nama_lokasi : newLokasiName})
+        .insert({ nama_lokasi: newLokasiName })
         .select()
         .single();
 
-        if(error){
-          alert("Gagal Menambah Lokasi Baru : Lokasi Sudah Ada");
-          setLoading(false);
-          return;
-        }
+      if (error) {
+        alert("Gagal Menambah Lokasi Baru : Lokasi Sudah Ada");
+        setLoading(false);
+        return;
+      }
 
-        lokasiId = data.lokasi_id;
+      lokasiId = data.lokasi_id;
     }
 
-    if(titikLokasiId === "new" && newTitikLokasiName){
-      const {data, error} = await supabase
+    if (titikLokasiId === "new" && newTitikLokasiName) {
+      const { data, error } = await supabase
         .from("titik_lokasi")
-        .insert({nama_titik_lokasi : newTitikLokasiName, lokasi_id : lokasiId})
+        .insert({ nama_titik_lokasi: newTitikLokasiName, lokasi_id: lokasiId })
         .select()
         .single();
 
+      if (error) {
+        alert("Gagal Menambah Titik Lokasi Baru : Titik Lokasi Sudah Ada");
+        setLoading(false);
+        return;
+      }
 
-        if(error){
-          alert("Gagal Menambah Titik Lokasi Baru : Titik Lokasi Sudah Ada");
-          setLoading(false);
-          return;
-        }
-
-        titikLokasiId = data
+      titikLokasiId = data;
     }
 
     if (file) {
@@ -194,24 +195,25 @@ const UploadForm = ({session} : Props) => {
       imageUrl = publicURLData.publicUrl;
     }
 
-    console.log("FormData : ", formData)
+    console.log("FormData : ", formData);
 
     const response = await fetch("/api/upload", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-         ...formData,
-          gambar: imageUrl,
-          new_lokasi_name : formData.lokasi_id === "new" ? newLokasiName : null,
-          new_titik_lokasi_name: formData.id_titik_lokasi === "new" ? newTitikLokasiName : null,
-         }),
+        ...formData,
+        gambar: imageUrl,
+        new_lokasi_name: formData.lokasi_id === "new" ? newLokasiName : null,
+        new_titik_lokasi_name:
+          formData.id_titik_lokasi === "new" ? newTitikLokasiName : null,
+      }),
     });
 
     const result = await response.json();
 
     if (!response.ok) {
       console.error("Error saving data:", result.error);
-      console.log("Response : ", result)
+      console.log("Response : ", result);
       alert("Gagal menyimpan data!");
     } else {
       alert("Data berhasil disimpan!");
@@ -222,6 +224,12 @@ const UploadForm = ({session} : Props) => {
 
   return (
     <div className="max-w-md mx-auto p-4 bg-gray-100 rounded-lg shadow-md">
+      <Link
+        href="/NewElement"
+        className="inline-flex items-center justify-center bg-blue-600 text-white text-lg w-10 h-10 rounded-full mb-6 hover:bg-blue-700"
+      >
+        <FaArrowLeft />
+      </Link>
       <h2 className="text-lg font-bold mb-4">Tambah Item Baru</h2>
 
       <form onSubmit={handleSubmit}>
@@ -291,19 +299,18 @@ const UploadForm = ({session} : Props) => {
               {lokasi.nama_lokasi}
             </option>
           ))}
-          <option value="new">
-            + Tambah Lokasi Baru
-          </option>
+          <option value="new">+ Tambah Lokasi Baru</option>
         </select>
         {/* Input Lokasi Baru */}
         {formData.lokasi_id === "new" && (
-          <input 
-          type="text"
-          placeholder="Masukkan Lokasi Baru"
-          value={newLokasiName}
-          onChange={(e) => setNewLokasiName(e.target.value)}
-          className="mb-2 p-2 w-full border rounded"
-          required />
+          <input
+            type="text"
+            placeholder="Masukkan Lokasi Baru"
+            value={newLokasiName}
+            onChange={(e) => setNewLokasiName(e.target.value)}
+            className="mb-2 p-2 w-full border rounded"
+            required
+          />
         )}
 
         {/* Dropdown Titik Lokasi */}
@@ -323,19 +330,18 @@ const UploadForm = ({session} : Props) => {
               {titik.nama_titik_lokasi}
             </option>
           ))}
-          <option value="new">
-            + Tambah Titik Lokasi Baru
-          </option>
+          <option value="new">+ Tambah Titik Lokasi Baru</option>
         </select>
         {/* Input Titik Lokasi Baru */}
         {formData.id_titik_lokasi === "new" && (
-          <input 
-          type="text"
-          placeholder="Masukkan Titik Lokasi Baru" 
-          value={newTitikLokasiName}
-          onChange={(e) => setNewTitikLokasiName(e.target.value)}
-          className="mb-2 p-2 w-full border rounded"
-          required/>
+          <input
+            type="text"
+            placeholder="Masukkan Titik Lokasi Baru"
+            value={newTitikLokasiName}
+            onChange={(e) => setNewTitikLokasiName(e.target.value)}
+            className="mb-2 p-2 w-full border rounded"
+            required
+          />
         )}
 
         <input

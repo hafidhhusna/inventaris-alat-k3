@@ -109,11 +109,11 @@ const ItemsForm = () => {
 
           setTitikLokasiList(result.data);
 
-          if(result.data.length === 1){
+          if (result.data.length === 1) {
             setSelectedValue((prev) => ({
               ...prev,
-              id_titik_lokasi : result.data[0].id_titik_lokasi,
-            }))
+              id_titik_lokasi: result.data[0].id_titik_lokasi,
+            }));
           }
           // console.log("titik lokasi:", result.data);
         } catch (error) {
@@ -231,7 +231,7 @@ const ItemsForm = () => {
     const table_name = `inspeksi_${jenisSarana}`;
 
     // let imageUrl = null;
-    let uploadedUrl = null
+    let uploadedUrl = null;
     if (capturedImage) {
       uploadedUrl = await uploadImage(capturedImage);
     }
@@ -244,7 +244,7 @@ const ItemsForm = () => {
       ...selectedValue,
     };
 
-    console.log("DataToInserttt : ", dataToInsert)
+    console.log("DataToInserttt : ", dataToInsert);
     columnName.forEach(
       (column) => {
         if (
@@ -428,9 +428,9 @@ const ItemsForm = () => {
                 />
               )}
 
-              {column.column_name == "gambar" && (
+              {/* {column.column_name == "gambar" && (
                 <Camera onCapture={(image) => setCapturedImage(image)} />
-              )}
+              )} */}
 
               <span className="text-sm sm:text-[1.302vw] font-medium">
                 {formatColumnName(column.column_name)}
