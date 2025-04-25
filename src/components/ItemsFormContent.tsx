@@ -6,7 +6,7 @@ import Dropdown from "@/components/Dropdown";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
-import Camera from "@/components/Camera";
+// import Camera from "@/components/Camera";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -24,6 +24,7 @@ type TitikLokasi = {
 };
 
 const ItemsForm = () => {
+  const [file, setFile] = useState<File | null>(null);
   const [lokasiList, setLokasiList] = useState<Lokasi[]>([]);
   const [titikLokasiList, setTitikLokasiList] = useState<TitikLokasi[]>([]);
   const [selectedLokasi, setSelectedLokasi] = useState("");
@@ -180,6 +181,20 @@ const ItemsForm = () => {
     return publicUrl.publicUrl;
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+
+      // Optional: If uploadImage needs a base64 string instead of a File
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setCapturedImage(base64String);
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
   // Mengubah nilai dropdown menjadi boolean (Yes = true, No = false)
   const handleDropdownChange = (
     columnName: string,
@@ -232,11 +247,14 @@ const ItemsForm = () => {
 
     // let imageUrl = null;
     let uploadedUrl = null;
+
+    // Check if image was captured
     if (capturedImage) {
       uploadedUrl = await uploadImage(capturedImage);
     }
+
     setImageUrl(uploadedUrl);
-    console.log("Final Image URL : ", imageUrl);
+    console.log("Final Image URL : ", uploadedUrl);
 
     const dataToInsert: { [key: string]: string | number | boolean | null } = {
       id_item: id,
@@ -428,9 +446,14 @@ const ItemsForm = () => {
                 />
               )}
 
-              {/* {column.column_name == "gambar" && (
-                <Camera onCapture={(image) => setCapturedImage(image)} />
-              )} */}
+              {column.column_name == "gambar" && (
+                // <Camera onCapture={(image) => setCapturedImage(image)} />
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  className="mb-2 p-2 w-full border rounded"
+                />
+              )}
 
               <span className="text-sm sm:text-[1.302vw] font-medium">
                 {formatColumnName(column.column_name)}
