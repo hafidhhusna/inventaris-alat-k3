@@ -18,6 +18,18 @@ const InspectionDetails = () => {
   const [items, setItems] = useState<Record<string, any[]>>({});
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortColumn, setSortColumn] = useState<string>("createdAt");
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const openModal = (url : string) => {
+    setPreviewImageUrl(url);
+    setShowModal(true);
+  }
+
+  const closeModal = () => {
+    setPreviewImageUrl(null);
+    setShowModal(false);
+  }
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
@@ -162,13 +174,12 @@ const InspectionDetails = () => {
                       {Object.values(row).map((value, colIndex) => (
                         <td key={colIndex} className="border px-4 py-2 text-sm">
                           {String(value).startsWith("https:") ? (
-                            <Image
-                              src={String(value)}
-                              alt="gambar barang"
-                              width={200}
-                              height={200}
-                              className="w-[10vw] h-[3vw] object-cover"
-                            />
+                            <button
+                              onClick={() => openModal(String(value))}
+                              className="text-blue-500 underline hover:text-blue-700"
+                              >
+                                Show Image
+                              </button>
                           ) : (
                             String(value)
                           )}
@@ -191,6 +202,24 @@ const InspectionDetails = () => {
           </table>
         </div>
       ))}
+      {showModal && previewImageUrl && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded-lg max-w-[90vw] max-h-[90vh] relative">
+            <button
+            onClick={closeModal}
+            className="absolute top-2 right-2 text-gray-500 hover:text-black text-xl font-bold"
+            >
+              x
+            </button>
+            <Image
+              src={previewImageUrl}
+              alt="Preview"
+              width={800}
+              height={800}
+              className="object-contain max-w-full max-h-[80vh]"/>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
