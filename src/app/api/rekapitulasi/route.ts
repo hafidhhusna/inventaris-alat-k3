@@ -75,29 +75,33 @@ export async function GET(req : NextRequest) {
                 katup_kontrol: true,
                 koneksi_pemadam_kebakaran: true,
                 penyangga: true,
-                kepala_sprinkler: true,
+                tanda_informasi_desain_hidrolik : true,
+                tanda_informasi : true,
+                pipa_dan_perlengkapan : true,
                 sprinkler_cadangan: true,
-                perangkat_pengawasan_katup: true,
-                perangkat_alarm_aliran_air: true,
               }
             },
             inspeksi_APAP: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
               select: {
+                lokasi : true,
                 visibilitas: true,
                 kemudahan_akses: true,
                 tekanan: true,
                 kepenuhan_isi: true,
                 segel_pengaman: true,
                 selang_dan_nozel: true,
-                abnormalitas_fisik: true
+                abnormalitas_fisik: true,
+                karetban_roda_kereta : true,
               }
             },
             inspeksi_detector: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
               select: {
+                lokasi : true,
                 penghalang_detektor: true,
                 kerusakan_fisik: true,
+                derajat_kebersihan : true,
                 audible_dan_visible: true,
                 lampu: true,
                 power_supply: true,
@@ -131,6 +135,7 @@ export async function GET(req : NextRequest) {
             inspeksi_kotak_p3k: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
               select: {
+                kasa_steril_terbungkus : true,
                 perban: true,
                 plester: true,
                 kapas: true,
@@ -159,7 +164,8 @@ export async function GET(req : NextRequest) {
                 kapabilitas_komunikasi: true,
                 daya_sekunder: true,
                 ketersediaan_alat_komunikasi: true,
-                pemantauan_alat_komunikasi: true
+                konektivitas_komunikasi : true,
+                daya_cadangan : true
               }
             },
             inspeksi_rumah_pompa_hidran: {
@@ -183,6 +189,7 @@ export async function GET(req : NextRequest) {
               select: {
                 eksit: true,
                 eksit_pelepasan: true,
+                pintu_eksit : true,
                 iluminasi: true,
                 pencahayaan_darurat: true,
                 penandaan: true,
