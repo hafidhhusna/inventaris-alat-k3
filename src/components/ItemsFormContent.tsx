@@ -39,6 +39,7 @@ const ItemsForm = () => {
   // const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [namaItem, setNamaItem] = useState<string>("");
 
   const searchParams = useSearchParams();
 
@@ -58,7 +59,7 @@ const ItemsForm = () => {
 
       const { data, error } = await supabase
         .from("item")
-        .select("jenis_sarana")
+        .select("jenis_sarana, nama_item")
         .eq("id_item", id)
         .single();
 
@@ -66,6 +67,8 @@ const ItemsForm = () => {
         console.error("Error fetching item: ", error);
       } else {
         setJenisSarana(data?.jenis_sarana || "Unknown");
+        setNamaItem(data?.nama_item || "Unknown");
+        // console.log("ini datanya", data);
       }
     };
 
@@ -76,7 +79,7 @@ const ItemsForm = () => {
     const fetchLokasi = async () => {
       try {
         const response = await fetch("/api/titik-lokasi", {
-          method : 'GET'
+          method: "GET",
         });
         const result: { data: Lokasi[] } = await response.json();
 
@@ -100,8 +103,9 @@ const ItemsForm = () => {
       const fetchTitikLokasi = async () => {
         try {
           const response = await fetch(
-            `/api/titik-lokasi?lokasi_id=${selectedLokasi}`, {
-              method : 'GET'
+            `/api/titik-lokasi?lokasi_id=${selectedLokasi}`,
+            {
+              method: "GET",
             }
           );
           const result = await response.json();
@@ -335,7 +339,7 @@ const ItemsForm = () => {
           Inspeksi {formatColumnName(jenisSarana)}
         </h1>
         <h2 className="text-base sm:text-[1.302vw] mt-2">
-          Formulir Inspeksi Alat Pemadam Api
+          Formulir Inspeksi {namaItem}
         </h2>
       </div>
 

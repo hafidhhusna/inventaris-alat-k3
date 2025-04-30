@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa6";
+import { IoMdInformationCircle } from "react-icons/io";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -273,15 +274,22 @@ const UploadForm = ({ session }: Props) => {
           required
           className="mb-2 p-2 w-full border rounded"
         />
-
-        <input
-          type="text"
-          name="deskripsi"
-          placeholder="Deskripsi Item"
-          onChange={handleChange}
-          required
-          className="mb-2 p-2 w-full border rounded"
-        />
+        <div className="flex items-center justify-center relative">
+          <input
+            type="text"
+            name="deskripsi"
+            placeholder="Deskripsi Item"
+            onChange={handleChange}
+            required
+            className="mb-2 p-2 w-full border rounded"
+          />
+          <div className="relative group ml-2">
+            <IoMdInformationCircle className="text-[2vw] cursor-pointer" />
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-1 bg-gray-700 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity">
+              <p>contoh deskripsi aeifugwefiwbpiuweqhudpqowjhdweidhqwodshbq</p>
+            </div>
+          </div>
+        </div>
 
         {/* Dropdown Lokasi */}
         <select
