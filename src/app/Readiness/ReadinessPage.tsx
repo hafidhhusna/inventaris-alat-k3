@@ -95,17 +95,47 @@ const Readiness = ({session} : Props) => {
     }
   };
 
-  const formatChartData = (chartData: ChartData<"bar">): string => {
-    const labels = chartData.labels ?? [];
-    const dataset = chartData.datasets[0];
+const formatChartData = (chartData: ChartData<"bar">, bulan: number, tahun: number): string => {
+  const labels = chartData.labels ?? [];
+  const dataset = chartData.datasets[0];
+  const data = dataset.data;
 
-    return (
-      `${dataset.label || "No Label"}\n` +
-      labels
-        .map((label, index) => `${label}: ${dataset.data[index] ?? "N/A"}%`)
-        .join("\n")
-    );
-  };
+  const total = (chartData.datasets[0].data as number[])
+    .map(Number)
+    .reduce((acc, val) => acc + val, 0)
+  const average = data.length > 0 ? (total/data.length).toFixed(0) : "N/A";
+  // const bulanTeks = bulan.toString().padStart(2, "0");
+
+  let rincian = "";
+  labels.forEach((label, i) => {
+    rincian += `${label}: ${data[i] ?? "0"}%\n`;
+  });
+
+  return (
+    `Halo UP3 Menteng!\n` +
+    `Kami sampaikan hasil\n` +
+    `rekapitulasi pemantauan\n` +
+    `INSPEKTRA PLUS,\n` +
+    `PRESENTASE KESIAPAN\n` +
+    `SARANA TANGGAP\n` +
+    `DARURAT BULAN ${bulan} TAHUN\n` +
+    `${tahun} DI UNIT ANDA\n` +
+    `MENCAPAI ${average}%.\n\n` +
+    `Berikut rincian rekapitulasi\n` +
+    `kesiapan, mohon ditinjau\n` +
+    `mendekati 100% setiap\n` +
+    `bulannya:\n` +
+    `${rincian}\n` +
+    `Pastikan inspeksi dan\n` +
+    `perawatan rutin dilakukan\n` +
+    `sesuai prosedur untuk\n` +
+    `meningkatkan keandalan sarana\n` +
+    `tanggap darurat.\n\n` +
+    `Salam Safety,\n` +
+    `Tetap waspada dan prioritaskan\n` +
+    `keselamatan setiap saat! 🚨👷‍♂️`
+  );
+};
 
   const options: ChartOptions<"bar"> = {
     responsive: true,
@@ -183,7 +213,7 @@ const Readiness = ({session} : Props) => {
                 <button
                   className="rounded-md sm:rounded-[0.3vw] w-32 sm:w-[7vw] h-10 sm:h-[2vw] bg-[#0092b6] font-bold text-white text-sm sm:text-[0.7vw] hover:bg-[#007a99] active:bg-[#00637d]"
                   onClick={() =>
-                    sendToTelegram(formatChartData(chartData), "6380736334")
+                    sendToTelegram(formatChartData(chartData), "")
                   }
                 >
                   Send to Telegram
