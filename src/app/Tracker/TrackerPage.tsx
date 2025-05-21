@@ -19,7 +19,7 @@ import { RiUploadLine } from "react-icons/ri";
 import { useQRCode } from "next-qrcode";
 import * as XLSX from "xlsx";
 
-const ITEMS_PER_PAGE = 7;
+const ITEMS_PER_PAGE = 5;
 
 interface Item {
   id_item: number;
