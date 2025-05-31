@@ -123,15 +123,12 @@ model inspeksi_sprinkler {
   koneksi_pemadam_kebakaran       Boolean
   penyangga                       Boolean
   sprinkler_cadangan              Boolean
-  catatan                         String?  @db.VarChar
-  gambar                          String?
-  lokasi_id                       Int
-  id_titik_lokasi                 Int
   id_item                         Int
   pipa_dan_perlengkapan           Boolean
   tanda_informasi                 Boolean
   tanda_informasi_desain_hidrolik Boolean
-  createdAt                       DateTime @map("createdAt") @db.Timestamptz(6)
+  gambar                          String?
+  createdAt                       DateTime @map("createdAt") @db.Timestamptz(6) @default(now())
   item                            item     @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction, map: "inspeksi sprinkler_id_item_fkey")
 }
 
@@ -145,10 +142,10 @@ model inspeksi_APAP {
   abnormalitas_fisik   Boolean?
   id_inspeksi          Int       @id @default(autoincrement())
   id_item              Int?
-  gambar               String?
   karetban_roda_kereta Boolean?
   lokasi               Boolean?
-  createdAt            DateTime? @map("createdAt") @db.Timestamptz(6)
+  gambar               String?
+  createdAt            DateTime? @map("createdAt") @db.Timestamptz(6) @default(now())
   item                 item?     @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -161,10 +158,10 @@ model inspeksi_detector {
   power_supply        Boolean?
   prosedur_manufaktur Boolean?
   id_item             Int?
-  gambar              String?
   derajat_kebersihan  Boolean?
   lokasi              Boolean?
-  createdAt           DateTime? @map("createdAt") @db.Timestamptz(6)
+  gambar              String?
+  createdAt           DateTime? @map("createdAt") @db.Timestamptz(6) @default(now())
   item                item?     @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -179,7 +176,7 @@ model inspeksi_hidran_bangunan {
   kabinet_penyimpanan              Boolean?
   id_item                          Int?
   gambar                           String?
-  createdAt                        DateTime? @map("createdAt") @db.Timestamptz(6)
+  createdAt                        DateTime? @map("createdAt") @db.Timestamptz(6) @default(now())
   item                             item?     @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -194,7 +191,7 @@ model inspeksi_hidran_halaman {
   ketersediaan_kunci_hidran       Boolean?
   id_item                         Int?
   gambar                          String?
-  createdAt                       DateTime? @map("createdAt") @db.Timestamptz(6)
+  createdAt                       DateTime? @map("createdAt") @db.Timestamptz(6) @default(now())
   item                            item?     @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -211,9 +208,9 @@ model inspeksi_kotak_p3k {
   kantong_plastik         Boolean?
   buku_panduan_daftar_isi Boolean?
   id_item                 Int?
-  gambar                  String?
   kasa_steril_terbungkus  Boolean?
-  createdAt               DateTime? @map("createdAt") @db.Timestamptz(6)
+  gambar                  String?
+  createdAt               DateTime? @map("createdAt") @db.Timestamptz(6) @default(now())
   item                    item?     @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -233,10 +230,10 @@ model inspeksi_ruang_mns {
   daya_sekunder                Boolean?
   ketersediaan_alat_komunikasi Boolean?
   id_item                      Int?
-  gambar                       String?
   daya_cadangan                Boolean?
   konektivitas_komunikasi      Boolean?
-  createdAt                    DateTime? @map("createdAt") @db.Timestamptz(6)
+  gambar                       String?
+  createdAt                    DateTime? @map("createdAt") @db.Timestamptz(6) @default(now())
   item                         item?     @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -255,7 +252,7 @@ model inspeksi_rumah_pompa_hidran {
   buku_petunjuk_perkakas_khusus_sparepart Boolean?
   id_item                                 Int?
   gambar                                  String?
-  createdAt                               DateTime? @map("createdAt") @db.Timestamptz(6)
+  createdAt                               DateTime? @map("createdAt") @db.Timestamptz(6) @default(now())
   item                                    item?     @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -268,10 +265,10 @@ model inspeksi_sarana_jalan_keluar {
   penandaan           Boolean?
   tangga_kebakaran    Boolean?
   id_item             Int?
-  gambar              String?
   akses_eksit         Boolean?
   pintu_eksit         Boolean?
-  createdAt           DateTime? @map("createdAt") @db.Timestamptz(6)
+  gambar              String?
+  createdAt           DateTime? @map("createdAt") @db.Timestamptz(6) @default(now())
   item                item?     @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -285,7 +282,7 @@ model inspeksi_scba {
   regulator              Boolean?
   id_item                Int?
   gambar                 String?
-  createdAt              DateTime? @map("createdAt") @db.Timestamptz(6)
+  createdAt              DateTime? @map("createdAt") @db.Timestamptz(6) @default(now())
   item                   item?     @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
@@ -298,7 +295,7 @@ model inspeksi_spill_containment_room {
   sistem_penanggulangan_keadaan_darurat Boolean?
   id_item                               Int?
   gambar                                String?
-  createdAt                             DateTime? @map("createdAt") @db.Timestamptz(6)
+  createdAt                             DateTime? @map("createdAt") @db.Timestamptz(6) @default(now())
   item                                  item?     @relation(fields: [id_item], references: [id_item], onDelete: Cascade, onUpdate: NoAction)
 }
 
