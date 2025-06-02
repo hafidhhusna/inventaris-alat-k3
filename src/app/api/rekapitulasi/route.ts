@@ -52,21 +52,6 @@ export async function GET(req : NextRequest) {
     const lokasiData = await prisma.lokasi.findMany({
       include: {
         item: {
-          where: {
-            OR: [
-              { inspeksi_sprinkler: { some: { createdAt: { gte: awalBulan, lte: akhirBulan } } } },
-              { inspeksi_APAP: { some: { createdAt: { gte: awalBulan, lte: akhirBulan } } } },
-              { inspeksi_detector: { some: { createdAt: { gte: awalBulan, lte: akhirBulan } } } },
-              { inspeksi_hidran_bangunan: { some: { createdAt: { gte: awalBulan, lte: akhirBulan } } } },
-              { inspeksi_hidran_halaman: { some: { createdAt: { gte: awalBulan, lte: akhirBulan } } } },
-              { inspeksi_kotak_p3k: { some: { createdAt: { gte: awalBulan, lte: akhirBulan } } } },
-              { inspeksi_ruang_mns: { some: { createdAt: { gte: awalBulan, lte: akhirBulan } } } },
-              { inspeksi_rumah_pompa_hidran: { some: { createdAt: { gte: awalBulan, lte: akhirBulan } } } },
-              { inspeksi_sarana_jalan_keluar: { some: { createdAt: { gte: awalBulan, lte: akhirBulan } } } },
-              { inspeksi_scba: { some: { createdAt: { gte: awalBulan, lte: akhirBulan } } } },
-              { inspeksi_spill_containment_room: { some: { createdAt: { gte: awalBulan, lte: akhirBulan } } } },
-            ]
-          },
           include: {
             inspeksi_sprinkler: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
@@ -75,16 +60,16 @@ export async function GET(req : NextRequest) {
                 katup_kontrol: true,
                 koneksi_pemadam_kebakaran: true,
                 penyangga: true,
-                tanda_informasi_desain_hidrolik : true,
-                tanda_informasi : true,
-                pipa_dan_perlengkapan : true,
+                tanda_informasi_desain_hidrolik: true,
+                tanda_informasi: true,
+                pipa_dan_perlengkapan: true,
                 sprinkler_cadangan: true,
               }
             },
             inspeksi_APAP: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
               select: {
-                lokasi : true,
+                lokasi: true,
                 visibilitas: true,
                 kemudahan_akses: true,
                 tekanan: true,
@@ -92,16 +77,16 @@ export async function GET(req : NextRequest) {
                 segel_pengaman: true,
                 selang_dan_nozel: true,
                 abnormalitas_fisik: true,
-                karetban_roda_kereta : true,
+                karetban_roda_kereta: true,
               }
             },
             inspeksi_detector: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
               select: {
-                lokasi : true,
+                lokasi: true,
                 penghalang_detektor: true,
                 kerusakan_fisik: true,
-                derajat_kebersihan : true,
+                derajat_kebersihan: true,
                 audible_dan_visible: true,
                 lampu: true,
                 power_supply: true,
@@ -135,7 +120,7 @@ export async function GET(req : NextRequest) {
             inspeksi_kotak_p3k: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
               select: {
-                kasa_steril_terbungkus : true,
+                kasa_steril_terbungkus: true,
                 perban: true,
                 plester: true,
                 kapas: true,
@@ -164,8 +149,8 @@ export async function GET(req : NextRequest) {
                 kapabilitas_komunikasi: true,
                 daya_sekunder: true,
                 ketersediaan_alat_komunikasi: true,
-                konektivitas_komunikasi : true,
-                daya_cadangan : true
+                konektivitas_komunikasi: true,
+                daya_cadangan: true
               }
             },
             inspeksi_rumah_pompa_hidran: {
@@ -189,7 +174,7 @@ export async function GET(req : NextRequest) {
               select: {
                 eksit: true,
                 eksit_pelepasan: true,
-                pintu_eksit : true,
+                pintu_eksit: true,
                 iluminasi: true,
                 pencahayaan_darurat: true,
                 penandaan: true,
@@ -221,6 +206,7 @@ export async function GET(req : NextRequest) {
         }
       }
     });
+
     
     console.log("lokasi data : ", JSON.stringify(lokasiData, null, 2))
     console.log("data lokasi dari prisma : ", lokasiData);
@@ -228,17 +214,35 @@ export async function GET(req : NextRequest) {
     // Rekapitulasi berdasarkan lokasi
     const rekapitulasi = lokasiData.map((lokasi) => {
       const totalItems = lokasi.item.length;
-      console.log(lokasi.item.length)
-      const readyItems = lokasi.item.filter((item) => checkStatus(item) === "READY").length;
-      const persentaseReady = totalItems > 0 ? (readyItems / totalItems) * 100 : 0;
+      let readyCount = 0;
+      let tinjauCount = 0;
+      let validItems = 0;
+
+      lokasi.item.forEach((item) => {
+        const status = checkStatus(item);
+
+        if (status === "READY") {
+          readyCount++;
+          validItems++;
+        } else if (status === "TIDAK ADA DATA") {
+          tinjauCount++;
+          validItems++;
+        }
+        // NOT READY tidak dihitung ke validItems
+      });
+
+      const persentaseReady = validItems > 0 ? (readyCount / validItems) * 100 : 0;
 
       return {
         lokasi: lokasi.nama_lokasi,
         total_items: totalItems,
-        ready_items: readyItems,
+        ready_items: readyCount,
+        tinjau_items: tinjauCount,
+        valid_items: validItems,
         persentase_ready: `${persentaseReady.toFixed(2)}%`,
       };
     });
+
     console.log("rekapitulasi yang dikirim ke FE : ", rekapitulasi);
 
     return NextResponse.json({ data: rekapitulasi });
