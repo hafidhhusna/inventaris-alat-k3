@@ -216,6 +216,7 @@ export async function GET(req : NextRequest) {
       const totalItems = lokasi.item.length;
       let readyCount = 0;
       let tinjauCount = 0;
+      let emptyCount = 0;
       let validItems = 0;
 
       lokasi.item.forEach((item) => {
@@ -225,6 +226,9 @@ export async function GET(req : NextRequest) {
           readyCount++;
           validItems++;
         } else if (status === "TIDAK ADA DATA") {
+          emptyCount++;
+          validItems++;
+        } else if(status === "TINJAU LEBIH LANJUT"){
           tinjauCount++;
           validItems++;
         }
