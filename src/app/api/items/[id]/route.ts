@@ -7,10 +7,16 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const id = parseInt(params.id);
   const body = await req.json();
 
+  const {
+    nama_lokasi,
+    titik_lokasi,
+    ...validData
+  } = body;
+
   try {
     const updatedItem = await prisma.item.update({
       where: { id_item : id },
-      data: body
+      data: validData,
     });
 
     return NextResponse.json({ message: "Item Updated", data: updatedItem }, { status: 200 });

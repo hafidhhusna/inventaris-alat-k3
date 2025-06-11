@@ -36,8 +36,8 @@ interface Item {
   deskripsi: string;
   nomor_ser: string | number;
   nama_lokasi?: string;
-  // lokasi_id?: string;
-  // id_titik_lokasi?: string;
+  lokasi_id?: string;
+  id_titik_lokasi?: string;
   tanggal_pembelian: string;
   status_pemasangan: boolean;
   PIC: string;
@@ -595,7 +595,11 @@ const TrackerPage = ({ session }: Props) => {
                   e.preventDefault();
                   if (!editItem) return;
 
-                  const { id_item, ...updateData } = editItem;
+                  const { id_item, ...updateData } = {
+                    ...editItem,
+                    lokasi_id : parseInt(formData.lokasi_id),
+                    id_titik_lokasi:parseInt(formData.id_titik_lokasi),
+                  };
 
                   const response = await fetch(`/api/items/${id_item}`, {
                     method: "PUT",
@@ -604,6 +608,7 @@ const TrackerPage = ({ session }: Props) => {
                     },
                     body: JSON.stringify(updateData),
                   });
+                  console.log("updateData : ", updateData)
 
                   if (response.ok) {
                     alert("Item Berhasil Diperbarui!");
