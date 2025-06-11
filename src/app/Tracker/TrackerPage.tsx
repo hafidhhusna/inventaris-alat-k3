@@ -28,7 +28,7 @@ interface Item {
   lokasi: string;
   gambar: string;
   deskripsi: string;
-  nomor_seri: string | number;
+  nomor_ser: string | number;
   nama_lokasi?: string;
   tanggal_pembelian: string;
   status_pemasangan: boolean;
@@ -81,7 +81,7 @@ const TrackerPage = ({ session }: Props) => {
   const exportToExcel = (data: any[], fileName = "data_item.xlsx") => {
     // const formattedData = data.map((item) => ({
     //   "Nama Item" : item.nama_item,
-    //   "Nomor Seri" : item.nomor_seri,
+    //   "Nomor Seri" : item.nomor_ser,
     //   "Jenis Sarana" : item.jenis_sarana,
     //   "Lokasi" : item.nama_lokasi,
     //   "Status" : item.status
@@ -262,7 +262,7 @@ const TrackerPage = ({ session }: Props) => {
                     </td>
                     <td className="px-4 py-2 border">{item.nama_item}</td>
                     <td className="px-4 py-2 border">{item.jenis_sarana}</td>
-                    <td className="px-4 py-2 border">{item.nomor_seri}</td>
+                    <td className="px-4 py-2 border">{item.nomor_ser}</td>
                     <td className="px-4 py-2 border">{item.nama_lokasi}</td>
                     <td className="px-4 py-2 border">{item.titik_lokasi}</td>
                     <td className="px-4 py-2 border">{item.spesifikasi}</td>
@@ -403,7 +403,7 @@ const TrackerPage = ({ session }: Props) => {
                 {selectedItem.nama_item}
               </h2>
               <p>
-                <strong>Nomor Seri:</strong> {selectedItem.nomor_seri}
+                <strong>Nomor Seri:</strong> {selectedItem.nomor_ser}
               </p>
               <p>
                 <strong>Lokasi:</strong> {selectedItem.nama_lokasi}
@@ -482,7 +482,7 @@ const TrackerPage = ({ session }: Props) => {
                     Name: {selectedItem.nama_item}
                   </h2>
                   <h2 className="text-lg sm:text-xl font-bold">
-                    SN: {selectedItem.nomor_seri}
+                    SN: {selectedItem.nomor_ser}
                   </h2>
                   <h2 className="text-xs sm:text-sm mt-2 text-red-700 font-bold">
                     SCAN FOR INSPECTION <br />
@@ -572,9 +572,20 @@ const TrackerPage = ({ session }: Props) => {
                   <input
                     type="text"
                     className="w-full border p-2 rounded"
-                    value={editItem.nomor_seri}
+                    value={editItem.nomor_ser}
                     onChange={(e) =>
-                      setEditItem({ ...editItem, nomor_seri: e.target.value })
+                      setEditItem({ ...editItem, nomor_ser: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold">Deskripsi Item</label>
+                  <input
+                    type="text"
+                    className="w-full border p-2 rounded"
+                    value={editItem.deskripsi}
+                    onChange={(e) =>
+                      setEditItem({ ...editItem, deskripsi: e.target.value })
                     }
                   />
                 </div>

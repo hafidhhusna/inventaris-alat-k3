@@ -12,6 +12,8 @@ RUN npm install
 # Copy the rest of the project
 COPY . .
 
+EXPOSE 3000
+
 # Install prisma client
 RUN npx prisma generate
 

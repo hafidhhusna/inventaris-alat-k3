@@ -52,6 +52,10 @@ export async function GET(req : NextRequest) {
     const lokasiData = await prisma.lokasi.findMany({
       include: {
         item: {
+          where : {
+            status_pemasangan : true,
+            status : 'APPROVED'
+          },
           include: {
             inspeksi_sprinkler: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
