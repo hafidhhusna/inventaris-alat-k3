@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {prisma} from "@/lib/db"; 
+import { stat } from "fs";
 
 // Fungsi untuk menentukan status inspeksi tiap item
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,7 +69,9 @@ export async function GET(req : NextRequest) {
                 tanda_informasi: true,
                 pipa_dan_perlengkapan: true,
                 sprinkler_cadangan: true,
-              }
+              },
+              orderBy : {createdAt : 'desc'},
+              take : 1
             },
             inspeksi_APAP: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
@@ -82,7 +85,9 @@ export async function GET(req : NextRequest) {
                 selang_dan_nozel: true,
                 abnormalitas_fisik: true,
                 karetban_roda_kereta: true,
-              }
+              },
+              orderBy : {createdAt : 'desc'},
+              take : 1
             },
             inspeksi_detector: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
@@ -95,7 +100,9 @@ export async function GET(req : NextRequest) {
                 lampu: true,
                 power_supply: true,
                 prosedur_manufaktur: true
-              }
+              },
+              orderBy : {createdAt : 'desc'},
+              take : 1
             },
             inspeksi_hidran_bangunan: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
@@ -107,7 +114,9 @@ export async function GET(req : NextRequest) {
                 nozel: true,
                 perangkat_penyimpan_selang: true,
                 kabinet_penyimpanan: true
-              }
+              },
+              orderBy : {createdAt : 'desc'},
+              take : 1
             },
             inspeksi_hidran_halaman: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
@@ -119,7 +128,9 @@ export async function GET(req : NextRequest) {
                 nozel: true,
                 mur_pengoperasian: true,
                 ketersediaan_kunci_hidran: true
-              }
+              },
+              orderBy : {createdAt : 'desc'},
+              take : 1
             },
             inspeksi_kotak_p3k: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
@@ -135,7 +146,9 @@ export async function GET(req : NextRequest) {
                 povidon_iodin: true,
                 kantong_plastik: true,
                 buku_panduan_daftar_isi: true
-              }
+              },
+              orderBy : {createdAt : 'desc'},
+              take : 1
             },
             inspeksi_ruang_mns: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
@@ -155,7 +168,9 @@ export async function GET(req : NextRequest) {
                 ketersediaan_alat_komunikasi: true,
                 konektivitas_komunikasi: true,
                 daya_cadangan: true
-              }
+              },
+              orderBy : {createdAt : 'desc'},
+              take : 1
             },
             inspeksi_rumah_pompa_hidran: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
@@ -171,7 +186,9 @@ export async function GET(req : NextRequest) {
                 baterai: true,
                 penyediaan_bahan_bakar: true,
                 buku_petunjuk_perkakas_khusus_sparepart: true
-              }
+              },
+              orderBy : {createdAt : 'desc'},
+              take : 1
             },
             inspeksi_sarana_jalan_keluar: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
@@ -183,7 +200,9 @@ export async function GET(req : NextRequest) {
                 pencahayaan_darurat: true,
                 penandaan: true,
                 tangga_kebakaran: true
-              }
+              },
+              orderBy : {createdAt : 'desc'},
+              take : 1
             },
             inspeksi_scba: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
@@ -194,7 +213,9 @@ export async function GET(req : NextRequest) {
                 selang: true,
                 EOSTI: true,
                 regulator: true
-              }
+              },
+              orderBy : {createdAt : 'desc'},
+              take : 1
             },
             inspeksi_spill_containment_room: {
               where: { createdAt: { gte: awalBulan, lte: akhirBulan } },
@@ -204,7 +225,9 @@ export async function GET(req : NextRequest) {
                 sistem_pencegahan_kebakaran: true,
                 sistem_pencegahan_tumpahan_limbah: true,
                 sistem_penanggulangan_keadaan_darurat: true
-              }
+              },
+              orderBy : {createdAt : 'desc'},
+              take : 1
             },
           }
         }
@@ -223,21 +246,26 @@ export async function GET(req : NextRequest) {
       let emptyCount = 0;
       let validItems = 0;
 
-      lokasi.item.forEach((item) => {
+      const itemDetails = lokasi.item.map((item) => {
         const status = checkStatus(item);
 
-        if (status === "READY") {
-          readyCount++;
-          validItems++;
-        } else if (status === "TIDAK ADA DATA") {
-          emptyCount++;
-          validItems++;
-        } else if(status === "TINJAU LEBIH LANJUT"){
-          tinjauCount++;
+        if(
+          status === "READY" ||
+          status === "TIDAK ADA DATA" ||
+          status === "TINJAU LEBIH LANJUT"
+        ){
           validItems++;
         }
-        // NOT READY tidak dihitung ke validItems
-      });
+        if(status === "READY") readyCount++;
+        if(status === "TINJAU LEBIH LANJUT") tinjauCount++;
+        if(status === "TIDAK ADA DATA") emptyCount++;
+
+        return{
+          id_item : item.id_item,
+          nama_item : item.nama_item,
+          status,
+        }
+      })
 
       const persentaseReady = validItems > 0 ? (readyCount / validItems) * 100 : 0;
 
@@ -245,13 +273,15 @@ export async function GET(req : NextRequest) {
         lokasi: lokasi.nama_lokasi,
         total_items: totalItems,
         ready_items: readyCount,
+        empty_items : emptyCount,
         tinjau_items: tinjauCount,
         valid_items: validItems,
         persentase_ready: `${persentaseReady.toFixed(2)}%`,
+        item_details : itemDetails,
       };
     });
 
-    console.log("rekapitulasi yang dikirim ke FE : ", rekapitulasi);
+    console.log("rekapitulasi yang dikirim ke FE : ", JSON.stringify(rekapitulasi, null, 2));
 
     return NextResponse.json({ data: rekapitulasi });
   } catch (error) {
