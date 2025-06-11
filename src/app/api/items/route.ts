@@ -22,7 +22,7 @@ export async function GET() {
     const result = items.map((item) => ({
       id_item : item.id_item,
       nama_item : item.nama_item,
-      nomor_seri : item.nomor_ser,
+      nomor_ser : item.nomor_ser,
       nama_lokasi : item.nama_lokasi.nama_lokasi,
       titik_lokasi : item.lokasi_titik_lokasi.nama_titik_lokasi,
       deskripsi : item.deskripsi,

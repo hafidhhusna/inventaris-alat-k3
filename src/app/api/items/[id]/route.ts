@@ -1,40 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { PrismaClient } from "@prisma/client";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+const prisma = new PrismaClient();
 
-export async function PUT(req : NextRequest, {params}:{params : {id : string}}){
-    const id = params.id;
-    const body = await req.json();
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+  const id = parseInt(params.id);
+  const body = await req.json();
 
-    const {data, error} = await supabase
-        .from("item")
-        .update(body)
-        .eq("id_item", id)
-        .select()
-        .single();
-    
-    if(error){
-        return NextResponse.json({error: error.message}, {status: 500});
-    }
+  try {
+    const updatedItem = await prisma.item.update({
+      where: { id_item : id },
+      data: body
+    });
 
-    return NextResponse.json({message : "Item Updated", data}, {status: 200});
+    return NextResponse.json({ message: "Item Updated", data: updatedItem }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
 
-export async function DELETE(req : NextRequest, {params}: {params : {id:string}}){
-    const id = params.id;
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+  const id = parseInt(params.id);
 
-    const {error} = await supabase
-        .from("item")
-        .delete()
-        .eq("id_item", id);
+  try {
+    await prisma.item.delete({
+      where: { id_item: id },
+    });
 
-    if(error){
-        return NextResponse.json({error : error.message} , {status: 500});
-    }
-
-    return NextResponse.json({message : "Item Berhasil Dihapus"}, {status: 200});
+    return NextResponse.json({ message: "Item Berhasil Dihapus" }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
