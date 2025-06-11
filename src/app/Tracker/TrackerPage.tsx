@@ -18,6 +18,12 @@ import { IoIosClose } from "react-icons/io";
 import { RiUploadLine } from "react-icons/ri";
 import { useQRCode } from "next-qrcode";
 import * as XLSX from "xlsx";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 const ITEMS_PER_PAGE = 5;
 
@@ -30,6 +36,8 @@ interface Item {
   deskripsi: string;
   nomor_ser: string | number;
   nama_lokasi?: string;
+  // lokasi_id?: string;
+  // id_titik_lokasi?: string;
   tanggal_pembelian: string;
   status_pemasangan: boolean;
   PIC: string;
@@ -43,6 +51,10 @@ type Props = {
 };
 
 const TrackerPage = ({ session }: Props) => {
+  const [formData, setFormData] = useState({
+    lokasi_id: "",
+    id_titik_lokasi: "",
+  });
   const [items, setItems] = useState<Item[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -54,6 +66,12 @@ const TrackerPage = ({ session }: Props) => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [searchQuery, setSearchQuery] = useState("");
   const [isImageOpen, setIsImageOpen] = useState(false);
+  const [lokasiList, setLokasiList] = useState<
+    { lokasi_id: number; nama_lokasi: string }[]
+  >([]);
+  const [titikLokasiList, setTitikLokasiList] = useState<
+    { id_titik_lokasi: number; nama_titik_lokasi: string }[]
+  >([]);
 
   const { Canvas } = useQRCode();
   const qrCanvasRef = useRef<HTMLDivElement>(null);
@@ -77,6 +95,54 @@ const TrackerPage = ({ session }: Props) => {
 
     fetchItems();
   }, []);
+
+  useEffect(() => {
+    const fetchLokasi = async () => {
+      const { data, error } = await supabase
+        .from("lokasi")
+        .select(`lokasi_id, "nama_lokasi"`);
+
+      if (error) {
+        console.error("Error fetching lokasi:", error.message);
+      } else {
+        setLokasiList(
+          data.map((lokasi) => ({
+            lokasi_id: lokasi.lokasi_id,
+            nama_lokasi: lokasi["nama_lokasi"],
+          }))
+        );
+      }
+    };
+
+    fetchLokasi();
+  }, []);
+
+  // Fetch titik lokasi berdasarkan lokasi yang dipilih
+  useEffect(() => {
+    if (formData.lokasi_id && formData.lokasi_id !== "new") {
+      const fetchTitikLokasi = async () => {
+        const { data, error } = await supabase
+          .from("titik_lokasi")
+          .select(`id_titik_lokasi, "nama_titik_lokasi"`)
+          .eq("lokasi_id", formData.lokasi_id);
+
+        if (error) {
+          console.error("Error fetching titik lokasi:", error.message);
+        } else {
+          setTitikLokasiList(
+            data.map((titik) => ({
+              id_titik_lokasi: titik.id_titik_lokasi,
+              nama_titik_lokasi: titik["nama_titik_lokasi"],
+            }))
+          );
+        }
+      };
+
+      fetchTitikLokasi();
+    } else {
+      setTitikLokasiList([]);
+    }
+  }, [formData.lokasi_id]);
 
   const exportToExcel = (data: any[], fileName = "data_item.xlsx") => {
     // const formattedData = data.map((item) => ({
@@ -529,7 +595,7 @@ const TrackerPage = ({ session }: Props) => {
                   e.preventDefault();
                   if (!editItem) return;
 
-                  const { id_item, nama_lokasi, ...updateData } = editItem;
+                  const { id_item, ...updateData } = editItem;
 
                   const response = await fetch(`/api/items/${id_item}`, {
                     method: "PUT",
@@ -552,6 +618,7 @@ const TrackerPage = ({ session }: Props) => {
                   } else {
                     const result = await response.json();
                     alert("Gagal Update : " + result.error);
+                    console.log(result.error);
                   }
                 }}
                 className="space-y-4"
@@ -602,25 +669,69 @@ const TrackerPage = ({ session }: Props) => {
                 </div>
                 <div>
                   <label className="block font-semibold">Lokasi</label>
-                  <input
+                  {/* <input
                     type="text"
                     className="w-full border p-2 rounded"
                     value={editItem.nama_lokasi}
                     onChange={(e) =>
                       setEditItem({ ...editItem, nama_lokasi: e.target.value })
                     }
-                  />
+                  /> */}
+                  <select
+                    name="lokasi_id"
+                    value={formData.lokasi_id}
+                    onChange={(e) => {
+                      const lokasi_id = e.target.value;
+                      setFormData((prev) => ({ ...prev, lokasi_id }));
+                      // setEditItem((prev) => ({ ...prev, lokasi_id }));
+                    }}
+                    required
+                    className="mb-2 p-2 w-full border rounded"
+                  >
+                    <option value="" disabled>
+                      Pilih Lokasi
+                    </option>
+                    {lokasiList.map((lokasi) => (
+                      <option key={lokasi.lokasi_id} value={lokasi.lokasi_id}>
+                        {lokasi.nama_lokasi}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block font-semibold">Titik Lokasi</label>
-                  <input
+                  {/* <input
                     type="text"
                     className="w-full border p-2 rounded"
                     value={editItem.titik_lokasi}
                     onChange={(e) =>
                       setEditItem({ ...editItem, titik_lokasi: e.target.value })
                     }
-                  />
+                  /> */}
+                  <select
+                    name="id_titik_lokasi"
+                    value={formData.id_titik_lokasi}
+                    onChange={(e) => {
+                      const id_titik_lokasi = e.target.value;
+                      setFormData((prev) => ({ ...prev, id_titik_lokasi }));
+                      // setEditItem((prev) => ({ ...prev, id_titik_lokasi }));
+                    }}
+                    required
+                    className="mb-2 p-2 w-full border rounded"
+                    disabled={!formData.lokasi_id}
+                  >
+                    <option value="" disabled>
+                      Pilih Titik Lokasi
+                    </option>
+                    {titikLokasiList.map((titik) => (
+                      <option
+                        key={titik.id_titik_lokasi}
+                        value={titik.id_titik_lokasi}
+                      >
+                        {titik.nama_titik_lokasi}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block font-semibold">Spesifikasi</label>
