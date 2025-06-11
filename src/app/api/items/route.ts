@@ -17,7 +17,7 @@ export async function GET() {
       orderBy: { id_item: "asc" },
     });
 
-    console.log("Items dari FindMany : ", items)
+    // console.log("Items dari FindMany : ", items)
 
     const result = items.map((item) => ({
       id_item : item.id_item,
