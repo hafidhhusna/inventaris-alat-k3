@@ -516,7 +516,7 @@ const TrackerPage = ({ session }: Props) => {
 
         {isEditOpen && editItem && (
           <div className="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-30">
-            <div className="bg-white w-[50vw] p-6 rounded-lg relative">
+            <div className="bg-white w-[50vw] max-h-[80vh] p-6 rounded-lg relative overflow-y-auto">
               <button
                 onClick={() => setIsEditOpen(false)}
                 className="absolute top-3 right-3 text-2x1"
@@ -568,6 +568,17 @@ const TrackerPage = ({ session }: Props) => {
                   />
                 </div>
                 <div>
+                  <label className="block font-semibold">Jenis Sarana</label>
+                  <input
+                    type="text"
+                    className="w-full border p-2 rounded"
+                    value={editItem.jenis_sarana}
+                    onChange={(e) =>
+                      setEditItem({ ...editItem, jenis_sarana: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
                   <label className="block font-semibold">Nomor Seri</label>
                   <input
                     type="text"
@@ -590,6 +601,28 @@ const TrackerPage = ({ session }: Props) => {
                   />
                 </div>
                 <div>
+                  <label className="block font-semibold">Lokasi</label>
+                  <input
+                    type="text"
+                    className="w-full border p-2 rounded"
+                    value={editItem.nama_lokasi}
+                    onChange={(e) =>
+                      setEditItem({ ...editItem, nama_lokasi: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold">Titik Lokasi</label>
+                  <input
+                    type="text"
+                    className="w-full border p-2 rounded"
+                    value={editItem.titik_lokasi}
+                    onChange={(e) =>
+                      setEditItem({ ...editItem, titik_lokasi: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
                   <label className="block font-semibold">Spesifikasi</label>
                   <input
                     type="text"
@@ -600,6 +633,76 @@ const TrackerPage = ({ session }: Props) => {
                     }
                   />
                 </div>
+                <div>
+                  <label className="block font-semibold">Tanggal</label>
+                  <input
+                    type="date"
+                    className="w-full border p-2 rounded"
+                    value={editItem.tanggal_pembelian?.split("T")[0] || ""}
+                    onChange={(e) =>
+                      setEditItem({
+                        ...editItem,
+                        tanggal_pembelian: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold">Pemasok</label>
+                  <input
+                    type="text"
+                    className="w-full border p-2 rounded"
+                    value={editItem.pemasok}
+                    onChange={(e) =>
+                      setEditItem({ ...editItem, pemasok: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold">PIC</label>
+                  <input
+                    type="text"
+                    className="w-full border p-2 rounded"
+                    value={editItem.PIC}
+                    onChange={(e) =>
+                      setEditItem({ ...editItem, PIC: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold">
+                    Status Pemasangan
+                  </label>
+                  <input
+                    type="checkbox"
+                    className="mr-2"
+                    checked={editItem.status_pemasangan}
+                    onChange={(e) =>
+                      setEditItem({
+                        ...editItem,
+                        status_pemasangan: e.target.checked,
+                      })
+                    }
+                  />
+                  <span>
+                    {editItem.status_pemasangan
+                      ? "Terpasang"
+                      : "Belum Terpasang"}
+                  </span>
+                </div>
+                {/* <div>
+                  <label className="block font-semibold">
+                    Unggah Dokumentasi
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border p-2 rounded"
+                    value={editItem.spesifikasi}
+                    onChange={(e) =>
+                      setEditItem({ ...editItem, spesifikasi: e.target.value })
+                    }
+                  />
+                </div> */}
                 <div className="flex justify-end">
                   <button
                     type="submit"
