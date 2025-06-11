@@ -27,6 +27,8 @@ const supabase = createClient(
 
 const ITEMS_PER_PAGE = 5;
 
+const JENIS_SARANA = [""];
+
 interface Item {
   id_item: number;
   nama_item: string;
@@ -597,8 +599,8 @@ const TrackerPage = ({ session }: Props) => {
 
                   const { id_item, ...updateData } = {
                     ...editItem,
-                    lokasi_id : parseInt(formData.lokasi_id),
-                    id_titik_lokasi:parseInt(formData.id_titik_lokasi),
+                    lokasi_id: parseInt(formData.lokasi_id),
+                    id_titik_lokasi: parseInt(formData.id_titik_lokasi),
                   };
 
                   const response = await fetch(`/api/items/${id_item}`, {
@@ -608,11 +610,12 @@ const TrackerPage = ({ session }: Props) => {
                     },
                     body: JSON.stringify(updateData),
                   });
-                  console.log("updateData : ", updateData)
+                  console.log("updateData : ", updateData);
 
                   if (response.ok) {
                     alert("Item Berhasil Diperbarui!");
                     setIsEditOpen(false);
+                    window.location.reload();
                     //Reload Data
                     const updated = await response.json();
                     setItems((prev) =>
@@ -641,14 +644,44 @@ const TrackerPage = ({ session }: Props) => {
                 </div>
                 <div>
                   <label className="block font-semibold">Jenis Sarana</label>
-                  <input
+                  {/* <input
                     type="text"
                     className="w-full border p-2 rounded"
                     value={editItem.jenis_sarana}
                     onChange={(e) =>
                       setEditItem({ ...editItem, jenis_sarana: e.target.value })
                     }
-                  />
+                  /> */}
+                  <select
+                    name="jenis_sarana"
+                    value={editItem.jenis_sarana}
+                    onChange={(e) =>
+                      setEditItem({ ...editItem, jenis_sarana: e.target.value })
+                    }
+                    required
+                    className="mb-2 p-2 w-full border rounded"
+                  >
+                    <option value="" disabled>
+                      Pilih Jenis Sarana
+                    </option>
+                    <option value="sprinkler">Sprinkler</option>
+                    <option value="APAP">APAP</option>
+                    <option value="detector">Detector</option>
+                    <option value="hidran_bangunan">Hidran Bangunan</option>
+                    <option value="hidran_halaman">Hidran Halaman</option>
+                    <option value="kotak_p3k">Kotak P3K</option>
+                    <option value="ruang_mns">Ruang MNS</option>
+                    <option value="rumah_pompa_hidran">
+                      Rumah Pompa Hidran
+                    </option>
+                    <option value="sarana_jalan_keluar">
+                      Sarana Jalan Keluar
+                    </option>
+                    <option value="scba">SCBA</option>
+                    <option value="spill_containment_room">
+                      Spill Containment Room
+                    </option>
+                  </select>
                 </div>
                 <div>
                   <label className="block font-semibold">Nomor Seri</label>
